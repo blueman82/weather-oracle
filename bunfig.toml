@@ -1,0 +1,11 @@
+[install]
+# Use exact versions for reproducible installs
+exact = true
+
+[run]
+# Enable source maps for better debugging
+smol = false
+
+[test]
+# Test configuration
+coverage = true
