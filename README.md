@@ -94,6 +94,7 @@ bun run packages/cli/src/index.ts forecast "Berlin" --models ecmwf,gfs,icon
 
 | Option | Description |
 |--------|-------------|
+| `-V, --version` | Show version number |
 | `-d, --days <n>` | Forecast days (1-14, default: 7) |
 | `-m, --models <list>` | Models to query (comma-separated) |
 | `-u, --units <type>` | Temperature units (metric/imperial) |

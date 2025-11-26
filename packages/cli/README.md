@@ -28,6 +28,14 @@ weather-oracle forecast "London"
 forecast forecast "London"
 ```
 
+## Commands
+
+| Command | Description |
+|---------|-------------|
+| `forecast <location>` | Get weather forecast with model consensus |
+| `compare <location>` | Compare forecasts across models side-by-side |
+| `config` | Manage configuration *(coming soon)* |
+
 ## Usage
 
 ### Forecast Command
@@ -120,6 +128,7 @@ These options work with all commands:
 
 | Option | Short | Description |
 |--------|-------|-------------|
+| `--version` | `-V` | Show version number |
 | `--units <type>` | `-u` | Temperature units: `metric` (default) or `imperial` |
 | `--days <n>` | `-d` | Forecast days: 1-14 (default: 7) |
 | `--models <list>` | `-m` | Comma-separated list of models to use |
