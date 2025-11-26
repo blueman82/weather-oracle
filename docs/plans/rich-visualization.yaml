@@ -1,0 +1,1235 @@
+# ═══════════════════════════════════════════════════════════════════════════════
+# WEATHER ORACLE: RICH VISUALIZATION SYSTEM
+# ═══════════════════════════════════════════════════════════════════════════════
+# Feature: Atmospheric weather visualization with true-color gradients,
+#          sparklines, heatmaps, mood theming, and model constellation
+# Source: Multi-model AI deliberation (Claude Opus + GPT-5.1 Codex Max)
+# ═══════════════════════════════════════════════════════════════════════════════
+#
+# DATA FLOW REGISTRY
+# ═══════════════════════════════════════════════════════════════════════════════
+# PRODUCERS:
+#   Task 1 → detectColorSupport(), RenderTier enum
+#   Task 2 → labToRgb(), rgbToLab(), RGB type, LAB type
+#   Task 3 → tempToColor(), interpolateColor(), TEMP_GRADIENT_LAB
+#   Task 4 → WeatherTheme, MOOD_THEMES, getThemeForConditions()
+#   Task 5 → createSparkline(), SPARK_CHARS
+#   Task 6 → render7DayHeatMap(), renderHeatmapLegend()
+#   Task 7 → WEATHER_ART, renderWeatherIcon()
+#   Task 8 → renderModelConstellation()
+#   Task 9 → revealAnimation(), weatherSpinner()
+#   Task 10 → RichFormatter class
+#
+# CONSUMERS:
+#   Task 3 → depends_on [1, 2] (uses RenderTier, labToRgb)
+#   Task 5 → depends_on [3] (uses tempToColor)
+#   Task 6 → depends_on [3] (uses tempToColor)
+#   Task 7 → depends_on [4] (uses WeatherTheme)
+#   Task 8 → depends_on [3, 4] (uses tempToColor, theme)
+#   Task 9 → depends_on [1, 4] (uses RenderTier, theme)
+#   Task 10 → depends_on [3, 4, 5, 6, 7, 8, 9] (uses all components)
+#   Task 11 → depends_on [10] (uses RichFormatter)
+#   Task 12 → depends_on [11] (tests full integration)
+#
+# VALIDATION: All consumers depend_on their producers ✓
+# ═══════════════════════════════════════════════════════════════════════════════
+#
+# SUCCESS CRITERIA CLASSIFICATION
+# ═══════════════════════════════════════════════════════════════════════════════
+# All component tasks (1-9) have CAPABILITY-only criteria ✓
+# Integration criteria isolated to Task 11 (CLI Integration) ✓
+# Task 12 is pure integration testing ✓
+# ═══════════════════════════════════════════════════════════════════════════════
+
+conductor:
+  default_agent: typescript-pro
+  worktree_groups:
+    - group_id: "foundation"
+      description: "Core utilities with no dependencies - can run in parallel"
+      tasks: [1, 2]
+      rationale: "Terminal detection and color space are independent foundations"
+    - group_id: "gradient-theme"
+      description: "Gradient and theming depend on foundation"
+      tasks: [3, 4]
+      rationale: "Both depend on Task 2 (color-space), can run in parallel after foundation"
+    - group_id: "visualizations"
+      description: "All visualization components depend on gradient/theme"
+      tasks: [5, 6, 7, 8, 9]
+      rationale: "Sparklines, heatmap, ASCII art, constellation, animation - can mostly parallelize"
+    - group_id: "integration"
+      description: "Formatter and CLI integration"
+      tasks: [10, 11, 12]
+      rationale: "Sequential: RichFormatter → CLI wiring → Integration tests"
+plan:
+  metadata:
+    feature_name: "Rich Visualization System"
+    created: "2025-11-26"
+    estimated_total_time: "6-8 hours"
+    source: "AI Counsel Deliberation (Claude Opus 4.5 + GPT-5.1 Codex Max)"
+    consensus_confidence: 0.93
+  context:
+    framework: "Bun + TypeScript"
+    architecture: "Monorepo with packages/cli and packages/core"
+    testing_framework: "Bun test with MSW mocking"
+    existing_patterns:
+      - "Strategy pattern for formatters (OutputFormatter interface)"
+      - "Branded types for weather units (Celsius, Millimeters, etc.)"
+      - "ColorPalette interface in formatters/types.ts"
+      - "chalk 5.x for terminal colors"
+  tasks:
+    # ═══════════════════════════════════════════════════════════════════════════
+    # TASK 1: Terminal Capability Detection
+    # ═══════════════════════════════════════════════════════════════════════════
+    - task_number: 1
+      name: "Terminal Capability Detection"
+      agent: cli-developer
+      files:
+        - "packages/cli/src/visualization/terminal.ts"
+        - "packages/cli/src/visualization/terminal.test.ts"
+      depends_on: []
+      estimated_time: "30m"
+      description: |
+        # Task 1: Terminal Capability Detection
+
+        ## IMPLEMENTATION REQUIREMENTS
+        Create a terminal capability detection module that identifies the color support
+        level of the current terminal environment.
+
+        **MUST export:**
+        - `RenderTier` enum with levels: RICH, FULL, STANDARD, COMPAT, PLAIN
+        - `detectColorSupport()` function returning RenderTier
+        - `supportsAnimation()` function returning boolean
+
+        **PROHIBITED:** TODO comments, placeholder structs, unused variables
+      success_criteria:
+        - "RenderTier enum exported with 5 levels (RICH=4, FULL=3, STANDARD=2, COMPAT=1, PLAIN=0)"
+        - "detectColorSupport() checks COLORTERM, TERM, NO_COLOR, FORCE_COLOR environment variables"
+        - "detectColorSupport() returns PLAIN when NO_COLOR is set"
+        - "detectColorSupport() returns RICH when COLORTERM=truecolor and TTY"
+        - "supportsAnimation() returns false when not TTY or CI environment"
+        - "All functions have JSDoc comments"
+        - "No TODO comments in production code paths"
+        - "No placeholder empty implementations"
+      test_commands:
+        - "bun test packages/cli/src/visualization/terminal.test.ts"
+      test_first:
+        rationale: "Terminal detection has clear input/output contracts based on env vars"
+        tests_to_write:
+          - description: "Returns PLAIN when NO_COLOR is set"
+            input: "process.env.NO_COLOR = '1'"
+            expected: "RenderTier.PLAIN"
+          - description: "Returns RICH when COLORTERM=truecolor and TTY"
+            input: "process.env.COLORTERM = 'truecolor', isTTY = true"
+            expected: "RenderTier.RICH"
+          - description: "Returns STANDARD when TERM contains 256"
+            input: "process.env.TERM = 'xterm-256color'"
+            expected: "RenderTier.STANDARD"
+          - description: "supportsAnimation returns false in CI"
+            input: "process.env.CI = 'true'"
+            expected: "false"
+      implementation:
+        approach: |
+          Create a hierarchical detection system that checks environment variables in priority order:
+          1. NO_COLOR (standard) → PLAIN
+          2. FORCE_COLOR → respect level
+          3. COLORTERM=truecolor → RICH/FULL based on TTY
+          4. TERM contains 256 → STANDARD
+          5. isTTY → COMPAT
+          6. Default → PLAIN
+        key_points:
+          - point: "Follow NO_COLOR standard"
+            details: "NO_COLOR takes absolute precedence per https://no-color.org/"
+            reference: "https://no-color.org/"
+          - point: "Detect CI environments for animation"
+            details: "Check CI, CONTINUOUS_INTEGRATION, GITHUB_ACTIONS, etc."
+          - point: "Cache detection result"
+            details: "Terminal capabilities don't change during execution"
+      verification:
+        checklist:
+          - "RenderTier enum has exactly 5 values"
+          - "detectColorSupport handles all documented env vars"
+          - "supportsAnimation checks TTY and CI"
+          - "Tests cover all detection paths"
+      code_quality:
+        typescript:
+          full_quality_pipeline:
+            command: |
+              cd packages/cli && bun test src/visualization/terminal.test.ts && bun run typecheck
+      commit:
+        message: "feat(cli): add terminal capability detection for rich visualization"
+        files:
+          - "packages/cli/src/visualization/terminal.ts"
+          - "packages/cli/src/visualization/terminal.test.ts"
+    # ═══════════════════════════════════════════════════════════════════════════
+    # TASK 2: LAB Color Space Utilities
+    # ═══════════════════════════════════════════════════════════════════════════
+    - task_number: 2
+      name: "LAB Color Space Utilities"
+      agent: typescript-pro
+      files:
+        - "packages/cli/src/visualization/color-space.ts"
+        - "packages/cli/src/visualization/color-space.test.ts"
+      depends_on: []
+      estimated_time: "45m"
+      description: |
+        # Task 2: LAB Color Space Utilities
+
+        ## IMPLEMENTATION REQUIREMENTS
+        Create color space conversion utilities for perceptually-uniform gradients.
+        LAB color space avoids the "muddy greens" problem of RGB interpolation.
+
+        **MUST export:**
+        - `RGB` interface with r, g, b number fields
+        - `LAB` interface with l, a, b number fields
+        - `rgbToLab(rgb: RGB): LAB` function
+        - `labToRgb(lab: LAB): RGB` function
+        - `interpolateLab(lab1: LAB, lab2: LAB, t: number): LAB` function
+
+        **PROHIBITED:** TODO comments, placeholder structs, unused variables
+      success_criteria:
+        - "RGB and LAB interfaces exported with readonly number fields"
+        - "rgbToLab correctly converts using D65 illuminant"
+        - "labToRgb correctly converts back to RGB with clamping"
+        - "interpolateLab performs linear interpolation in LAB space"
+        - "Round-trip conversion (RGB→LAB→RGB) preserves values within tolerance"
+        - "All functions have JSDoc with mathematical references"
+        - "No TODO comments in production code paths"
+      test_commands:
+        - "bun test packages/cli/src/visualization/color-space.test.ts"
+      test_first:
+        rationale: "Color conversions have known mathematical formulas with test vectors"
+        tests_to_write:
+          - description: "Converts white RGB to LAB"
+            input: "{ r: 255, g: 255, b: 255 }"
+            expected: "{ l: 100, a: 0, b: 0 } (approximately)"
+          - description: "Converts black RGB to LAB"
+            input: "{ r: 0, g: 0, b: 0 }"
+            expected: "{ l: 0, a: 0, b: 0 }"
+          - description: "Round-trip preserves values"
+            input: "{ r: 128, g: 64, b: 192 }"
+            expected: "Same values after rgbToLab then labToRgb"
+          - description: "Interpolation at t=0.5 gives midpoint"
+            input: "lab1, lab2, t=0.5"
+            expected: "Midpoint of each component"
+      implementation:
+        approach: |
+          Implement standard CIE LAB conversion using D65 illuminant:
+          1. RGB → Linear RGB (remove gamma)
+          2. Linear RGB → XYZ (matrix multiplication)
+          3. XYZ → LAB (nonlinear transformation)
+          And reverse for LAB → RGB with clamping to [0, 255].
+        key_points:
+          - point: "Use D65 illuminant reference white"
+            details: "D65 is standard for sRGB: X=95.047, Y=100, Z=108.883"
+            reference: "CIE 15:2004"
+          - point: "Apply gamma correction"
+            details: "sRGB uses gamma ≈ 2.2 with linear segment near black"
+          - point: "Clamp output RGB values"
+            details: "Some LAB values map outside [0,255] - clamp gracefully"
+        code_structure: |
+          // Constants
+          const D65 = { X: 95.047, Y: 100.0, Z: 108.883 };
+
+          // Helper functions
+          function gammaExpand(c: number): number { ... }
+          function gammaCompress(c: number): number { ... }
+          function rgbToXyz(rgb: RGB): XYZ { ... }
+          function xyzToLab(xyz: XYZ): LAB { ... }
+
+          // Exported functions
+          export function rgbToLab(rgb: RGB): LAB { ... }
+          export function labToRgb(lab: LAB): RGB { ... }
+          export function interpolateLab(lab1: LAB, lab2: LAB, t: number): LAB { ... }
+      verification:
+        checklist:
+          - "D65 illuminant constants correct"
+          - "Gamma expansion/compression formulas correct"
+          - "Matrix multiplication for XYZ correct"
+          - "LAB nonlinear transformation correct"
+          - "Output clamping prevents invalid RGB"
+      code_quality:
+        typescript:
+          full_quality_pipeline:
+            command: |
+              cd packages/cli && bun test src/visualization/color-space.test.ts && bun run typecheck
+      commit:
+        message: "feat(cli): add LAB color space utilities for perceptual gradients"
+        files:
+          - "packages/cli/src/visualization/color-space.ts"
+          - "packages/cli/src/visualization/color-space.test.ts"
+      status: "in-progress"
+    # ═══════════════════════════════════════════════════════════════════════════
+    # TASK 3: True-Color Gradient System
+    # ═══════════════════════════════════════════════════════════════════════════
+    - task_number: 3
+      name: "True-Color Gradient System"
+      agent: typescript-pro
+      files:
+        - "packages/cli/src/visualization/gradient.ts"
+        - "packages/cli/src/visualization/gradient.test.ts"
+      depends_on: [1, 2]
+      estimated_time: "1h"
+      description: |
+        # Task 3: True-Color Gradient System
+
+        ## PHASE 0: DEPENDENCY VERIFICATION (EXECUTE FIRST)
+        ```bash
+        grep -q "export enum RenderTier" packages/cli/src/visualization/terminal.ts && \
+          echo "✓ Task 1 ready" || echo "❌ STOP: Task 1 incomplete"
+        grep -q "export function labToRgb" packages/cli/src/visualization/color-space.ts && \
+          echo "✓ Task 2 ready" || echo "❌ STOP: Task 2 incomplete"
+        ```
+        If ANY check fails: Report "Dependency Task X incomplete" and STOP.
+
+        ## IMPLEMENTATION REQUIREMENTS
+        Create the temperature gradient system using LAB interpolation for smooth,
+        perceptually-uniform color transitions from arctic violet to crimson.
+
+        **MUST import from dependencies:**
+        - `RenderTier, detectColorSupport` from './terminal'
+        - `labToRgb, interpolateLab, LAB, RGB` from './color-space'
+
+        **MUST export:**
+        - `TEMP_GRADIENT_LAB` constant with temperature-to-LAB color stops
+        - `interpolateColor(temp: number): RGB` function
+        - `tempToColor(temp: number): (text: string) => string` function
+        - `tempToAnsi256(temp: number): number` fallback function
+        - `tempTo16Color(temp: number): string` fallback function
+
+        **PROHIBITED:** TODO comments, placeholder structs, unused variables
+      success_criteria:
+        - "TEMP_GRADIENT_LAB has at least 7 color stops from -30°C to +40°C"
+        - "interpolateColor returns smooth RGB values for any temperature"
+        - "tempToColor returns chalk.rgb() for true-color terminals"
+        - "tempToColor falls back to ansi256 for 256-color terminals"
+        - "tempToColor falls back to 16-color for basic terminals"
+        - "tempToColor returns identity function for PLAIN tier"
+        - "Gradient produces deep violet at -30°C, crimson at +40°C"
+        - "No TODO comments in production code paths"
+      test_commands:
+        - "bun test packages/cli/src/visualization/gradient.test.ts"
+      test_first:
+        rationale: "Gradient system has clear temperature-to-color mapping requirements"
+        tests_to_write:
+          - description: "Extreme cold produces violet"
+            input: "temp = -30"
+            expected: "RGB in violet range (r < 100, b > 150)"
+          - description: "Extreme hot produces crimson"
+            input: "temp = 40"
+            expected: "RGB in red range (r > 200, g < 100)"
+          - description: "Mild temperature produces neutral/green"
+            input: "temp = 15"
+            expected: "RGB in mild range (balanced r,g,b)"
+          - description: "Interpolation is smooth"
+            input: "temps 10, 11, 12, 13"
+            expected: "Each RGB component changes monotonically"
+      implementation:
+        approach: |
+          Define temperature color stops in LAB space, then interpolate between
+          adjacent stops for any given temperature. Support progressive degradation
+          based on detected terminal tier.
+        key_points:
+          - point: "Define semantic temperature stops"
+            details: |
+              -30°C: Deep arctic violet [25, 45, -65]
+              -10°C: Purple-blue
+              0°C: Steel blue [65, 5, -30]
+              10°C: Sage green
+              20°C: Warm cream [85, 0, 30]
+              30°C: Tangerine
+              40°C: Crimson danger [55, 65, 50]
+          - point: "Binary search for stop indices"
+            details: "Find which two stops bracket the temperature"
+          - point: "Cache tier detection"
+            details: "Avoid repeated detectColorSupport() calls"
+        integration:
+          imports:
+            - "RenderTier, detectColorSupport from './terminal'"
+            - "labToRgb, interpolateLab, LAB, RGB from './color-space'"
+        code_structure: |
+          const TEMP_GRADIENT_LAB: Array<{ temp: number; lab: LAB }> = [...];
+
+          function findStopIndices(temp: number): [number, number] { ... }
+          export function interpolateColor(temp: number): RGB { ... }
+          export function tempToColor(temp: number): (text: string) => string { ... }
+          export function tempToAnsi256(temp: number): number { ... }
+          export function tempTo16Color(temp: number): string { ... }
+      verification:
+        checklist:
+          - "Imports from Task 1 and Task 2 resolve correctly"
+          - "TEMP_GRADIENT_LAB covers full temperature range"
+          - "Interpolation uses LAB space (not RGB)"
+          - "Progressive degradation works for all tiers"
+          - "Edge cases (below -30, above 40) handled"
+      code_quality:
+        typescript:
+          full_quality_pipeline:
+            command: |
+              cd packages/cli && bun test src/visualization/gradient.test.ts && bun run typecheck
+      commit:
+        message: "feat(cli): add true-color LAB gradient system for temperature"
+        files:
+          - "packages/cli/src/visualization/gradient.ts"
+          - "packages/cli/src/visualization/gradient.test.ts"
+    # ═══════════════════════════════════════════════════════════════════════════
+    # TASK 4: Weather Mood Theming
+    # ═══════════════════════════════════════════════════════════════════════════
+    - task_number: 4
+      name: "Weather Mood Theming"
+      agent: ui-designer
+      files:
+        - "packages/cli/src/visualization/themes.ts"
+        - "packages/cli/src/visualization/themes.test.ts"
+      depends_on: [2]
+      estimated_time: "45m"
+      description: |
+        # Task 4: Weather Mood Theming
+
+        ## PHASE 0: DEPENDENCY VERIFICATION (EXECUTE FIRST)
+        ```bash
+        grep -q "export interface RGB" packages/cli/src/visualization/color-space.ts && \
+          echo "✓ Task 2 ready" || echo "❌ STOP: Task 2 incomplete"
+        ```
+        If ANY check fails: Report "Dependency Task X incomplete" and STOP.
+
+        ## IMPLEMENTATION REQUIREMENTS
+        Create weather mood themes that shift the entire terminal palette based on
+        weather conditions and time of day.
+
+        **MUST import from dependencies:**
+        - `RGB` from './color-space'
+
+        **MUST export:**
+        - `WeatherTheme` interface with primary, secondary, accent, borderStyle
+        - `BorderStyle` type ('wavy' | 'jagged' | 'soft' | 'standard')
+        - `MOOD_THEMES` constant with themes: sunny, rainy, stormy, snowy, serene, sunset
+        - `getThemeForConditions(weatherCode: number, hour: number): WeatherTheme`
+        - `getBorderChars(style: BorderStyle): BoxChars`
+
+        **PROHIBITED:** TODO comments, placeholder structs, unused variables
+      success_criteria:
+        - "WeatherTheme interface has primary, secondary, accent (RGB), and borderStyle"
+        - "MOOD_THEMES has at least 6 distinct themes"
+        - "sunny theme uses warm amber/gold colors"
+        - "stormy theme uses charcoal with electric yellow accent"
+        - "getThemeForConditions returns sunset theme during sunset hours (17-20)"
+        - "getThemeForConditions returns stormy theme for thunderstorm codes (95+)"
+        - "getBorderChars returns wavy chars (∿) for scorching, jagged (⌇) for stormy"
+        - "No TODO comments in production code paths"
+      test_commands:
+        - "bun test packages/cli/src/visualization/themes.test.ts"
+      test_first:
+        rationale: "Theme selection has clear condition-based rules"
+        tests_to_write:
+          - description: "Sunny weather returns sunny theme"
+            input: "weatherCode = 0, hour = 12"
+            expected: "MOOD_THEMES.sunny"
+          - description: "Thunderstorm returns stormy theme"
+            input: "weatherCode = 95, hour = 14"
+            expected: "MOOD_THEMES.stormy"
+          - description: "Clear sky at sunset returns sunset theme"
+            input: "weatherCode = 0, hour = 18"
+            expected: "MOOD_THEMES.sunset"
+          - description: "Snow code returns snowy theme"
+            input: "weatherCode = 71, hour = 10"
+            expected: "MOOD_THEMES.snowy"
+      implementation:
+        approach: |
+          Define mood palettes inspired by real weather aesthetics. Theme selection
+          considers both weather code (WMO standard) and time of day.
+        key_points:
+          - point: "Semantic color psychology"
+            details: |
+              - Sunny: Warm amber (#FF6B35) feels energetic
+              - Rainy: Blue-gray feels calm/melancholic
+              - Stormy: Charcoal with electric yellow accent for drama
+              - Snowy: Moonlight blue/lavender for serenity
+          - point: "Border styles add subtle cohesion"
+            details: |
+              - Wavy (∿∿∿) for heat shimmer
+              - Jagged (⌇⌇⌇) for storms
+              - Soft (╭╮╰╯) for calm weather
+          - point: "Sunset/sunrise detection"
+            details: "Check hour 5-7 for sunrise, 17-20 for sunset"
+        integration:
+          imports:
+            - "RGB from './color-space'"
+      verification:
+        checklist:
+          - "All 6 themes have distinct, appropriate colors"
+          - "Border characters render correctly in terminal"
+          - "WMO weather codes mapped correctly"
+          - "Time-based theme selection works"
+      code_quality:
+        typescript:
+          full_quality_pipeline:
+            command: |
+              cd packages/cli && bun test src/visualization/themes.test.ts && bun run typecheck
+      commit:
+        message: "feat(cli): add weather mood theming with atmospheric palettes"
+        files:
+          - "packages/cli/src/visualization/themes.ts"
+          - "packages/cli/src/visualization/themes.test.ts"
+    # ═══════════════════════════════════════════════════════════════════════════
+    # TASK 5: Temperature Sparklines
+    # ═══════════════════════════════════════════════════════════════════════════
+    - task_number: 5
+      name: "Temperature Sparklines"
+      agent: frontend-developer
+      files:
+        - "packages/cli/src/visualization/sparklines.ts"
+        - "packages/cli/src/visualization/sparklines.test.ts"
+      depends_on: [3]
+      estimated_time: "45m"
+      description: |
+        # Task 5: Temperature Sparklines
+
+        ## PHASE 0: DEPENDENCY VERIFICATION (EXECUTE FIRST)
+        ```bash
+        grep -q "export function tempToColor" packages/cli/src/visualization/gradient.ts && \
+          echo "✓ Task 3 ready" || echo "❌ STOP: Task 3 incomplete"
+        ```
+        If ANY check fails: Report "Dependency Task X incomplete" and STOP.
+
+        ## IMPLEMENTATION REQUIREMENTS
+        Create sparkline visualizations where each character's HEIGHT shows relative
+        value and COLOR shows absolute temperature.
+
+        **MUST import from dependencies:**
+        - `tempToColor` from './gradient'
+
+        **MUST export:**
+        - `SPARK_CHARS` constant: ['▁', '▂', '▃', '▄', '▅', '▆', '▇', '█']
+        - `createTempSparkline(temps: number[]): string` function
+        - `createPrecipBars(probabilities: number[]): string` function
+        - `createWindArrows(directions: number[], speeds: number[]): string` function
+
+        **PROHIBITED:** TODO comments, placeholder structs, unused variables
+      success_criteria:
+        - "SPARK_CHARS has 8 block characters from ▁ to █"
+        - "createTempSparkline returns colored string with each char height based on relative temp"
+        - "Each sparkline character is colored by ABSOLUTE temperature (not relative position)"
+        - "createPrecipBars uses fill █ vs empty ░ with blue intensity by probability"
+        - "createWindArrows uses directional arrows (↗→↘↓↙←↖↑) with brightness for speed"
+        - "Empty input arrays return empty string"
+        - "No TODO comments in production code paths"
+      test_commands:
+        - "bun test packages/cli/src/visualization/sparklines.test.ts"
+      test_first:
+        rationale: "Sparklines have clear character mapping requirements"
+        tests_to_write:
+          - description: "Min temp gets lowest bar"
+            input: "[10, 20, 30]"
+            expected: "First char is ▁"
+          - description: "Max temp gets highest bar"
+            input: "[10, 20, 30]"
+            expected: "Last char is █"
+          - description: "Hot temp colored orange/red"
+            input: "[35]"
+            expected: "ANSI codes indicate warm color"
+          - description: "Cold temp colored blue"
+            input: "[0]"
+            expected: "ANSI codes indicate cool color"
+      implementation:
+        approach: |
+          Separate concerns: bar HEIGHT is relative (shows trend shape),
+          bar COLOR is absolute (shows actual temperature feeling).
+        key_points:
+          - point: "Semantic coloring is key insight"
+            details: |
+              Users should FEEL whether it's a warm or cold day from
+              color alone, without reading numbers. A hot day sparkline
+              glows orange; a cold day sparkline is blue.
+          - point: "Normalize heights to data range"
+            details: "Map min→max to indices 0→7"
+          - point: "Handle edge cases"
+            details: "Single value, all same values, empty array"
+        integration:
+          imports:
+            - "tempToColor from './gradient'"
+      verification:
+        checklist:
+          - "Height calculation uses relative normalization"
+          - "Color uses absolute temperature"
+          - "Special characters render in terminal"
+          - "Edge cases handled gracefully"
+      code_quality:
+        typescript:
+          full_quality_pipeline:
+            command: |
+              cd packages/cli && bun test src/visualization/sparklines.test.ts && bun run typecheck
+      commit:
+        message: "feat(cli): add semantic-colored sparkline visualizations"
+        files:
+          - "packages/cli/src/visualization/sparklines.ts"
+          - "packages/cli/src/visualization/sparklines.test.ts"
+    # ═══════════════════════════════════════════════════════════════════════════
+    # TASK 6: 7-Day Heatmap Grid
+    # ═══════════════════════════════════════════════════════════════════════════
+    - task_number: 6
+      name: "7-Day Heatmap Grid"
+      agent: frontend-developer
+      files:
+        - "packages/cli/src/visualization/heatmap.ts"
+        - "packages/cli/src/visualization/heatmap.test.ts"
+      depends_on: [3]
+      estimated_time: "45m"
+      description: |
+        # Task 6: 7-Day Heatmap Grid
+
+        ## PHASE 0: DEPENDENCY VERIFICATION (EXECUTE FIRST)
+        ```bash
+        grep -q "export function tempToColor" packages/cli/src/visualization/gradient.ts && \
+          echo "✓ Task 3 ready" || echo "❌ STOP: Task 3 incomplete"
+        ```
+        If ANY check fails: Report "Dependency Task X incomplete" and STOP.
+
+        ## IMPLEMENTATION REQUIREMENTS
+        Create a 7×24 colored matrix showing the week's temperature pattern at a glance.
+
+        **MUST import from dependencies:**
+        - `tempToColor` from './gradient'
+
+        **MUST export:**
+        - `HeatmapCell` interface with temp, hour, day
+        - `render7DayHeatMap(forecasts: DailyForecast[]): string` function
+        - `renderHeatmapLegend(minTemp: number, maxTemp: number): string` function
+
+        **PROHIBITED:** TODO comments, placeholder structs, unused variables
+      success_criteria:
+        - "render7DayHeatMap produces a 7-row grid (one per day)"
+        - "Each row has columns for hours (at least 4 time markers: 06, 12, 18, 00)"
+        - "Cells use gradient-colored block chars (▀/▄/█)"
+        - "Row labels show day abbreviations (Mon, Tue, etc.)"
+        - "renderHeatmapLegend shows temperature gradient ramp with tick labels"
+        - "Handles missing hourly data gracefully (interpolation or placeholder)"
+        - "No TODO comments in production code paths"
+      test_commands:
+        - "bun test packages/cli/src/visualization/heatmap.test.ts"
+      test_first:
+        rationale: "Heatmap has clear grid structure requirements"
+        tests_to_write:
+          - description: "Renders 7 rows for 7 days"
+            input: "7 DailyForecast objects"
+            expected: "Output has 7 data rows"
+          - description: "Hot cells are colored red/orange"
+            input: "forecast with 35°C"
+            expected: "Cell contains warm-colored ANSI"
+          - description: "Cold cells are colored blue"
+            input: "forecast with 0°C"
+            expected: "Cell contains cool-colored ANSI"
+          - description: "Legend shows gradient"
+            input: "minTemp=5, maxTemp=25"
+            expected: "Gradient bar with 5° and 25° labels"
+      implementation:
+        approach: |
+          Create a time-temperature matrix where each cell's color instantly shows
+          the temperature at that day/hour intersection.
+        key_points:
+          - point: "Use half-block characters for density"
+            details: "▀ and ▄ allow 2 values per character height"
+          - point: "Interpolate missing hours"
+            details: "Not all forecasts have hourly data; interpolate from daily"
+          - point: "Align columns consistently"
+            details: "Fixed-width columns for clean alignment"
+        integration:
+          imports:
+            - "tempToColor from './gradient'"
+            - "DailyForecast from '@weather-oracle/core'"
+      verification:
+        checklist:
+          - "Grid renders 7 days × 24 hours (or 4 time markers)"
+          - "Colors match temperature values"
+          - "Legend accurately represents gradient"
+          - "Day labels are correct"
+      code_quality:
+        typescript:
+          full_quality_pipeline:
+            command: |
+              cd packages/cli && bun test src/visualization/heatmap.test.ts && bun run typecheck
+      commit:
+        message: "feat(cli): add 7×24 temperature heatmap visualization"
+        files:
+          - "packages/cli/src/visualization/heatmap.ts"
+          - "packages/cli/src/visualization/heatmap.test.ts"
+    # ═══════════════════════════════════════════════════════════════════════════
+    # TASK 7: ASCII Weather Art
+    # ═══════════════════════════════════════════════════════════════════════════
+    - task_number: 7
+      name: "ASCII Weather Art"
+      agent: ui-designer
+      files:
+        - "packages/cli/src/visualization/ascii-art.ts"
+        - "packages/cli/src/visualization/ascii-art.test.ts"
+      depends_on: [4]
+      estimated_time: "45m"
+      description: |
+        # Task 7: ASCII Weather Art
+
+        ## PHASE 0: DEPENDENCY VERIFICATION (EXECUTE FIRST)
+        ```bash
+        grep -q "export interface WeatherTheme" packages/cli/src/visualization/themes.ts && \
+          echo "✓ Task 4 ready" || echo "❌ STOP: Task 4 incomplete"
+        ```
+        If ANY check fails: Report "Dependency Task X incomplete" and STOP.
+
+        ## IMPLEMENTATION REQUIREMENTS
+        Create multi-line ASCII/Unicode weather icons with visual depth through
+        shading, layering, and line weight variation.
+
+        **MUST import from dependencies:**
+        - `WeatherTheme` from './themes'
+
+        **MUST export:**
+        - `WEATHER_ART` constant with art for: clear, partlyCloudy, cloudy, rain,
+          heavyRain, snow, thunderstorm, fog
+        - `renderWeatherIcon(code: number, theme: WeatherTheme): string` function
+        - `getCompactIcon(code: number): string` function (single-line fallback)
+
+        **PROHIBITED:** TODO comments, placeholder structs, unused variables
+      success_criteria:
+        - "WEATHER_ART has multi-line ASCII for 8+ weather conditions"
+        - "Clear sky art has sun with rays (╲│╱ style)"
+        - "Rain art has cloud with falling drops (╱╲ or ‚ trails)"
+        - "Thunderstorm has ⚡ lightning bolt"
+        - "renderWeatherIcon applies theme colors to art"
+        - "getCompactIcon returns single emoji (☀, ⛅, \U0001F327, ⛈, ❄, \U0001F32B)"
+        - "WMO weather codes mapped to correct art"
+        - "No TODO comments in production code paths"
+      test_commands:
+        - "bun test packages/cli/src/visualization/ascii-art.test.ts"
+      test_first:
+        rationale: "ASCII art has clear visual requirements"
+        tests_to_write:
+          - description: "Clear sky code returns sun art"
+            input: "code = 0"
+            expected: "Art contains sun symbols"
+          - description: "Rain code returns rain art"
+            input: "code = 61"
+            expected: "Art contains cloud and rain drops"
+          - description: "Compact icon for clear is ☀"
+            input: "code = 0"
+            expected: "☀ or ☀️"
+          - description: "Theme colors applied"
+            input: "code = 0, sunny theme"
+            expected: "Output contains ANSI color codes"
+      implementation:
+        approach: |
+          Design layered ASCII art with depth using:
+          - Line weight variation (thin/thick strokes)
+          - Block density for clouds (▂▃▄▅▆)
+          - Bright/dim contrast for highlights/shadows
+        key_points:
+          - point: "Create visual depth"
+            details: |
+              Sun: layered rays ╲│╱ with bright center
+              Clouds: stacked shapes with darker undersides
+              Thunder: dense cloud blocks with bright ⚡
+          - point: "WMO code mapping"
+            details: |
+              0: Clear
+              1-2: Partly cloudy
+              3: Cloudy
+              45-48: Fog
+              51-57: Drizzle
+              61-65: Rain
+              71-77: Snow
+              95-99: Thunderstorm
+          - point: "Apply theme colors"
+            details: "Use theme.primary for main elements, theme.accent for highlights"
+        integration:
+          imports:
+            - "WeatherTheme from './themes'"
+      verification:
+        checklist:
+          - "All 8 weather conditions have distinct art"
+          - "Art renders correctly in terminal (no broken chars)"
+          - "Theme colors enhance but don't obscure"
+          - "Compact icons cover all conditions"
+      code_quality:
+        typescript:
+          full_quality_pipeline:
+            command: |
+              cd packages/cli && bun test src/visualization/ascii-art.test.ts && bun run typecheck
+      commit:
+        message: "feat(cli): add layered ASCII weather art with depth"
+        files:
+          - "packages/cli/src/visualization/ascii-art.ts"
+          - "packages/cli/src/visualization/ascii-art.test.ts"
+    # ═══════════════════════════════════════════════════════════════════════════
+    # TASK 8: Model Agreement Constellation
+    # ═══════════════════════════════════════════════════════════════════════════
+    - task_number: 8
+      name: "Model Agreement Constellation"
+      agent: frontend-developer
+      files:
+        - "packages/cli/src/visualization/constellation.ts"
+        - "packages/cli/src/visualization/constellation.test.ts"
+      depends_on: [3, 4]
+      estimated_time: "45m"
+      description: |
+        # Task 8: Model Agreement Constellation
+
+        ## PHASE 0: DEPENDENCY VERIFICATION (EXECUTE FIRST)
+        ```bash
+        grep -q "export function tempToColor" packages/cli/src/visualization/gradient.ts && \
+          echo "✓ Task 3 ready" || echo "❌ STOP: Task 3 incomplete"
+        grep -q "export interface WeatherTheme" packages/cli/src/visualization/themes.ts && \
+          echo "✓ Task 4 ready" || echo "❌ STOP: Task 4 incomplete"
+        ```
+        If ANY check fails: Report "Dependency Task X incomplete" and STOP.
+
+        ## IMPLEMENTATION REQUIREMENTS
+        Create visual representation of model agreement where clustering instantly
+        communicates uncertainty without reading numbers.
+
+        **MUST import from dependencies:**
+        - `tempToColor` from './gradient'
+        - `WeatherTheme` from './themes'
+
+        **MUST export:**
+        - `ConstellationPoint` interface with model name, value, confidence
+        - `renderModelConstellation(models: ModelForecast[], metric: string): string`
+        - `renderAgreementBar(agreement: number): string`
+
+        **PROHIBITED:** TODO comments, placeholder structs, unused variables
+      success_criteria:
+        - "renderModelConstellation plots models on a visual line from min to max"
+        - "High agreement shows clustered points (●●●)"
+        - "Low agreement shows scattered points (●   ●   ●)"
+        - "Points use different symbols by confidence (●/◐/○)"
+        - "renderAgreementBar shows filled bar with percentage"
+        - "Output includes model name legend"
+        - "No TODO comments in production code paths"
+      test_commands:
+        - "bun test packages/cli/src/visualization/constellation.test.ts"
+      test_first:
+        rationale: "Constellation has clear clustering requirements"
+        tests_to_write:
+          - description: "Tight clustering for high agreement"
+            input: "Models all predicting 20-21°C"
+            expected: "Points within 2 character positions"
+          - description: "Wide scatter for low agreement"
+            input: "Models predicting 15-25°C range"
+            expected: "Points spread across many positions"
+          - description: "High confidence uses ● symbol"
+            input: "model with confidence > 0.8"
+            expected: "Symbol is ●"
+          - description: "Low confidence uses ○ symbol"
+            input: "model with confidence < 0.5"
+            expected: "Symbol is ○"
+      implementation:
+        approach: |
+          Map model predictions to horizontal positions on a scale, creating
+          visual clustering that instantly shows agreement level.
+        key_points:
+          - point: "Visual clustering is the key insight"
+            details: |
+              HIGH AGREEMENT          LOW AGREEMENT
+                   ●●●                      ●
+                    ●●                 ●        ●
+              Users see clustering instantly without reading numbers
+          - point: "Scale to prediction range"
+            details: "Position = (value - min) / (max - min) * width"
+          - point: "Symbol indicates confidence"
+            details: "● = high (>0.8), ◐ = medium (0.5-0.8), ○ = low (<0.5)"
+        integration:
+          imports:
+            - "tempToColor from './gradient'"
+            - "WeatherTheme from './themes'"
+            - "ModelForecast from '@weather-oracle/core'"
+      verification:
+        checklist:
+          - "Clustering visually apparent for high agreement"
+          - "Spread visually apparent for low agreement"
+          - "Confidence symbols correct"
+          - "Legend maps symbols to model names"
+      code_quality:
+        typescript:
+          full_quality_pipeline:
+            command: |
+              cd packages/cli && bun test src/visualization/constellation.test.ts && bun run typecheck
+      commit:
+        message: "feat(cli): add model agreement constellation visualization"
+        files:
+          - "packages/cli/src/visualization/constellation.ts"
+          - "packages/cli/src/visualization/constellation.test.ts"
+    # ═══════════════════════════════════════════════════════════════════════════
+    # TASK 9: Animation System
+    # ═══════════════════════════════════════════════════════════════════════════
+    - task_number: 9
+      name: "Animation System"
+      agent: cli-developer
+      files:
+        - "packages/cli/src/visualization/animation.ts"
+        - "packages/cli/src/visualization/animation.test.ts"
+      depends_on: [1, 4]
+      estimated_time: "45m"
+      description: |
+        # Task 9: Animation System
+
+        ## PHASE 0: DEPENDENCY VERIFICATION (EXECUTE FIRST)
+        ```bash
+        grep -q "export function supportsAnimation" packages/cli/src/visualization/terminal.ts && \
+          echo "✓ Task 1 ready" || echo "❌ STOP: Task 1 incomplete"
+        grep -q "export interface WeatherTheme" packages/cli/src/visualization/themes.ts && \
+          echo "✓ Task 4 ready" || echo "❌ STOP: Task 4 incomplete"
+        ```
+        If ANY check fails: Report "Dependency Task X incomplete" and STOP.
+
+        ## IMPLEMENTATION REQUIREMENTS
+        Create brief (0.5-1s) weather-themed reveal animations that settle to
+        static display. Animations enhance without distracting.
+
+        **MUST import from dependencies:**
+        - `supportsAnimation` from './terminal'
+        - `WeatherTheme` from './themes'
+
+        **MUST export:**
+        - `AnimationConfig` interface with duration, frames, interval
+        - `weatherSpinner(condition: string): ora.Options` function
+        - `revealAnimation(content: string, theme: WeatherTheme): Promise<void>`
+        - `LOADING_SPINNERS` constant with themed spinners
+
+        **PROHIBITED:** TODO comments, placeholder structs, unused variables
+      success_criteria:
+        - "revealAnimation completes in under 1 second"
+        - "revealAnimation is no-op when supportsAnimation() returns false"
+        - "weatherSpinner returns ora-compatible spinner config"
+        - "LOADING_SPINNERS has different spinners for: fetch, aggregate, analyze"
+        - "Sun spinner uses rotating ray frames"
+        - "Rain spinner uses dripping drop frames"
+        - "Animation gracefully handles interruption"
+        - "No TODO comments in production code paths"
+      test_commands:
+        - "bun test packages/cli/src/visualization/animation.test.ts"
+      test_first:
+        rationale: "Animation behavior has clear timing and fallback requirements"
+        tests_to_write:
+          - description: "No animation when unsupported"
+            input: "supportsAnimation() = false"
+            expected: "revealAnimation resolves immediately"
+          - description: "Animation completes within timeout"
+            input: "revealAnimation with 500ms config"
+            expected: "Resolves in ~500ms"
+          - description: "Spinner has multiple frames"
+            input: "weatherSpinner('sunny')"
+            expected: "Config has frames array with > 1 frame"
+      implementation:
+        approach: |
+          Create micro-animations for "wow moments" that settle to static display.
+          Brief is key - 0.5s is enough for delight without annoyance.
+        key_points:
+          - point: "Respect terminal capabilities"
+            details: "Check supportsAnimation() before any animation"
+          - point: "Weather-themed spinners"
+            details: |
+              Sunny: ◐ ◓ ◑ ◒ (rotating sun)
+              Rain: ⠋ ⠙ ⠹ ⠸ ⠼ ⠴ (dripping)
+              Wind: 〜 〰 ～ (flowing)
+          - point: "Reveal animation pattern"
+            details: "Quick gradient wipe or fade-in, then settle"
+        integration:
+          imports:
+            - "supportsAnimation from './terminal'"
+            - "WeatherTheme from './themes'"
+      verification:
+        checklist:
+          - "Animation disabled when unsupported"
+          - "Timing is consistent and brief"
+          - "Spinners are visually distinct"
+          - "No hanging promises or leaked intervals"
+      code_quality:
+        typescript:
+          full_quality_pipeline:
+            command: |
+              cd packages/cli && bun test src/visualization/animation.test.ts && bun run typecheck
+      commit:
+        message: "feat(cli): add brief weather-themed reveal animations"
+        files:
+          - "packages/cli/src/visualization/animation.ts"
+          - "packages/cli/src/visualization/animation.test.ts"
+    # ═══════════════════════════════════════════════════════════════════════════
+    # TASK 10: Rich Formatter
+    # ═══════════════════════════════════════════════════════════════════════════
+    - task_number: 10
+      name: "Rich Formatter"
+      agent: fullstack-developer
+      files:
+        - "packages/cli/src/formatters/rich.ts"
+        - "packages/cli/src/formatters/rich.test.ts"
+        - "packages/cli/src/formatters/index.ts"
+        - "packages/cli/src/formatters/types.ts"
+      depends_on: [3, 4, 5, 6, 7, 8, 9]
+      estimated_time: "1h 30m"
+      description: |
+        # Task 10: Rich Formatter
+
+        ## PHASE 0: DEPENDENCY VERIFICATION (EXECUTE FIRST)
+        ```bash
+        grep -q "export function tempToColor" packages/cli/src/visualization/gradient.ts && \
+          echo "✓ Task 3 ready" || echo "❌ STOP: Task 3 incomplete"
+        grep -q "export interface WeatherTheme" packages/cli/src/visualization/themes.ts && \
+          echo "✓ Task 4 ready" || echo "❌ STOP: Task 4 incomplete"
+        grep -q "export function createTempSparkline" packages/cli/src/visualization/sparklines.ts && \
+          echo "✓ Task 5 ready" || echo "❌ STOP: Task 5 incomplete"
+        grep -q "export function render7DayHeatMap" packages/cli/src/visualization/heatmap.ts && \
+          echo "✓ Task 6 ready" || echo "❌ STOP: Task 6 incomplete"
+        grep -q "export function renderWeatherIcon" packages/cli/src/visualization/ascii-art.ts && \
+          echo "✓ Task 7 ready" || echo "❌ STOP: Task 7 incomplete"
+        grep -q "export function renderModelConstellation" packages/cli/src/visualization/constellation.ts && \
+          echo "✓ Task 8 ready" || echo "❌ STOP: Task 8 incomplete"
+        grep -q "export function revealAnimation" packages/cli/src/visualization/animation.ts && \
+          echo "✓ Task 9 ready" || echo "❌ STOP: Task 9 incomplete"
+        ```
+        If ANY check fails: Report "Dependency Task X incomplete" and STOP.
+
+        ## IMPLEMENTATION REQUIREMENTS
+        Create the RichFormatter class that brings all visualization components
+        together into a cohesive, stunning weather display.
+
+        **MUST import from dependencies:**
+        - All visualization modules from Tasks 3-9
+
+        **MUST export:**
+        - `RichFormatter` class implementing `OutputFormatter` interface
+        - `createRichFormatter(options?: FormatterOptions): RichFormatter`
+
+        **MUST update:**
+        - `formatters/types.ts`: Add 'rich' to OutputFormatType
+        - `formatters/index.ts`: Register RichFormatter
+
+        **PROHIBITED:** TODO comments, placeholder structs, unused variables
+      success_criteria:
+        - "RichFormatter implements OutputFormatter interface"
+        - "format() returns string with weather art, sparklines, heatmap, constellation"
+        - "'rich' added to OutputFormatType union"
+        - "RichFormatter registered in formatters index"
+        - "Theme applied based on weather conditions"
+        - "Border style changes with theme"
+        - "Reveal animation plays when enabled"
+        - "Progressive degradation works for all terminal tiers"
+        - "No TODO comments in production code paths"
+      test_commands:
+        - "bun test packages/cli/src/formatters/rich.test.ts"
+      test_first:
+        rationale: "Formatter has clear output structure requirements"
+        tests_to_write:
+          - description: "Output contains weather art section"
+            input: "FormatterInput with clear weather"
+            expected: "Output contains ASCII sun art"
+          - description: "Output contains temperature sparkline"
+            input: "FormatterInput with hourly data"
+            expected: "Output contains sparkline block chars"
+          - description: "Output contains heatmap"
+            input: "FormatterInput with 7 days"
+            expected: "Output contains 7 heatmap rows"
+          - description: "Output contains constellation"
+            input: "FormatterInput with model data"
+            expected: "Output contains model agreement visual"
+      implementation:
+        approach: |
+          Compose all visualization components into a cohesive display with
+          sections for: header/art, temperature, model consensus, and heatmap.
+        key_points:
+          - point: "Respect the OutputFormatter interface"
+            details: "format(data: FormatterInput): string"
+          - point: "Section-based layout"
+            details: |
+              1. Header with weather art + location
+              2. Temperature section with sparkline
+              3. Model consensus section with constellation
+              4. 7-day heatmap
+          - point: "Apply theme consistently"
+            details: "Use theme colors for borders, headers, accents"
+          - point: "Progressive enhancement"
+            details: "Check RenderTier and adjust output complexity"
+        integration:
+          imports:
+            - "tempToColor, interpolateColor from '../visualization/gradient'"
+            - "getThemeForConditions, WeatherTheme from '../visualization/themes'"
+            - "createTempSparkline from '../visualization/sparklines'"
+            - "render7DayHeatMap from '../visualization/heatmap'"
+            - "renderWeatherIcon from '../visualization/ascii-art'"
+            - "renderModelConstellation from '../visualization/constellation'"
+            - "revealAnimation from '../visualization/animation'"
+          services_to_inject: []
+          config_values: []
+        code_structure: |
+          export class RichFormatter implements OutputFormatter {
+            constructor(options?: FormatterOptions) { ... }
+
+            format(data: FormatterInput): string {
+              const theme = getThemeForConditions(weatherCode, hour);
+              return [
+                this.formatHeader(data, theme),
+                this.formatTemperature(data, theme),
+                this.formatModelConsensus(data, theme),
+                this.formatHeatmap(data, theme),
+              ].join('\n\n');
+            }
+
+            private formatHeader(...) { ... }
+            private formatTemperature(...) { ... }
+            private formatModelConsensus(...) { ... }
+            private formatHeatmap(...) { ... }
+          }
+      verification:
+        checklist:
+          - "All visualization imports resolve"
+          - "OutputFormatter interface implemented"
+          - "formatters/types.ts updated"
+          - "formatters/index.ts updated"
+          - "All sections render correctly"
+      code_quality:
+        typescript:
+          full_quality_pipeline:
+            command: |
+              cd packages/cli && bun test src/formatters/rich.test.ts && bun run typecheck
+      commit:
+        message: "feat(cli): add RichFormatter combining all visualization components"
+        files:
+          - "packages/cli/src/formatters/rich.ts"
+          - "packages/cli/src/formatters/rich.test.ts"
+          - "packages/cli/src/formatters/index.ts"
+          - "packages/cli/src/formatters/types.ts"
+    # ═══════════════════════════════════════════════════════════════════════════
+    # TASK 11: CLI Integration
+    # ═══════════════════════════════════════════════════════════════════════════
+    - task_number: 11
+      name: "CLI Integration"
+      type: integration
+      agent: cli-developer
+      files:
+        - "packages/cli/src/commands/forecast.ts"
+        - "packages/cli/src/program.ts"
+      depends_on: [10]
+      estimated_time: "30m"
+      description: |
+        # Task 11: CLI Integration
+
+        ## PHASE 0: DEPENDENCY VERIFICATION (EXECUTE FIRST)
+        ```bash
+        grep -q "export class RichFormatter" packages/cli/src/formatters/rich.ts && \
+          echo "✓ Task 10 ready" || echo "❌ STOP: Task 10 incomplete"
+        grep -q "'rich'" packages/cli/src/formatters/types.ts && \
+          echo "✓ OutputFormatType updated" || echo "❌ STOP: Task 10 incomplete"
+        ```
+        If ANY check fails: Report "Dependency Task X incomplete" and STOP.
+
+        ## IMPLEMENTATION REQUIREMENTS
+        Wire the RichFormatter into the CLI so users can use `--format rich`.
+
+        **MUST modify:**
+        - `commands/forecast.ts`: Add 'rich' to format choices
+        - `program.ts`: Update format option description
+
+        **PROHIBITED:** TODO comments, placeholder structs, unused variables
+      success_criteria:
+        - "forecast command accepts --format rich"
+        - "compare command accepts --format rich"
+        - "--format option help text includes 'rich'"
+        - "Default format remains 'table' (backward compatible)"
+      integration_criteria:
+        - "Running 'weather-oracle forecast London --format rich' produces rich output"
+        - "RichFormatter correctly receives FormatterInput data"
+        - "Theme selection based on actual weather conditions works end-to-end"
+      test_commands:
+        - "bun run packages/cli/src/index.ts forecast --help | grep -q rich"
+      implementation:
+        approach: |
+          Simple integration: add 'rich' to the format option choices and ensure
+          the formatter factory creates RichFormatter when selected.
+        key_points:
+          - point: "Backward compatibility"
+            details: "Default format stays 'table'"
+          - point: "Update help text"
+            details: "Format option description should mention 'rich'"
+        integration:
+          imports:
+            - "RichFormatter already registered via formatters/index.ts"
+      verification:
+        checklist:
+          - "--format rich accepted by CLI"
+          - "Help text updated"
+          - "Default format unchanged"
+          - "Rich output displays correctly"
+      code_quality:
+        typescript:
+          full_quality_pipeline:
+            command: |
+              cd packages/cli && bun run typecheck
+      commit:
+        message: "feat(cli): integrate rich format option into forecast/compare commands"
+        files:
+          - "packages/cli/src/commands/forecast.ts"
+          - "packages/cli/src/program.ts"
+    # ═══════════════════════════════════════════════════════════════════════════
+    # TASK 12: Integration Tests
+    # ═══════════════════════════════════════════════════════════════════════════
+    - task_number: 12
+      name: "Integration Tests"
+      type: integration
+      agent: test-automator
+      files:
+        - "packages/cli/src/__tests__/rich-formatter.integration.test.ts"
+      depends_on: [11]
+      estimated_time: "45m"
+      description: |
+        # Task 12: Integration Tests
+
+        ## PHASE 0: DEPENDENCY VERIFICATION (EXECUTE FIRST)
+        ```bash
+        grep -q "rich" packages/cli/src/commands/forecast.ts && \
+          echo "✓ Task 11 ready" || echo "❌ STOP: Task 11 incomplete"
+        ```
+        If ANY check fails: Report "Dependency Task X incomplete" and STOP.
+
+        ## IMPLEMENTATION REQUIREMENTS
+        Create comprehensive integration tests for the rich visualization system.
+
+        **PROHIBITED:** TODO comments, placeholder structs, unused variables
+      success_criteria:
+        - "Tests cover full forecast → rich format → output flow"
+        - "Tests verify all visualization components appear in output"
+        - "Tests cover different weather conditions (sunny, rainy, stormy)"
+        - "Tests cover progressive enhancement (different terminal tiers)"
+        - "Tests use MSW mocking for API calls"
+        - "All tests pass"
+      integration_criteria:
+        - "End-to-end test: forecast command with --format rich produces expected sections"
+        - "Theme changes based on weather code in mock data"
+        - "Sparklines show in output"
+        - "Heatmap shows in output"
+        - "Constellation shows in output"
+      test_commands:
+        - "bun test packages/cli/src/__tests__/rich-formatter.integration.test.ts"
+      implementation:
+        approach: |
+          Create integration tests that mock the API, run the full CLI flow,
+          and verify the rich output contains all expected components.
+        key_points:
+          - point: "Use MSW for API mocking"
+            details: "Follow existing patterns in __tests__/mocks/"
+          - point: "Test multiple weather scenarios"
+            details: "Sunny (code 0), rainy (code 61), stormy (code 95)"
+          - point: "Verify component presence"
+            details: "Check for sparkline chars, heatmap rows, constellation points"
+        integration:
+          imports:
+            - "MSW handlers from '../__tests__/mocks'"
+      verification:
+        checklist:
+          - "All test scenarios covered"
+          - "MSW mocks configured correctly"
+          - "Tests isolated (don't affect other tests)"
+          - "Tests pass in CI environment"
+      code_quality:
+        typescript:
+          full_quality_pipeline:
+            command: |
+              cd packages/cli && bun test src/__tests__/rich-formatter.integration.test.ts
+      commit:
+        message: "test(cli): add integration tests for rich visualization system"
+        files:
+          - "packages/cli/src/__tests__/rich-formatter.integration.test.ts"
