@@ -9,7 +9,7 @@
  * Uses MSW to mock external API dependencies.
  */
 
-import { describe, it, expect, beforeAll, afterAll, afterEach, beforeEach } from "bun:test";
+import { describe, it, expect, beforeAll, afterAll, afterEach } from "bun:test";
 import { setupServer } from "msw/node";
 import { http, HttpResponse, delay } from "msw";
 import {

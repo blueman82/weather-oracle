@@ -6,7 +6,6 @@
 
 import { describe, it, expect, beforeAll, afterAll, afterEach } from "bun:test";
 import {
-  server,
   setupMswServer,
   resetMswServer,
   teardownMswServer,

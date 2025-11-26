@@ -4,6 +4,12 @@ node_modules/
 # Build outputs
 dist/
 *.tsbuildinfo
+.next/
+
+# TypeScript declaration files (generated)
+*.d.ts
+*.d.ts.map
+!*.config.d.ts
 
 # Bun
 bun.lockb
@@ -33,3 +39,12 @@ coverage/
 # Cache
 .cache/
 .turbo/
+
+# Conductor
+.conductor/
+
+# Claude Code Logs
+logs/
+
+# Documents (some exclusions apply using negative excursion)
+docs/

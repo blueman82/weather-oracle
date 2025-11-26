@@ -210,11 +210,11 @@ describe("Forecast Route Integration Tests", () => {
       await cache.set(cacheKey, responseData, 1800);
 
       // Retrieve from cache
-      const cached = await cache.get(cacheKey);
+      const cached = await cache.get<typeof responseData>(cacheKey);
 
       expect(cached).toBeDefined();
-      expect(cached.location.name).toBe("Dublin");
-      expect(cached.forecast.daily.length).toBe(3);
+      expect(cached!.location.name).toBe("Dublin");
+      expect(cached!.forecast.daily.length).toBe(3);
     });
   });
 });

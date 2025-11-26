@@ -21,8 +21,7 @@
     "emitDeclarationOnly": true,
     "paths": {
       "@weather-oracle/core": ["./packages/core/src/index.ts"],
-      "@weather-oracle/cli": ["./packages/cli/src/index.ts"],
-      "@weather-oracle/web": ["./packages/web/src/index.ts"]
+      "@weather-oracle/cli": ["./packages/cli/src/index.ts"]
     }
   },
   "references": [

@@ -7,7 +7,6 @@
 
 import { describe, it, expect, beforeAll, afterAll, afterEach } from "bun:test";
 import {
-  server,
   setupMswServer,
   resetMswServer,
   teardownMswServer,
@@ -30,10 +29,12 @@ import {
   weatherCode,
   windDirection,
   timezoneId,
+  visibility,
   type Location,
   type ModelForecast,
   type ModelName,
   type GeocodingResult,
+  type HourlyForecast,
 } from "@weather-oracle/core";
 
 // Setup MSW server
@@ -121,7 +122,7 @@ function createDeterministicMockData() {
   };
 
   // Create deterministic hourly forecasts
-  const createHourlyForecast = (dayOffset: number, hour: number) => {
+  const createHourlyForecast = (dayOffset: number, hour: number): HourlyForecast => {
     const timestamp = new Date(baseDate);
     timestamp.setDate(timestamp.getDate() + dayOffset);
     timestamp.setHours(hour);
@@ -138,7 +139,7 @@ function createDeterministicMockData() {
         precipitation: millimeters(0),
         precipitationProbability: 15 + dayOffset * 10,
         cloudCover: cloudCover(50),
-        visibility: 15000,
+        visibility: visibility(15000),
         uvIndex: uvIndex(hour >= 10 && hour <= 16 ? 4 : 0),
         weatherCode: weatherCode(2),
       },
@@ -170,7 +171,7 @@ function createDeterministicMockData() {
         max: celsius((d.temperature.max as number) + tempOffset),
       },
     })),
-    hourly: hourly.map((h) => ({
+    hourly: hourly.map((h): HourlyForecast => ({
       ...h,
       metrics: {
         ...h.metrics,

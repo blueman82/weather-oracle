@@ -9,15 +9,12 @@ import {
   calculateDailyConfidence,
   formatConfidenceSummary,
   getConfidenceEmoji,
-  type MetricType,
   type ConfidenceResult,
 } from "./confidence";
 import { aggregateForecasts } from "./aggregator";
 import type {
   ModelForecast,
   ModelName,
-  AggregatedHourlyForecast,
-  AggregatedDailyForecast,
 } from "../types/models";
 import type { HourlyForecast, DailyForecast, WeatherMetrics } from "../types/weather";
 import {

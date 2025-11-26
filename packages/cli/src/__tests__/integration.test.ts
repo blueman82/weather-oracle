@@ -7,7 +7,6 @@
 
 import { describe, it, expect, beforeAll, afterAll, afterEach, beforeEach } from "bun:test";
 import {
-  server,
   setupMswServer,
   resetMswServer,
   teardownMswServer,
@@ -24,7 +23,7 @@ import {
   generateNarrative,
   createCacheManager,
   type Location,
-  type ModelName,
+  type MultiModelResult,
 } from "@weather-oracle/core";
 
 // Setup MSW server
@@ -179,12 +178,12 @@ describe("CLI Integration Tests", () => {
 
       // Second request - should use cache
       clearRequestLog();
-      const cachedResult = await cache.get(cacheKey);
+      const cachedResult = await cache.get<MultiModelResult>(cacheKey);
 
       // Should not have made new API requests
       expect(getRequestLog().length).toBe(0);
       expect(cachedResult).toBeDefined();
-      expect(cachedResult.forecasts.length).toBe(result1.forecasts.length);
+      expect(cachedResult!.forecasts.length).toBe(result1.forecasts.length);
     });
 
     it("should return cached data when available", async () => {
@@ -200,10 +199,10 @@ describe("CLI Integration Tests", () => {
       await cache.set("test_cache_key", mockCacheData, 3600);
 
       // Retrieve from cache
-      const cached = await cache.get("test_cache_key");
+      const cached = await cache.get<typeof mockCacheData>("test_cache_key");
 
       expect(cached).toBeDefined();
-      expect(cached.forecasts[0].cached).toBe(true);
+      expect(cached!.forecasts[0].cached).toBe(true);
     });
   });
 

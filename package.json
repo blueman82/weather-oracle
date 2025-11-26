@@ -13,7 +13,7 @@
     "lint": "eslint packages --ext .ts,.tsx",
     "format": "prettier --write \"packages/**/*.{ts,tsx,json}\"",
     "format:check": "prettier --check \"packages/**/*.{ts,tsx,json}\"",
-    "typecheck": "tsc --build"
+    "typecheck": "tsc --build packages/core packages/cli && cd packages/web && tsc --noEmit"
   },
   "devDependencies": {
     "@types/bun": "^1.1.0",

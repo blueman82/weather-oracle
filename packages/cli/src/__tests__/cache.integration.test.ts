@@ -83,11 +83,11 @@ describe("Cache Integration Tests", () => {
       await cache.set(cacheKey, testData, 3600);
 
       // Retrieve data
-      const cached = await cache.get(cacheKey);
+      const cached = await cache.get<typeof testData>(cacheKey);
 
       expect(cached).toBeDefined();
-      expect(cached.forecasts[0].model).toBe("ecmwf");
-      expect(cached.forecasts[0].test).toBe(true);
+      expect(cached!.forecasts[0].model).toBe("ecmwf");
+      expect(cached!.forecasts[0].test).toBe(true);
     });
 
     it("should return undefined for expired cache", async () => {
@@ -127,11 +127,11 @@ describe("Cache Integration Tests", () => {
 
       // Verify cache hit returns data without API calls
       clearRequestLog();
-      const cachedData = await cache.get(cacheKey);
+      const cachedData = await cache.get<typeof result1>(cacheKey);
 
       expect(getRequestLog().length).toBe(0); // No new requests
       expect(cachedData).toBeDefined();
-      expect(cachedData.forecasts.length).toBe(result1.forecasts.length);
+      expect(cachedData!.forecasts.length).toBe(result1.forecasts.length);
     });
   });
 
@@ -232,12 +232,12 @@ describe("Cache Integration Tests", () => {
       await cache.set(cacheKey, freshResult, 3600);
 
       // Retrieve from cache
-      const cachedResult = await cache.get(cacheKey);
+      const cachedResult = await cache.get<typeof freshResult>(cacheKey);
 
       // Verify cached data matches
       expect(cachedResult).toBeDefined();
-      expect(cachedResult.forecasts.length).toBe(freshResult.forecasts.length);
-      expect(cachedResult.forecasts[0].model).toBe(freshResult.forecasts[0].model);
+      expect(cachedResult!.forecasts.length).toBe(freshResult.forecasts.length);
+      expect(cachedResult!.forecasts[0].model).toBe(freshResult.forecasts[0].model);
     });
   });
 });

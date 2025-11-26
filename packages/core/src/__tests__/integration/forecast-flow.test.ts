@@ -24,7 +24,6 @@ import {
   createForecastCacheKey,
   type Location,
   type ModelName,
-  type ModelForecast,
   type MultiModelResult,
 } from "../../index";
 
@@ -478,6 +477,7 @@ describe("Forecast Flow Integration Tests", () => {
         forecasts: [],
         failures: [],
         fetchedAt: new Date(),
+        totalDurationMs: 100,
         successRate: 1,
       };
 
