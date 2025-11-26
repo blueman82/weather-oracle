@@ -376,6 +376,7 @@ export async function forecastHandler(
         units: effectiveOptions.units ?? "metric",
         showModelDetails: verbose,
         showConfidence: true,
+        maxDays: options.days ?? config.display.defaultDays,
       });
 
       output = formatter.format(formatterInput);
@@ -411,10 +412,10 @@ export function registerForecastCommand(program: Command): void {
   program
     .command("forecast <location>")
     .description("Get weather forecast for a location with model consensus")
-    .option("-d, --days <n>", "Forecast days (1-14, default: 7)", (v) => {
+    .option("-d, --days <n>", "Forecast days (1-16, default: 7)", (v) => {
       const n = parseInt(v, 10);
-      if (isNaN(n) || n < 1 || n > 14) {
-        throw new Error("Days must be between 1 and 14");
+      if (isNaN(n) || n < 1 || n > 16) {
+        throw new Error("Days must be between 1 and 16");
       }
       return n;
     })

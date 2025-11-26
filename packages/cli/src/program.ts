@@ -47,8 +47,8 @@ function parseModels(value: string): string[] {
  */
 function parseDays(value: string): number {
   const days = parseInt(value, 10);
-  if (isNaN(days) || days < 1 || days > 14) {
-    throw new Error("Days must be a number between 1 and 14");
+  if (isNaN(days) || days < 1 || days > 16) {
+    throw new Error("Days must be a number between 1 and 16");
   }
   return days;
 }
@@ -160,7 +160,7 @@ export function createProgram(): Command {
       "Multi-model weather forecast aggregator - get consensus forecasts from multiple weather models"
     )
     .option("-u, --units <type>", "Temperature units (metric/imperial)", parseUnits)
-    .option("-d, --days <n>", "Forecast days (1-14, default: 7)", parseDays)
+    .option("-d, --days <n>", "Forecast days (1-16, default: 7)", parseDays)
     .option("-m, --models <list>", "Models to query (comma-separated)", parseModels)
     .option("-f, --format <type>", "Output format (table/json/minimal)", parseFormat)
     .option("-v, --verbose", "Show detailed output")

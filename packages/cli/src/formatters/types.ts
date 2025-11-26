@@ -65,6 +65,12 @@ export interface FormatterOptions {
    * Date format style
    */
   readonly dateFormat?: "relative" | "absolute";
+
+  /**
+   * Maximum number of days to display in output
+   * When specified, shows all days up to this limit without truncation
+   */
+  readonly maxDays?: number;
 }
 
 /**

@@ -473,8 +473,8 @@ function renderMinimalFormat(
 }
 
 function validateDays(days: number): number {
-  if (days < 1 || days > 14) {
-    throw new Error("Days must be between 1 and 14");
+  if (days < 1 || days > 16) {
+    throw new Error("Days must be between 1 and 16");
   }
   return days;
 }

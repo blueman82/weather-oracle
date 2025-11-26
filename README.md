@@ -137,7 +137,7 @@ bun run packages/cli/src/index.ts config get display.units          # Get value
 | Option | Description |
 |--------|-------------|
 | `-V, --version` | Show version number |
-| `-d, --days <n>` | Forecast days (1-14, default: 7) |
+| `-d, --days <n>` | Forecast days (1-16, default: 7) |
 | `-m, --models <list>` | Models to query (comma-separated) |
 | `-u, --units <type>` | Temperature units (metric/imperial) |
 | `-f, --format <type>` | Output format (table/json/narrative/minimal) |

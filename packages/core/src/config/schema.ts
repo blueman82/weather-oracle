@@ -54,7 +54,7 @@ export const modelConfigSchema = z.object({
   defaults: z
     .array(z.enum(MODEL_NAMES as unknown as [string, ...string[]]))
     .min(1)
-    .default(["ecmwf", "gfs", "icon"]),
+    .default(["ecmwf", "gfs", "icon", "meteofrance", "ukmo", "jma", "gem"]),
   timeout: z.number().int().positive().default(30000),
   retries: z.number().int().min(0).max(5).default(2),
 });
@@ -68,6 +68,7 @@ export const displayConfigSchema = z.object({
   showConfidence: z.boolean().default(true),
   showModelDetails: z.boolean().default(false),
   colorOutput: z.boolean().default(true),
+  defaultDays: z.number().int().min(1).max(16).default(7),
 });
 
 /**

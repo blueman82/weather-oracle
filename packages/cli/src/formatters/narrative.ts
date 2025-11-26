@@ -123,8 +123,9 @@ export class NarrativeFormatter implements OutputFormatter {
     const labelFn = ui.label as unknown as (text: string) => string;
 
     const lines: string[] = [labelFn("Day-by-day outlook:")];
+    const maxDays = this.options.maxDays ?? 7;
 
-    for (const day of daily.slice(0, 7)) { // Show up to 7 days
+    for (const day of daily.slice(0, maxDays)) {
       const forecast = day.forecast;
       const dayName = formatRelativeDay(day.date);
       const high = this.formatTemp(forecast.temperature.max as number, units);
@@ -148,10 +149,10 @@ export class NarrativeFormatter implements OutputFormatter {
       lines.push(`  ${this.capitalize(dayName)}: ${high}/${low}, ${description}`);
     }
 
-    // Add note about extended period
-    if (daily.length > 7) {
+    // Add note about extended period if there are more days than displayed
+    if (daily.length > maxDays) {
       const mutedFn = ui.muted as unknown as (text: string) => string;
-      lines.push(mutedFn(`  ...and ${daily.length - 7} more day(s)`));
+      lines.push(mutedFn(`  ...and ${daily.length - maxDays} more day(s)`));
     }
 
     return lines.join("\n");

@@ -251,7 +251,7 @@ These options work with all commands:
 |--------|-------|-------------|
 | `--version` | `-V` | Show version number |
 | `--units <type>` | `-u` | Temperature units: `metric` (default) or `imperial` |
-| `--days <n>` | `-d` | Forecast days: 1-14 (default: 7) |
+| `--days <n>` | `-d` | Forecast days: 1-16 (default: 7) |
 | `--models <list>` | `-m` | Comma-separated list of models to use |
 | `--format <type>` | `-f` | Output format: `table`, `json`, `narrative`, or `minimal` |
 | `--verbose` | `-v` | Show detailed output including model notes |

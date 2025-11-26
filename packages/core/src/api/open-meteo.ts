@@ -32,7 +32,7 @@ import {
   weatherCode,
 } from "../types/weather";
 import { ApiError } from "../errors/api";
-import { getModelEndpoint, HOURLY_VARIABLES, DAILY_VARIABLES } from "./endpoints";
+import { getModelEndpoint, HOURLY_VARIABLES, DAILY_VARIABLES, MODEL_QUERY_PARAMS } from "./endpoints";
 
 /**
  * Options for fetching a forecast
@@ -161,6 +161,12 @@ function buildRequestUrl(
   url.searchParams.set("daily", DAILY_VARIABLES.join(","));
   url.searchParams.set("timezone", options.timezone);
   url.searchParams.set("forecast_days", String(options.forecastDays));
+
+  // Some models require the models= query parameter (e.g., UKMO uses /forecast?models=ukmo_seamless)
+  const modelParam = MODEL_QUERY_PARAMS[model];
+  if (modelParam) {
+    url.searchParams.set("models", modelParam);
+  }
 
   return url;
 }
@@ -342,13 +348,14 @@ export class OpenMeteoClient {
       } catch (error) {
         lastError = error instanceof Error ? error : new Error(String(error));
 
-        // Don't retry on non-transient errors
+        // Don't retry on non-transient errors (but DO retry 429 rate limits and 5xx)
         if (error instanceof ApiError) {
           if (
             error.code !== "API_TIMEOUT" &&
             error.code !== "API_UNAVAILABLE" &&
             error.statusCode !== undefined &&
-            error.statusCode < 500
+            error.statusCode < 500 &&
+            error.statusCode !== 429 // 429 Too Many Requests is transient
           ) {
             throw error;
           }

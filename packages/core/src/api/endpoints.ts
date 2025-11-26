@@ -12,6 +12,7 @@ export const OPEN_METEO_BASE_URL = "https://api.open-meteo.com/v1";
 
 /**
  * Model-specific endpoint paths
+ * Most models have dedicated endpoints, some use /forecast with models= param
  */
 export const MODEL_ENDPOINTS: Record<ModelName, string> = {
   ecmwf: `${OPEN_METEO_BASE_URL}/ecmwf`,
@@ -20,7 +21,14 @@ export const MODEL_ENDPOINTS: Record<ModelName, string> = {
   jma: `${OPEN_METEO_BASE_URL}/jma`,
   gem: `${OPEN_METEO_BASE_URL}/gem`,
   meteofrance: `${OPEN_METEO_BASE_URL}/meteofrance`,
-  ukmo: `${OPEN_METEO_BASE_URL}/ukmo`,
+  ukmo: `${OPEN_METEO_BASE_URL}/forecast`,
+} as const;
+
+/**
+ * Models that require the models= query parameter on /forecast endpoint
+ */
+export const MODEL_QUERY_PARAMS: Partial<Record<ModelName, string>> = {
+  ukmo: "ukmo_seamless",
 } as const;
 
 /**
