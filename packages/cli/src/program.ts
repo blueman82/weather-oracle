@@ -7,6 +7,7 @@ import { Command, type OptionValues } from "commander";
 import chalk from "chalk";
 import { loadConfig, type AppConfig, type UnitSystem, type OutputFormat } from "@weather-oracle/core";
 import { registerCompareCommand } from "./commands/compare";
+import { registerConfigCommand } from "./commands/config";
 import { registerForecastCommand } from "./commands/forecast";
 
 /**
@@ -173,13 +174,7 @@ export function createProgram(): Command {
   // Register commands
   registerForecastCommand(program);
   registerCompareCommand(program);
-
-  program
-    .command("config")
-    .description("Manage configuration")
-    .action(() => {
-      console.log(chalk.yellow("Config command not yet implemented"));
-    });
+  registerConfigCommand(program);
 
   return program;
 }

@@ -408,6 +408,12 @@ export async function compareHandler(
     const config = await loadConfigWithOverrides(options);
     const verbose = options.verbose ?? false;
 
+    // Use config values as defaults (fixes bug where config.display.units was ignored)
+    const effectiveOptions: CompareOptions = {
+      ...options,
+      units: options.units ?? config.display.units,
+    };
+
     // Resolve location
     const geocoded = await geocodeLocation(locationQuery);
     const location: Location = {
@@ -456,7 +462,7 @@ export async function compareHandler(
       location,
       result.forecasts,
       aggregated,
-      options
+      effectiveOptions
     );
 
     console.log(output);

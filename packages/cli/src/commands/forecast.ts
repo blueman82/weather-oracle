@@ -267,6 +267,12 @@ export async function forecastHandler(
     });
     const verbose = options.verbose ?? false;
 
+    // Use config values as defaults (fixes bug where config.display.units was ignored)
+    const effectiveOptions: ForecastOptions = {
+      ...options,
+      units: options.units ?? config.display.units,
+    };
+
     // Create cache manager (disabled if --no-cache flag is set)
     const cache = createCacheManager({ enabled: !options.noCache });
 
@@ -354,7 +360,7 @@ export async function forecastHandler(
 
     let output: string;
     if (format === "minimal") {
-      output = renderMinimalOutput(location, aggregated, options);
+      output = renderMinimalOutput(location, aggregated, effectiveOptions);
     } else if (format === "table" || format === "json" || format === "narrative") {
       // Use formatter factory for table, json, and narrative
       const formatterInput: FormatterInput = {
@@ -366,8 +372,8 @@ export async function forecastHandler(
       };
 
       const formatter = createFormatter(format, {
-        useColors: options.color !== false && process.stdout.isTTY,
-        units: options.units ?? "metric",
+        useColors: effectiveOptions.color !== false && process.stdout.isTTY,
+        units: effectiveOptions.units ?? "metric",
         showModelDetails: verbose,
         showConfidence: true,
       });
@@ -380,7 +386,7 @@ export async function forecastHandler(
         aggregated,
         confidence,
         narrative,
-        options
+        effectiveOptions
       );
     }
 

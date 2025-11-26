@@ -37,3 +37,19 @@ export {
   getConfigPath,
   type LoadConfigOptions,
 } from "./loader";
+
+// Config operations for CLI
+export {
+  CONFIG_KEYS,
+  getValidKeys,
+  isValidKey,
+  getConfigValue,
+  getDefaultValue,
+  setConfigValue,
+  unsetConfigValue,
+  parseConfigValue,
+  validatePartialConfig,
+  flattenConfig,
+  formatConfigValue,
+  type ConfigKey,
+} from "./operations";

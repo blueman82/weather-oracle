@@ -1,4 +1,10 @@
+<a id="top"></a>
+
 # Weather Oracle
+
+<p align="center">
+  <img src="assets/banner.png" alt="Weather Oracle - Multi-model weather forecast aggregator" width="800">
+</p>
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Bun](https://img.shields.io/badge/Bun-%3E%3D1.1.0-black)](https://bun.sh)
@@ -8,6 +14,33 @@
 
 Weather Oracle fetches forecasts from multiple weather models (ECMWF, GFS, ICON, and more), aggregates them using statistical methods, and provides confidence levels so you know not just *what* the weather will be, but *how certain* we are about it.
 
+---
+
+## Table of Contents
+
+- [Features](#features)
+- [Quick Start](#quick-start)
+  - [Prerequisites](#prerequisites)
+  - [Installation](#installation)
+  - [Install CLI Globally](#install-cli-globally-optional)
+  - [Get Your First Forecast](#get-your-first-forecast)
+- [Usage](#usage)
+  - [CLI Commands](#cli-commands)
+  - [CLI Options](#cli-options)
+  - [Available Models](#available-models)
+  - [Web Interface](#web-interface)
+  - [REST API](#rest-api)
+- [Configuration](#configuration)
+  - [Configuration Options](#configuration-options)
+  - [Example Config File](#example-config-file)
+- [Project Structure](#project-structure)
+- [How It Works](#how-it-works)
+- [Contributing](#contributing)
+- [License](#license)
+- [Acknowledgments](#acknowledgments)
+
+---
+
 ## Features
 
 - **7 Weather Models** - Aggregates forecasts from ECMWF IFS, GFS, ICON, ARPEGE, UK Met Office, JMA GSM, and GEM
@@ -16,6 +49,8 @@ Weather Oracle fetches forecasts from multiple weather models (ECMWF, GFS, ICON,
 - **Multi-Platform** - CLI for terminal, REST API, and web interface
 - **Smart Caching** - Reduces redundant API calls with file-based caching
 - **No API Keys Required** - Uses the free Open-Meteo API
+
+<p align="right"><a href="#top">⬆️ Back to top</a></p>
 
 ## Quick Start
 
@@ -73,6 +108,8 @@ Output:
 💦 Humidity: 45-72%
 ```
 
+<p align="right"><a href="#top">⬆️ Back to top</a></p>
+
 ## Usage
 
 ### CLI Commands
@@ -88,6 +125,11 @@ bun run packages/cli/src/index.ts compare "Tokyo"
 bun run packages/cli/src/index.ts forecast "Paris" --days 5 --format json
 bun run packages/cli/src/index.ts forecast "Sydney" --units imperial
 bun run packages/cli/src/index.ts forecast "Berlin" --models ecmwf,gfs,icon
+
+# Manage configuration
+bun run packages/cli/src/index.ts config                           # Show all
+bun run packages/cli/src/index.ts config set display.units imperial # Set value
+bun run packages/cli/src/index.ts config get display.units          # Get value
 ```
 
 ### CLI Options
@@ -155,34 +197,61 @@ curl "http://localhost:3000/api/geocode?q=Paris"
 
 See [docs/API.md](docs/API.md) for complete API documentation.
 
+<p align="right"><a href="#top">⬆️ Back to top</a></p>
+
 ## Configuration
 
-Weather Oracle can be configured via a `~/.config/weather-oracle/config.json` file:
+Weather Oracle stores configuration at `~/.weather-oracle/config.json`. Use the `config` command to manage settings:
+
+```bash
+# Show all configuration
+weather-oracle config
+
+# Set temperature units to Fahrenheit
+weather-oracle config set display.units imperial
+
+# Use more weather models by default
+weather-oracle config set models.defaults ecmwf,gfs,icon,meteofrance,ukmo
+
+# Get a specific value
+weather-oracle config get display.units
+
+# Reset to defaults
+weather-oracle config reset --force
+```
+
+### Configuration Options
+
+| Setting | Description | Default |
+|---------|-------------|---------|
+| `display.units` | Temperature units: `metric` (°C) or `imperial` (°F) | metric |
+| `display.outputFormat` | Output format: `table`, `json`, `minimal` | table |
+| `display.colorOutput` | Enable colored terminal output | true |
+| `models.defaults` | Weather models to query by default | ecmwf,gfs,icon |
+| `models.timeout` | API timeout in milliseconds | 30000 |
+| `cache.enabled` | Cache forecasts to reduce API calls | true |
+| `cache.ttlSeconds` | Cache validity in seconds (300 = 5 min) | 300 |
+
+### Example Config File
 
 ```json
 {
-  "api": {
-    "forecast": "https://api.open-meteo.com/v1/forecast",
-    "geocoding": "https://geocoding-api.open-meteo.com/v1/search"
-  },
-  "cache": {
-    "enabled": true,
-    "ttlSeconds": 300,
-    "maxEntries": 100
+  "display": {
+    "units": "imperial",
+    "outputFormat": "table"
   },
   "models": {
-    "defaults": ["ecmwf", "gfs", "icon"],
-    "timeout": 30000,
-    "retries": 2
+    "defaults": ["ecmwf", "gfs", "icon", "meteofrance", "ukmo"]
   },
-  "display": {
-    "units": "metric",
-    "outputFormat": "table",
-    "showConfidence": true,
-    "colorOutput": true
+  "cache": {
+    "ttlSeconds": 600
   }
 }
 ```
+
+See the [CLI README](packages/cli/README.md#config-command) for complete configuration documentation.
+
+<p align="right"><a href="#top">⬆️ Back to top</a></p>
 
 ## Project Structure
 
@@ -196,6 +265,8 @@ weather-oracle/
 └── package.json        # Workspace root
 ```
 
+<p align="right"><a href="#top">⬆️ Back to top</a></p>
+
 ## How It Works
 
 1. **Geocoding** - Location names are resolved to coordinates using Open-Meteo's geocoding API
@@ -207,15 +278,23 @@ weather-oracle/
 4. **Confidence Calculation** - Model agreement is analyzed to determine confidence levels
 5. **Narrative Generation** - Plain language summaries explain the forecast and highlight uncertainties
 
+<p align="right"><a href="#top">⬆️ Back to top</a></p>
+
 ## Contributing
 
 Contributions are welcome! Please see [docs/CONTRIBUTING.md](docs/CONTRIBUTING.md) for guidelines.
+
+<p align="right"><a href="#top">⬆️ Back to top</a></p>
 
 ## License
 
 MIT License - see [LICENSE](LICENSE) for details.
 
+<p align="right"><a href="#top">⬆️ Back to top</a></p>
+
 ## Acknowledgments
 
 - [Open-Meteo](https://open-meteo.com/) for providing free weather data APIs
 - Inspired by [Carlow Weather](https://x.com/CarlowWeather?s=20) for their approach to communicating forecast uncertainty
+
+<p align="right"><a href="#top">⬆️ Back to top</a></p>

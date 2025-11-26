@@ -34,7 +34,7 @@ forecast forecast "London"
 |---------|-------------|
 | `forecast <location>` | Get weather forecast with model consensus |
 | `compare <location>` | Compare forecasts across models side-by-side |
-| `config` | Manage configuration *(coming soon)* |
+| `config` | Manage configuration settings |
 
 ## Usage
 
@@ -120,6 +120,127 @@ ICON       8%    12%    32%    58%    42%
 ...
 
 Based on 7/7 models. ██ within 1σ, ██ within 2σ, ██ >2σ from mean
+```
+
+### Config Command
+
+Manage Weather Oracle configuration settings:
+
+```bash
+# Show all configuration
+weather-oracle config
+
+# Get a specific value
+weather-oracle config get display.units
+
+# Set a value
+weather-oracle config set display.units imperial
+
+# Remove a value (revert to default)
+weather-oracle config unset display.units
+
+# Show config file path
+weather-oracle config path
+
+# Reset to defaults
+weather-oracle config reset --force
+
+# List all valid configuration keys
+weather-oracle config list-keys
+```
+
+**Example Output:**
+
+```
+Weather Oracle Configuration
+──────────────────────────────────────────────────
+
+[api]
+  api.forecast = https://api.open-meteo.com/v1/forecast (default)
+  api.geocoding = https://geocoding-api.open-meteo.com/v1/search (default)
+
+[cache]
+  cache.enabled = true (default)
+  cache.ttlSeconds = 300 (default)
+
+[models]
+  models.defaults = ecmwf, gfs, icon (default)
+
+[display]
+  display.units = imperial (config file)
+  display.outputFormat = table (default)
+
+Config file: ~/.weather-oracle/config.json
+```
+
+#### Config Subcommands
+
+| Subcommand | Description |
+|------------|-------------|
+| `config` | Show all configuration with sources |
+| `config get <key>` | Get a single configuration value |
+| `config set <key> <value>` | Set a configuration value |
+| `config unset <key>` | Remove a value (revert to default) |
+| `config path` | Show the configuration file path |
+| `config reset --force` | Reset all settings to defaults |
+| `config list-keys` | List all valid configuration keys |
+
+#### Valid Configuration Keys
+
+##### Display Settings
+
+| Key | Type | Values | Default | Description |
+|-----|------|--------|---------|-------------|
+| `display.units` | enum | metric, imperial | metric | Temperature units in output. `metric` = Celsius, `imperial` = Fahrenheit |
+| `display.outputFormat` | enum | json, table, minimal | table | Default output format for forecast/compare commands |
+| `display.colorOutput` | boolean | true, false | true | Enable/disable colored terminal output |
+| `display.showConfidence` | boolean | true, false | true | Show confidence indicators in forecast output |
+
+##### Model Settings
+
+| Key | Type | Values | Default | Description |
+|-----|------|--------|---------|-------------|
+| `models.defaults` | array | ecmwf,gfs,icon,meteofrance,ukmo,jma,gem | ecmwf,gfs,icon | Weather models to query when `--models` flag not specified |
+| `models.timeout` | number | 1000-60000 | 30000 | API request timeout in milliseconds |
+
+##### Cache Settings
+
+| Key | Type | Values | Default | Description |
+|-----|------|--------|---------|-------------|
+| `cache.enabled` | boolean | true, false | true | Enable/disable forecast caching (reduces API calls) |
+| `cache.ttlSeconds` | number | 0-86400 | 300 | How long cached forecasts are valid (seconds). 300 = 5 minutes |
+
+##### API Settings
+
+| Key | Type | Default | Description |
+|-----|------|---------|-------------|
+| `api.forecast` | string | https://api.open-meteo.com/v1/forecast | Forecast API endpoint URL |
+| `api.geocoding` | string | https://geocoding-api.open-meteo.com/v1/search | Geocoding API endpoint URL |
+
+#### Config File Location
+
+The configuration file is stored at `~/.weather-oracle/config.json` and works from any directory on your system.
+
+```bash
+# View your config file path
+weather-oracle config path
+
+# Example config file
+cat ~/.weather-oracle/config.json
+```
+
+```json
+{
+  "display": {
+    "units": "imperial"
+  },
+  "models": {
+    "defaults": ["ecmwf", "gfs", "icon", "meteofrance", "ukmo"]
+  },
+  "cache": {
+    "ttlSeconds": 600
+  }
+}
 ```
 
 ### Global Options
