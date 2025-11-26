@@ -178,18 +178,20 @@ export function formatDayName(date: Date): string {
 
 /**
  * Format date with relative description (today, tomorrow, day name)
+ * Handles both Date objects and ISO strings (from cached data)
  */
-export function formatRelativeDay(date: Date, referenceDate: Date = new Date()): string {
-  const dateOnly = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+export function formatRelativeDay(date: Date | string, referenceDate: Date = new Date()): string {
+  const dateObj = typeof date === "string" ? new Date(date) : date;
+  const dateOnly = new Date(dateObj.getFullYear(), dateObj.getMonth(), dateObj.getDate());
   const refOnly = new Date(referenceDate.getFullYear(), referenceDate.getMonth(), referenceDate.getDate());
 
   const diffDays = Math.round((dateOnly.getTime() - refOnly.getTime()) / (24 * 60 * 60 * 1000));
 
   if (diffDays === 0) return "today";
   if (diffDays === 1) return "tomorrow";
-  if (diffDays >= 2 && diffDays <= 6) return formatDayName(date);
+  if (diffDays >= 2 && diffDays <= 6) return formatDayName(dateObj);
 
-  return date.toLocaleDateString("en-US", { weekday: "long", month: "short", day: "numeric" });
+  return dateObj.toLocaleDateString("en-US", { weekday: "long", month: "short", day: "numeric" });
 }
 
 /**

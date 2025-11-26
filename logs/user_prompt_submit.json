@@ -1,0 +1,321 @@
+[
+  {
+    "timestamp": "2025-11-26T10:57:43.423473",
+    "input_data": {
+      "session_id": "0a39c76f-2b75-43ab-b988-d4750b680c7b",
+      "transcript_path": "/Users/harrison/.claude/projects/-Users-harrison/0a39c76f-2b75-43ab-b988-d4750b680c7b.jsonl",
+      "cwd": "/Users/harrison/Github/weather-oracle",
+      "permission_mode": "default",
+      "hook_event_name": "UserPromptSubmit",
+      "prompt": "conductor is awsome isn't it :) "
+    }
+  },
+  {
+    "timestamp": "2025-11-26T11:02:17.218367",
+    "input_data": {
+      "session_id": "0a39c76f-2b75-43ab-b988-d4750b680c7b",
+      "transcript_path": "/Users/harrison/.claude/projects/-Users-harrison/0a39c76f-2b75-43ab-b988-d4750b680c7b.jsonl",
+      "cwd": "/Users/harrison/Github/weather-oracle",
+      "permission_mode": "default",
+      "hook_event_name": "UserPromptSubmit",
+      "prompt": "feel free to check the code yourself"
+    }
+  },
+  {
+    "timestamp": "2025-11-26T11:43:01.426358",
+    "input_data": {
+      "session_id": "0a39c76f-2b75-43ab-b988-d4750b680c7b",
+      "transcript_path": "/Users/harrison/.claude/projects/-Users-harrison/0a39c76f-2b75-43ab-b988-d4750b680c7b.jsonl",
+      "cwd": "/Users/harrison/Github/weather-oracle",
+      "permission_mode": "default",
+      "hook_event_name": "UserPromptSubmit",
+      "prompt": "**PASSES:**\n- Caches with configurable TTL (default 3600s)\n- Returns cached data when valid\n- Automatic expired entry eviction via cleanup()\n- No TODO comments\n- Clean TypeScript with no `any` types\n- Proper async/await handling\n- Good error handling with custom CacheError class\n- Atomic writes using temp file + rename pattern\n[typescript-pro] ## Quality Control Review: Cache Layer (Task 14)\n\n### Overall Assessment: YELLOW (Partial Implementation)\n\nThe cache layer has a solid implementation with proper features including file-based storage, atomic writes, configurable TTL, max entries limit, pattern invalidation, and automatic cleanup. However, there are critical missing deliverables.\n\n### Implementation Quality\nThe code quality is good with proper TypeScrip[11:39:24]   - Task 14 (Cache Layer): RED\n[11:39:24]     Feedback: [quality-control] The cache layer implementation is functionally complete with good code quality, but fails key success criteria and expected file requirements:\n\n**CRITICAL FAILURES:**\n1. **Missing --no-cache CLI flag (Success Criterion #3)**: The CLI (`program.ts`) does not implement a `--no-cache` flag. While the `FileCacheManager` has an `enabled` option that can disable caching, this is not exposed through the CLI as required.\n\n2. **Missing test file (Expected Files)**: `packages/core/src/cache/cache.test.ts` does not exist. Tests are required per task specification.\n\n3. **Wrong filename (Expected Files)**: Implementation is in `manager.ts` instead of the expected `file-cache.ts`.\n\nt typing, no 'any' types, correct async/await handling, and no TODO comments. The CacheManager interface matches the specification, and the FileCacheManager provides a robust file-based implementation at `~/.weather-oracle/cache/`.\n\n### Key Issues\n1. **Missing test file**: `packages/core/src/cache/cache.test.ts` does not exist - tests cannot be verified\n2. **Filename mismatch**: Implementation uses `manager.ts` instead of expected `file-cache.ts`\n3. **No CLI integration verification**: Cannot verify `--no-cache` flag integration (though cache has `enabled` option)\nError: execution failed: quality control failed after maximum retries\nError: execution failed: quality control failed after maximum retries"
+    }
+  },
+  {
+    "timestamp": "2025-11-26T12:02:09.186475",
+    "input_data": {
+      "session_id": "0a39c76f-2b75-43ab-b988-d4750b680c7b",
+      "transcript_path": "/Users/harrison/.claude/projects/-Users-harrison/0a39c76f-2b75-43ab-b988-d4750b680c7b.jsonl",
+      "cwd": "/Users/harrison/Github/weather-oracle",
+      "permission_mode": "default",
+      "hook_event_name": "UserPromptSubmit",
+      "prompt": "what is the failuure, plan, agent or post work from the agent?"
+    }
+  },
+  {
+    "timestamp": "2025-11-26T12:04:07.762833",
+    "input_data": {
+      "session_id": "0a39c76f-2b75-43ab-b988-d4750b680c7b",
+      "transcript_path": "/Users/harrison/.claude/projects/-Users-harrison/0a39c76f-2b75-43ab-b988-d4750b680c7b.jsonl",
+      "cwd": "/Users/harrison/Github/weather-oracle",
+      "permission_mode": "default",
+      "hook_event_name": "UserPromptSubmit",
+      "prompt": "is that an implementation-planner skill fault? "
+    }
+  },
+  {
+    "timestamp": "2025-11-26T12:05:53.740424",
+    "input_data": {
+      "session_id": "0a39c76f-2b75-43ab-b988-d4750b680c7b",
+      "transcript_path": "/Users/harrison/.claude/projects/-Users-harrison/0a39c76f-2b75-43ab-b988-d4750b680c7b.jsonl",
+      "cwd": "/Users/harrison/Github/weather-oracle",
+      "permission_mode": "default",
+      "hook_event_name": "UserPromptSubmit",
+      "prompt": "ultrathink, is that the vlidation step needed for the skill?"
+    }
+  },
+  {
+    "timestamp": "2025-11-26T12:07:40.221375",
+    "input_data": {
+      "session_id": "0a39c76f-2b75-43ab-b988-d4750b680c7b",
+      "transcript_path": "/Users/harrison/.claude/projects/-Users-harrison/0a39c76f-2b75-43ab-b988-d4750b680c7b.jsonl",
+      "cwd": "/Users/harrison/Github/weather-oracle",
+      "permission_mode": "default",
+      "hook_event_name": "UserPromptSubmit",
+      "prompt": "yes"
+    }
+  },
+  {
+    "timestamp": "2025-11-26T12:12:59.390690",
+    "input_data": {
+      "session_id": "0a39c76f-2b75-43ab-b988-d4750b680c7b",
+      "transcript_path": "/Users/harrison/.claude/projects/-Users-harrison/0a39c76f-2b75-43ab-b988-d4750b680c7b.jsonl",
+      "cwd": "/Users/harrison/Github/weather-oracle",
+      "permission_mode": "bypassPermissions",
+      "hook_event_name": "UserPromptSubmit",
+      "prompt": "are the changes you made are project agnostic?"
+    }
+  },
+  {
+    "timestamp": "2025-11-26T12:14:24.326273",
+    "input_data": {
+      "session_id": "0a39c76f-2b75-43ab-b988-d4750b680c7b",
+      "transcript_path": "/Users/harrison/.claude/projects/-Users-harrison/0a39c76f-2b75-43ab-b988-d4750b680c7b.jsonl",
+      "cwd": "/Users/harrison/Github/weather-oracle",
+      "permission_mode": "bypassPermissions",
+      "hook_event_name": "UserPromptSubmit",
+      "prompt": "before I re-run conductor to retry failed(conductor run docs/plans/weather-oracle.yaml --verbose   --skip-completed --retry-failed) what will we do about task 14?"
+    }
+  },
+  {
+    "timestamp": "2025-11-26T12:15:01.489185",
+    "input_data": {
+      "session_id": "0a39c76f-2b75-43ab-b988-d4750b680c7b",
+      "transcript_path": "/Users/harrison/.claude/projects/-Users-harrison/0a39c76f-2b75-43ab-b988-d4750b680c7b.jsonl",
+      "cwd": "/Users/harrison/Github/weather-oracle",
+      "permission_mode": "bypassPermissions",
+      "hook_event_name": "UserPromptSubmit",
+      "prompt": "yeah split it Option A"
+    }
+  },
+  {
+    "timestamp": "2025-11-26T12:17:35.609342",
+    "input_data": {
+      "session_id": "0a39c76f-2b75-43ab-b988-d4750b680c7b",
+      "transcript_path": "/Users/harrison/.claude/projects/-Users-harrison/0a39c76f-2b75-43ab-b988-d4750b680c7b.jsonl",
+      "cwd": "/Users/harrison/Github/weather-oracle",
+      "permission_mode": "bypassPermissions",
+      "hook_event_name": "UserPromptSubmit",
+      "prompt": "no undo that, keep it marked as failed, then conductor will retry a task marked as failed so just undo what you just did"
+    }
+  },
+  {
+    "timestamp": "2025-11-26T12:23:14.653023",
+    "input_data": {
+      "session_id": "0a39c76f-2b75-43ab-b988-d4750b680c7b",
+      "transcript_path": "/Users/harrison/.claude/projects/-Users-harrison/0a39c76f-2b75-43ab-b988-d4750b680c7b.jsonl",
+      "cwd": "/Users/harrison/Github/weather-oracle",
+      "permission_mode": "bypassPermissions",
+      "hook_event_name": "UserPromptSubmit",
+      "prompt": "task 14 just passesd, check the code"
+    }
+  },
+  {
+    "timestamp": "2025-11-26T13:21:02.885488",
+    "input_data": {
+      "session_id": "0a39c76f-2b75-43ab-b988-d4750b680c7b",
+      "transcript_path": "/Users/harrison/.claude/projects/-Users-harrison/0a39c76f-2b75-43ab-b988-d4750b680c7b.jsonl",
+      "cwd": "/Users/harrison/Github/weather-oracle",
+      "permission_mode": "bypassPermissions",
+      "hook_event_name": "UserPromptSubmit",
+      "prompt": "plan, agent or skill failure?\n[13:18:21] Failed tasks:\n[13:18:21]   - Task 17 (Web UI Components): FAILED\nError: execution failed: task 17: timeout after 0s (task execution timeout)\nError: execution failed: task 17: timeout after 0s (task execution timeout)"
+    }
+  },
+  {
+    "timestamp": "2025-11-26T13:21:36.349112",
+    "input_data": {
+      "session_id": "0a39c76f-2b75-43ab-b988-d4750b680c7b",
+      "transcript_path": "/Users/harrison/.claude/projects/-Users-harrison/0a39c76f-2b75-43ab-b988-d4750b680c7b.jsonl",
+      "cwd": "/Users/harrison/Github/weather-oracle",
+      "permission_mode": "bypassPermissions",
+      "hook_event_name": "UserPromptSubmit",
+      "prompt": "ah the timeout! I need to increase conductors timeout :) right? "
+    }
+  },
+  {
+    "timestamp": "2025-11-26T13:47:24.231803",
+    "input_data": {
+      "session_id": "0a39c76f-2b75-43ab-b988-d4750b680c7b",
+      "transcript_path": "/Users/harrison/.claude/projects/-Users-harrison/0a39c76f-2b75-43ab-b988-d4750b680c7b.jsonl",
+      "cwd": "/Users/harrison/Github/weather-oracle",
+      "permission_mode": "bypassPermissions",
+      "hook_event_name": "UserPromptSubmit",
+      "prompt": "re-review:\n[13:43:16] Failed tasks:\n[13:43:16]   - Task 11 (Forecast Command): FAILED\n[13:43:16]   - Task 17 (Web UI Components): RED\n[13:43:16]     Feedback: [code-reviewer] Agent code-reviewer failed: JSON schema enforcement failed: invalid character '-' after top-level value\n[react-specialist] Agent react-specialist failed: JSON schema enforcement failed: invalid character '-' after top-level value\n[accessibility-tester] Agent accessibility-tester failed: JSON schema enforcement failed: invalid character '-' after top-level value\n[nextjs-developer] Agent nextjs-developer failed: JSON schema enforcement failed: invalid character '-' after top-level value\nError: execution failed: quality control failed after maximum retries\nError: execution failed: quality control failed after maximum retries"
+    }
+  },
+  {
+    "timestamp": "2025-11-26T14:22:08.664971",
+    "input_data": {
+      "session_id": "0a39c76f-2b75-43ab-b988-d4750b680c7b",
+      "transcript_path": "/Users/harrison/.claude/projects/-Users-harrison/0a39c76f-2b75-43ab-b988-d4750b680c7b.jsonl",
+      "cwd": "/Users/harrison/Github/weather-oracle",
+      "permission_mode": "bypassPermissions",
+      "hook_event_name": "UserPromptSubmit",
+      "prompt": "remember the --no-cache?\n\n**SUCCESS CRITERIA VERIFICATION:**\n\n0. ✅ Geocodes location and shows resolved name - Yes, line 267-273 calls `geocodeLocation` and shows it in spinner\n1. ✅ Displays spinner during fetch operations - Yes, lines 247-311 show progressive spinner updates\n2. ✅ Shows narrative summary by default - Yes, line 322 defaults to \"narrative\"\n3. ✅ Supports --format table/json/narrative - Yes, line 388-396\n4. ❌ **Supports --no-cache flag that disables caching** - NOT IMPLEMENTED. The forecast command does not have a `--no-cache` option and doesn't interact with `CacheManager` at all.\n5. ✅ Handles errors gracefully - Yes, lines 357-360 catch errors and show formatted messages\n6. ✅ No TODO comments in command handler - Verified, no TODOs found"
+    }
+  },
+  {
+    "timestamp": "2025-11-26T14:23:07.187527",
+    "input_data": {
+      "session_id": "0a39c76f-2b75-43ab-b988-d4750b680c7b",
+      "transcript_path": "/Users/harrison/.claude/projects/-Users-harrison/0a39c76f-2b75-43ab-b988-d4750b680c7b.jsonl",
+      "cwd": "/Users/harrison/Github/weather-oracle",
+      "permission_mode": "bypassPermissions",
+      "hook_event_name": "UserPromptSubmit",
+      "prompt": "yes"
+    }
+  },
+  {
+    "timestamp": "2025-11-26T14:24:02.948493",
+    "input_data": {
+      "session_id": "0a39c76f-2b75-43ab-b988-d4750b680c7b",
+      "transcript_path": "/Users/harrison/.claude/projects/-Users-harrison/0a39c76f-2b75-43ab-b988-d4750b680c7b.jsonl",
+      "cwd": "/Users/harrison/Github/weather-oracle",
+      "permission_mode": "bypassPermissions",
+      "hook_event_name": "UserPromptSubmit",
+      "prompt": "B"
+    }
+  },
+  {
+    "timestamp": "2025-11-26T14:25:57.365442",
+    "input_data": {
+      "session_id": "0a39c76f-2b75-43ab-b988-d4750b680c7b",
+      "transcript_path": "/Users/harrison/.claude/projects/-Users-harrison/0a39c76f-2b75-43ab-b988-d4750b680c7b.jsonl",
+      "cwd": "/Users/harrison/Github/weather-oracle",
+      "permission_mode": "bypassPermissions",
+      "hook_event_name": "UserPromptSubmit",
+      "prompt": "its like the 2nd attempt at the task 11, what was the failure, plan, skill or agent? success criteria or integsation criteria? "
+    }
+  },
+  {
+    "timestamp": "2025-11-26T14:27:09.959843",
+    "input_data": {
+      "session_id": "0a39c76f-2b75-43ab-b988-d4750b680c7b",
+      "transcript_path": "/Users/harrison/.claude/projects/-Users-harrison/0a39c76f-2b75-43ab-b988-d4750b680c7b.jsonl",
+      "cwd": "/Users/harrison/Github/weather-oracle",
+      "permission_mode": "bypassPermissions",
+      "hook_event_name": "UserPromptSubmit",
+      "prompt": "did confudvor fix it before you?!\n14:26:19 💬 [Assistant]: **Agent failure.** Here's the breakdown:\n\n| Question | Answer | Reasoning |\n|----------|--------|-----------|\n| **Plan?** | ❌ No | Criterion was there: \"Supports --no-cache flag...\" |\n| **Skill?** | ❌ No | Correctly classified as INTEGRATION in Task 11 |\n| **Agent?** | ✅ Yes | Implemented 5/6 criteria, completely missed `--no-cache` |\n\n## Evidence\n\n| What agent DID implement | What agent MISSED |\n|--------------------------|-------------------|\n| ✅ Geocoding + resolved name | ❌ `--no-cache` flag |\n| ✅ Spinner during fetch | ❌ Cache imports |\n| ✅ Narrative summary default | ❌ CacheManager creation |\n| ✅ `--format` options | ❌ Cache check before fetch |\n| ✅ Error handling | ❌ Cache store after fetch |\n\n## Criterion Type\n\n**INTEGRATION criterion** - correctly placed in Task 11 (CLI task) rather than Task 14 (Cache task).\n\nThe split we did was correct:\n- Task 14 (Cache): CAPABILITY → `enabled` option, bypass behavior ✅\n- Task 11 (CLI): INTEGRATION → `--no-cache` flag wires to cache ❌ (agent missed)\n\n---\n\n**Bottom line**: The system worked correctly - plan was right, criterion was in the right place. The agent just didn't implement one of its criteria. QC caught it, that's the safety net doing its job.\n14:26:23 🔧 Bash: grep -E \"^import.*from\" packages/cli/src/commands/forecast.ts\n14:26:27 💬 [Assistant]: All imports are used in the file. Now let me run a full verification to confirm that everything works:\n14:26:28 🔧 Bash: bun test packages/cli/ 2>&1 | tail -30\n14:26:43 💬 [Assistant]: All 85 tests pass (26 forecast tests + others). Now I have all the information needed for my QC assessment. Let me summarize my findings:\n\n**SUCCESS CRITERIA VERIFICATION:**\n\n0. ✅ **Geocodes location and shows resolved name**: Line 274 calls `geocodeLocation(locationQuery)`, and lines 106, 110, 241 display `location.resolved.name`\n\n1. ✅ **Displays spinner during fetch operations**: Uses `ora` package (lines 8, 251-254) with progressive status updates (\"Resolving location...\", \"Fetching forecasts for {name}...\", \"Aggregating forecast data...\", \"Calculating confidence...\", \"Generating narrative...\")\n\n2. ✅ **Shows narrative summary by default**: Line 353 sets `format = options.format ?? \"narrative\"`, making narrative the default\n\n3. ✅ **Supports --format table/json/narrative**: Lines 419-428 define the format option with all four formats (table/json/narrative/minimal)\n\n4. ✅ **Supports --no-cache flag**: Line 429 defines `--no-cache` option, line 271 passes `enabled: !options.noCache` to `createCacheManager`\n\n5. ✅ **Handles errors gracefully**: Lines 388-392 catch errors, format them with `formatError`, and exit with code 1. Lines 317-324 handle partial failures with informative messages\n\n6. ✅ **No TODO comments**: grep confirmed no TODO comments in the file\n\n**FILE PATHS:**\n- ✅ packages/cli/src/commands/forecast.ts exists\n- ✅ packages/cli/src/commands/forecast.test.ts exists\n\n**TYPESCRIPT-SPECIFIC:**\n- ✅ No `any` types (only word \"any\" appears in a string literal)\n- ✅ Async/await properly handled (no floating promises)\n- ✅ Type narrowing used correctly\n- ✅ No unused imports or variables\n- ✅ TypeScript compilation passes\n\n**TESTS:**\n- ✅ 26 forecast command tests pass\n- ✅ 85 total CLI tests pass"
+    }
+  },
+  {
+    "timestamp": "2025-11-26T14:28:09.008314",
+    "input_data": {
+      "session_id": "0a39c76f-2b75-43ab-b988-d4750b680c7b",
+      "transcript_path": "/Users/harrison/.claude/projects/-Users-harrison/0a39c76f-2b75-43ab-b988-d4750b680c7b.jsonl",
+      "cwd": "/Users/harrison/Github/weather-oracle",
+      "permission_mode": "bypassPermissions",
+      "hook_event_name": "UserPromptSubmit",
+      "prompt": "why did agent miss it because we have rubrics cimplemented for conductor?!"
+    }
+  },
+  {
+    "timestamp": "2025-11-26T14:29:05.140137",
+    "input_data": {
+      "session_id": "0a39c76f-2b75-43ab-b988-d4750b680c7b",
+      "transcript_path": "/Users/harrison/.claude/projects/-Users-harrison/0a39c76f-2b75-43ab-b988-d4750b680c7b.jsonl",
+      "cwd": "/Users/harrison/Github/weather-oracle",
+      "permission_mode": "bypassPermissions",
+      "hook_event_name": "UserPromptSubmit",
+      "prompt": "perhaps if the agent had retired again it would have picke dup the feedback anyways, its fine, we're on wave 11 now"
+    }
+  },
+  {
+    "timestamp": "2025-11-26T14:51:49.839434",
+    "input_data": {
+      "session_id": "0a39c76f-2b75-43ab-b988-d4750b680c7b",
+      "transcript_path": "/Users/harrison/.claude/projects/-Users-harrison/0a39c76f-2b75-43ab-b988-d4750b680c7b.jsonl",
+      "cwd": "/Users/harrison/Github/weather-oracle",
+      "permission_mode": "bypassPermissions",
+      "hook_event_name": "UserPromptSubmit",
+      "prompt": "why is task 18 failing?"
+    }
+  },
+  {
+    "timestamp": "2025-11-26T14:53:14.909076",
+    "input_data": {
+      "session_id": "0a39c76f-2b75-43ab-b988-d4750b680c7b",
+      "transcript_path": "/Users/harrison/.claude/projects/-Users-harrison/0a39c76f-2b75-43ab-b988-d4750b680c7b.jsonl",
+      "cwd": "/Users/harrison/Github/weather-oracle",
+      "permission_mode": "bypassPermissions",
+      "hook_event_name": "UserPromptSubmit",
+      "prompt": ".conductor/logs/tasks/*.log and the agent_output qc_feedback in the plan show you too..."
+    }
+  },
+  {
+    "timestamp": "2025-11-26T15:06:27.394720",
+    "input_data": {
+      "session_id": "0a39c76f-2b75-43ab-b988-d4750b680c7b",
+      "transcript_path": "/Users/harrison/.claude/projects/-Users-harrison/0a39c76f-2b75-43ab-b988-d4750b680c7b.jsonl",
+      "cwd": "/Users/harrison/Github/weather-oracle",
+      "permission_mode": "bypassPermissions",
+      "hook_event_name": "UserPromptSubmit",
+      "prompt": "git commit all that isn't committed"
+    }
+  },
+  {
+    "timestamp": "2025-11-26T15:07:32.071055",
+    "input_data": {
+      "session_id": "0a39c76f-2b75-43ab-b988-d4750b680c7b",
+      "transcript_path": "/Users/harrison/.claude/projects/-Users-harrison/0a39c76f-2b75-43ab-b988-d4750b680c7b.jsonl",
+      "cwd": "/Users/harrison/Github/weather-oracle",
+      "permission_mode": "bypassPermissions",
+      "hook_event_name": "UserPromptSubmit",
+      "prompt": "use git commit skill instead"
+    }
+  },
+  {
+    "timestamp": "2025-11-26T15:08:57.514932",
+    "input_data": {
+      "session_id": "0a39c76f-2b75-43ab-b988-d4750b680c7b",
+      "transcript_path": "/Users/harrison/.claude/projects/-Users-harrison/0a39c76f-2b75-43ab-b988-d4750b680c7b.jsonl",
+      "cwd": "/Users/harrison/Github/weather-oracle",
+      "permission_mode": "bypassPermissions",
+      "hook_event_name": "UserPromptSubmit",
+      "prompt": "never mind, right now integration tests and documentation are the last tasks running. Could you even start weather oracle or better yet tell me how to?"
+    }
+  },
+  {
+    "timestamp": "2025-11-26T15:09:29.381758",
+    "input_data": {
+      "session_id": "0a39c76f-2b75-43ab-b988-d4750b680c7b",
+      "transcript_path": "/Users/harrison/.claude/projects/-Users-harrison/0a39c76f-2b75-43ab-b988-d4750b680c7b.jsonl",
+      "cwd": "/Users/harrison/Github/weather-oracle",
+      "permission_mode": "bypassPermissions",
+      "hook_event_name": "UserPromptSubmit",
+      "prompt": "bun run packages/cli/src/index.ts forecast \"Dublin, Ireland\"\n✖ Failed\n❌ Error: hourly.timestamp.toISOString is not a function. (In 'hourly.timestamp.toISOString()', 'hourly.timestamp.toISOString' is undefined)"
+    }
+  },
+  {
+    "timestamp": "2025-11-26T15:10:14.961366",
+    "input_data": {
+      "session_id": "0a39c76f-2b75-43ab-b988-d4750b680c7b",
+      "transcript_path": "/Users/harrison/.claude/projects/-Users-harrison/0a39c76f-2b75-43ab-b988-d4750b680c7b.jsonl",
+      "cwd": "/Users/harrison/Github/weather-oracle",
+      "permission_mode": "bypassPermissions",
+      "hook_event_name": "UserPromptSubmit",
+      "prompt": "ahh okay fix it"
+    }
+  }
+]

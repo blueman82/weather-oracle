@@ -30,6 +30,28 @@ import {
 } from "./templates";
 
 /**
+ * Safely convert a Date or string to ISO string.
+ * Handles cached data where Dates become strings after JSON serialization.
+ */
+function toISOString(value: Date | string): string {
+  if (typeof value === "string") {
+    return value;
+  }
+  return value.toISOString();
+}
+
+/**
+ * Safely convert a Date or string to a Date object.
+ * Handles cached data where Dates become strings after JSON serialization.
+ */
+function toDate(value: Date | string): Date {
+  if (typeof value === "string") {
+    return new Date(value);
+  }
+  return value;
+}
+
+/**
  * Narrative summary for a forecast
  */
 export interface NarrativeSummary {
@@ -173,7 +195,7 @@ function identifyOutlierModels(
 
       if (modelForecast) {
         const modelDaily = modelForecast.daily.find(
-          (d) => d.date.toISOString().split("T")[0] === daily.date.toISOString().split("T")[0]
+          (d) => toISOString(d.date).split("T")[0] === toISOString(daily.date).split("T")[0]
         );
 
         if (modelDaily) {
@@ -322,8 +344,8 @@ function generateBody(
             const forecast = aggregated.modelForecasts.find((f) => f.model === m);
             const daily = forecast?.daily.find(
               (d) =>
-                d.date.toISOString().split("T")[0] ===
-                firstDaily.date.toISOString().split("T")[0]
+                toISOString(d.date).split("T")[0] ===
+                toISOString(firstDaily.date).split("T")[0]
             );
             return daily && daily.temperature.max > tempStats.mean;
           }
@@ -345,12 +367,12 @@ function generateBody(
     const transition = findTransitionDay(aggregated);
     if (transition && isPrecipitation(transition.condition)) {
       // Find precipitation amounts from models
-      const dayDate = transition.day.date.toISOString().split("T")[0];
+      const dayDate = toISOString(transition.day.date).split("T")[0];
       const precipAmounts: Array<{ model: ModelName; amount: number }> = [];
 
       for (const modelForecast of aggregated.modelForecasts) {
         const daily = modelForecast.daily.find(
-          (d) => d.date.toISOString().split("T")[0] === dayDate
+          (d) => toISOString(d.date).split("T")[0] === dayDate
         );
         if (daily) {
           precipAmounts.push({
@@ -420,7 +442,7 @@ function generateAlerts(
     const lastDay = aggregated.consensus.daily[aggregated.consensus.daily.length - 1];
     const today = new Date();
     const daysAhead = Math.round(
-      (lastDay.date.getTime() - today.getTime()) / (24 * 60 * 60 * 1000)
+      (toDate(lastDay.date).getTime() - today.getTime()) / (24 * 60 * 60 * 1000)
     );
 
     if (daysAhead >= UNCERTAINTY_DAYS_THRESHOLD) {

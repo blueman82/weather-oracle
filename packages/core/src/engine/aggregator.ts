@@ -28,6 +28,28 @@ import {
   weatherCode,
   windDirection,
 } from "../types/weather";
+
+/**
+ * Safely convert a Date or string to ISO string.
+ * Handles cached data where Dates become strings after JSON serialization.
+ */
+function toISOString(value: Date | string): string {
+  if (typeof value === "string") {
+    return value;
+  }
+  return value.toISOString();
+}
+
+/**
+ * Safely convert a Date or string to a Date object.
+ * Handles cached data where Dates become strings after JSON serialization.
+ */
+function toDate(value: Date | string): Date {
+  if (typeof value === "string") {
+    return new Date(value);
+  }
+  return value;
+}
 import { confidenceLevel } from "../types/models";
 import {
   mean,
@@ -79,7 +101,7 @@ function groupByTimestamp(
 
   for (const forecast of forecasts) {
     for (const hourly of forecast.hourly) {
-      const key = hourly.timestamp.toISOString();
+      const key = toISOString(hourly.timestamp);
       const existing = groups.get(key) ?? [];
       existing.push({ model: forecast.model, hourly });
       groups.set(key, existing);
@@ -99,7 +121,7 @@ function groupByDate(
 
   for (const forecast of forecasts) {
     for (const daily of forecast.daily) {
-      const key = daily.date.toISOString().split("T")[0];
+      const key = toISOString(daily.date).split("T")[0];
       const existing = groups.get(key) ?? [];
       existing.push({ model: forecast.model, daily });
       groups.set(key, existing);
@@ -578,7 +600,7 @@ export function aggregateForecasts(
 
   // Sort by timestamp
   aggregatedHourly.sort(
-    (a, b) => a.timestamp.getTime() - b.timestamp.getTime()
+    (a, b) => toDate(a.timestamp).getTime() - toDate(b.timestamp).getTime()
   );
 
   // Aggregate daily forecasts
@@ -618,7 +640,7 @@ export function aggregateForecasts(
   }
 
   // Sort by date
-  aggregatedDaily.sort((a, b) => a.date.getTime() - b.date.getTime());
+  aggregatedDaily.sort((a, b) => toDate(a.date).getTime() - toDate(b.date).getTime());
 
   // Calculate model weights and overall confidence
   const modelWeights = calculateModelWeights(models);
