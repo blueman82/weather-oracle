@@ -17,9 +17,15 @@
   "scripts": {
     "build": "tsc --build",
     "dev": "bun run src/index.ts",
+    "test": "bun test",
+    "test:integration": "bun test src/__tests__/integration.test.ts",
+    "test:snapshot": "bun test src/__tests__/snapshot.test.ts",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@weather-oracle/core": "workspace:*"
+    "@weather-oracle/core": "workspace:*",
+    "chalk": "^5.3.0",
+    "commander": "^12.1.0",
+    "ora": "^8.1.0"
   }
 }
