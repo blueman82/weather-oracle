@@ -356,7 +356,7 @@ export async function forecastHandler(
     }
 
     // Step 7: Format and display output
-    const format = options.format ?? "narrative";
+    const format = options.format ?? config.display.outputFormat ?? "narrative";
 
     let output: string;
     if (format === "minimal") {
