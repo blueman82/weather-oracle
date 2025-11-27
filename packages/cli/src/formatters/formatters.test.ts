@@ -35,6 +35,7 @@ import {
 import { TableFormatter, createTableFormatter } from "./table";
 import { NarrativeFormatter, createNarrativeFormatter } from "./narrative";
 import { JsonFormatter, createJsonFormatter } from "./json";
+import { RichFormatter } from "./rich";
 import {
   createFormatter,
   getAvailableFormats,
@@ -641,6 +642,11 @@ describe("Formatter factory", () => {
     expect(formatter).toBeInstanceOf(JsonFormatter);
   });
 
+  test("createFormatter creates rich formatter", () => {
+    const formatter = createFormatter("rich");
+    expect(formatter).toBeInstanceOf(RichFormatter);
+  });
+
   test("createFormatter throws for unknown type", () => {
     expect(() => createFormatter("invalid" as any)).toThrow("Unknown formatter type");
   });
@@ -661,13 +667,15 @@ describe("Formatter factory", () => {
     expect(formats).toContain("table");
     expect(formats).toContain("narrative");
     expect(formats).toContain("json");
-    expect(formats.length).toBe(3);
+    expect(formats).toContain("rich");
+    expect(formats.length).toBe(4);
   });
 
   test("isValidFormat returns true for valid formats", () => {
     expect(isValidFormat("table")).toBe(true);
     expect(isValidFormat("narrative")).toBe(true);
     expect(isValidFormat("json")).toBe(true);
+    expect(isValidFormat("rich")).toBe(true);
   });
 
   test("isValidFormat returns false for invalid formats", () => {

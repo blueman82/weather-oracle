@@ -1,6 +1,6 @@
 /**
  * Output formatters for Weather Oracle CLI.
- * Provides table, narrative, and JSON output formats.
+ * Provides table, narrative, JSON, and rich output formats.
  */
 
 // Type exports
@@ -43,11 +43,20 @@ export {
   type JsonFormatterOptions,
 } from "./json";
 
+// Rich formatter
+export {
+  RichFormatter,
+  createRichFormatter,
+  revealAnimation,
+  type RichFormatterOptions,
+} from "./rich";
+
 // Re-import for factory
 import type { OutputFormatType, OutputFormatter, FormatterOptions } from "./types";
 import { TableFormatter } from "./table";
 import { NarrativeFormatter } from "./narrative";
 import { JsonFormatter } from "./json";
+import { RichFormatter } from "./rich";
 
 /**
  * Registry of formatters by type
@@ -59,6 +68,7 @@ const formatters: Record<
   table: TableFormatter,
   narrative: NarrativeFormatter,
   json: JsonFormatter,
+  rich: RichFormatter,
 };
 
 /**

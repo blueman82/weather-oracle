@@ -140,7 +140,7 @@ bun run packages/cli/src/index.ts config get display.units          # Get value
 | `-d, --days <n>` | Forecast days (1-16, default: 7) |
 | `-m, --models <list>` | Models to query (comma-separated) |
 | `-u, --units <type>` | Temperature units (metric/imperial) |
-| `-f, --format <type>` | Output format (table/json/narrative/minimal) |
+| `-f, --format <type>` | Output format (table/json/rich/minimal) |
 | `-v, --verbose` | Show detailed output including model notes |
 | `--no-cache` | Fetch fresh data from API |
 | `--no-color` | Disable colored output |
@@ -225,7 +225,7 @@ weather-oracle config reset --force
 | Setting | Description | Default |
 |---------|-------------|---------|
 | `display.units` | Temperature units: `metric` (°C) or `imperial` (°F) | metric |
-| `display.outputFormat` | Output format: `table`, `json`, `minimal` | table |
+| `display.outputFormat` | Output format: `table`, `json`, `rich`, `minimal` | table |
 | `display.colorOutput` | Enable colored terminal output | true |
 | `models.defaults` | Weather models to query by default | ecmwf,gfs,icon |
 | `models.timeout` | API timeout in milliseconds | 30000 |

@@ -20,7 +20,7 @@ export const CONFIG_KEYS = {
   "models.timeout": { type: "number", description: "API timeout in ms (1000-60000)", min: 1000, max: 60000 },
   "models.retries": { type: "number", description: "Number of retries (0-5)", min: 0, max: 5 },
   "display.units": { type: "enum", values: ["metric", "imperial"], description: "Temperature units" },
-  "display.outputFormat": { type: "enum", values: ["json", "table", "minimal"], description: "Output format" },
+  "display.outputFormat": { type: "enum", values: ["json", "table", "minimal", "rich"], description: "Output format" },
   "display.showConfidence": { type: "boolean", description: "Show confidence indicators" },
   "display.showModelDetails": { type: "boolean", description: "Show model details in output" },
   "display.colorOutput": { type: "boolean", description: "Enable colored output" },

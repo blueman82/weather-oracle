@@ -69,10 +69,10 @@ function parseUnits(value: string): UnitSystem {
  */
 function parseFormat(value: string): OutputFormat {
   const normalized = value.toLowerCase();
-  if (normalized !== "table" && normalized !== "json" && normalized !== "minimal") {
-    throw new Error('Format must be "table", "json", or "minimal"');
+  if (normalized !== "table" && normalized !== "json" && normalized !== "rich" && normalized !== "minimal") {
+    throw new Error('Format must be "table", "json", "rich", or "minimal"');
   }
-  return normalized;
+  return normalized as OutputFormat;
 }
 
 /**
@@ -162,7 +162,7 @@ export function createProgram(): Command {
     .option("-u, --units <type>", "Temperature units (metric/imperial)", parseUnits)
     .option("-d, --days <n>", "Forecast days (1-16, default: 7)", parseDays)
     .option("-m, --models <list>", "Models to query (comma-separated)", parseModels)
-    .option("-f, --format <type>", "Output format (table/json/minimal)", parseFormat)
+    .option("-f, --format <type>", "Output format (table/json/rich/minimal)", parseFormat)
     .option("-v, --verbose", "Show detailed output")
     .option("--no-color", "Disable colored output")
     .configureOutput({

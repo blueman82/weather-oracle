@@ -53,6 +53,7 @@ bun run packages/cli/src/index.ts forecast "New York" --days 5 --units imperial
 bun run packages/cli/src/index.ts forecast "Tokyo" --format json
 bun run packages/cli/src/index.ts forecast "Paris" --format table
 bun run packages/cli/src/index.ts forecast "Berlin" --format minimal
+bun run packages/cli/src/index.ts forecast "London" --format rich
 
 # Select specific models
 bun run packages/cli/src/index.ts forecast "Sydney" --models ecmwf,gfs,icon
@@ -192,7 +193,7 @@ Config file: ~/.weather-oracle/config.json
 | Key | Type | Values | Default | Description |
 |-----|------|--------|---------|-------------|
 | `display.units` | enum | metric, imperial | metric | Temperature units in output. `metric` = Celsius, `imperial` = Fahrenheit |
-| `display.outputFormat` | enum | json, table, minimal | table | Default output format for forecast/compare commands |
+| `display.outputFormat` | enum | json, table, minimal, rich | table | Default output format for forecast/compare commands |
 | `display.colorOutput` | boolean | true, false | true | Enable/disable colored terminal output |
 | `display.showConfidence` | boolean | true, false | true | Show confidence indicators in forecast output |
 
@@ -253,7 +254,7 @@ These options work with all commands:
 | `--units <type>` | `-u` | Temperature units: `metric` (default) or `imperial` |
 | `--days <n>` | `-d` | Forecast days: 1-16 (default: 7) |
 | `--models <list>` | `-m` | Comma-separated list of models to use |
-| `--format <type>` | `-f` | Output format: `table`, `json`, `narrative`, or `minimal` |
+| `--format <type>` | `-f` | Output format: `table`, `json`, `rich`, or `minimal` |
 | `--verbose` | `-v` | Show detailed output including model notes |
 | `--no-color` | | Disable colored output |
 | `--no-cache` | | Fetch fresh data, skip cache |
@@ -274,13 +275,24 @@ These options work with all commands:
 
 ## Output Formats
 
-### Narrative (default)
-
-Human-readable format with weather icons, narrative summaries, and confidence indicators. Best for terminal use.
-
-### Table
+### Table (default)
 
 Structured table format showing daily forecasts with confidence levels.
+
+### Rich
+
+Full-featured visualization with true-color gradients, ASCII weather art, sparklines, model constellation, and 7-day heatmap:
+
+```bash
+bun run packages/cli/src/index.ts forecast "London" --format rich
+```
+
+Features:
+- **ASCII Weather Art** - Themed artwork based on current conditions
+- **Temperature Sparklines** - 24-hour trend visualization with color gradients
+- **Model Constellation** - Visual clustering showing model agreement
+- **7-Day Heatmap** - Hour-by-day temperature grid with LAB color interpolation
+- **Weather-Themed Styling** - Sunny (amber), rainy (blue-gray), snowy (icy blue), stormy themes
 
 ### JSON
 

@@ -27,7 +27,7 @@ export const unitSystemSchema = z.enum(["metric", "imperial"]).default("metric")
 /**
  * Output format for CLI and API responses
  */
-export const outputFormatSchema = z.enum(["json", "table", "minimal"]).default("table");
+export const outputFormatSchema = z.enum(["json", "table", "minimal", "rich"]).default("table");
 
 /**
  * API endpoints configuration
