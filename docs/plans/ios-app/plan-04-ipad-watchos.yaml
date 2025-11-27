@@ -1,0 +1,364 @@
+# ═══════════════════════════════════════════════════════════════════════════════
+# WEATHER ORACLE: iPadOS & watchOS
+# ═══════════════════════════════════════════════════════════════════════════════
+# iPad: Adaptive layouts, sidebar navigation, multi-column
+# Watch: Complications, glanceable info, quick actions
+# ═══════════════════════════════════════════════════════════════════════════════
+
+conductor:
+  default_agent: ios-developer
+  worktree_groups:
+    - group_id: "ipad"
+      description: "iPad-specific enhancements"
+      tasks: [18, 19]
+      rationale: "iPad layout adaptations"
+    - group_id: "watchos"
+      description: "Apple Watch app and complications"
+      tasks: [20, 21, 22]
+      rationale: "Complete watchOS experience"
+
+plan:
+  metadata:
+    feature_name: "Weather Oracle - iPadOS & watchOS"
+    created: "2025-11-27"
+    estimated_total_time: "6-8 hours"
+
+  tasks:
+    # ═══════════════════════════════════════════════════════════════════════════
+    # TASK 18: iPad Adaptive Layouts
+    # ═══════════════════════════════════════════════════════════════════════════
+    - task_number: 18
+      name: "iPad Adaptive Layouts"
+      agent: ios-developer
+      files:
+        - "packages/apple/WeatherOracle/Views/iPad/iPadForecastView.swift"
+        - "packages/apple/WeatherOracle/Views/iPad/iPadCompareView.swift"
+        - "packages/apple/WeatherOracle/Views/iPad/SidebarNavigation.swift"
+        - "packages/apple/WeatherOracle/Views/iPad/MultiColumnLayout.swift"
+      depends_on:
+        - file: "plan-03-ios-screens.yaml"
+          task: 13
+        - file: "plan-03-ios-screens.yaml"
+          task: 14
+      estimated_time: "2h"
+      description: |
+        # Task 18: iPad Adaptive Layouts
+
+        ## IMPLEMENTATION REQUIREMENTS
+        Create iPad-optimized layouts taking advantage of larger screen.
+        Use NavigationSplitView for sidebar-based navigation.
+
+        **iPad Layout Features:**
+        - Sidebar navigation replacing bottom tabs
+        - Two-column layout for forecast (locations | detail)
+        - Three-column for compare (locations | models | detail)
+        - Responsive grid for weather details
+
+        **MUST implement:**
+        - `SidebarNavigation` replacing TabView on iPad
+        - `iPadForecastView` with multi-column layout
+        - `iPadCompareView` with model grid
+        - `MultiColumnLayout` adaptive container
+        - Proper size class handling
+
+        **PROHIBITED:** TODO comments, iPhone-only layouts on iPad
+      success_criteria:
+        - "Sidebar navigation appears on iPad"
+        - "Two-column layout for forecast view"
+        - "Weather detail cards use adaptive grid"
+        - "Layouts adapt to split view sizes"
+        - "Keyboard shortcuts for navigation"
+        - "Pointer hover effects on interactive elements"
+      test_commands:
+        - "cd packages/apple && xcodebuild -scheme WeatherOracle -destination 'platform=iOS Simulator,name=iPad Pro 13-inch (M4)' build"
+      implementation:
+        approach: |
+          Use NavigationSplitView and size classes:
+          1. NavigationSplitView for sidebar layout
+          2. @Environment(\.horizontalSizeClass) for adaptation
+          3. LazyVGrid with adaptive columns
+          4. ViewThatFits for size-aware components
+        key_points:
+          - point: "NavigationSplitView"
+            details: "Automatic sidebar behavior on iPad"
+          - point: "Size class switching"
+            details: "Fall back to TabView in compact mode"
+          - point: "Pointer interactions"
+            details: ".hoverEffect() for trackpad/mouse"
+      code_quality:
+        swift:
+          full_quality_pipeline:
+            command: |
+              cd packages/apple && xcodebuild -scheme WeatherOracle -destination 'platform=iOS Simulator,name=iPad Pro 13-inch (M4)' build
+      commit:
+        message: "feat(apple): add iPad adaptive layouts with sidebar navigation"
+        files:
+          - "packages/apple/WeatherOracle/Views/iPad/"
+
+    # ═══════════════════════════════════════════════════════════════════════════
+    # TASK 19: iPad Stage Manager & Multitasking
+    # ═══════════════════════════════════════════════════════════════════════════
+    - task_number: 19
+      name: "iPad Stage Manager Support"
+      agent: ios-developer
+      files:
+        - "packages/apple/WeatherOracle/Views/iPad/ResizableContainer.swift"
+        - "packages/apple/WeatherOracle/Views/iPad/CompactForecastView.swift"
+        - "packages/apple/WeatherOracle/SceneDelegate.swift"
+      depends_on:
+        - 18
+      estimated_time: "1h"
+      description: |
+        # Task 19: iPad Stage Manager Support
+
+        ## IMPLEMENTATION REQUIREMENTS
+        Support Stage Manager resizable windows and multitasking.
+
+        **Features:**
+        - Graceful resizing from full screen to compact
+        - Compact mode with essential info only
+        - Multiple window support
+        - Scene-based state restoration
+
+        **PROHIBITED:** TODO comments, broken layouts at any size
+      success_criteria:
+        - "App functions at all Stage Manager sizes"
+        - "Compact view shows essential weather info"
+        - "Multiple windows can show different locations"
+        - "Window state restores after backgrounding"
+      test_commands:
+        - "cd packages/apple && xcodebuild -scheme WeatherOracle build"
+      implementation:
+        approach: |
+          Use scene-based architecture and adaptive layouts:
+          1. UIWindowSceneDelegate for window management
+          2. ViewThatFits for adaptive content
+          3. @SceneStorage for state preservation
+          4. Multiple scene support in Info.plist
+        key_points:
+          - point: "Scene configuration"
+            details: "UIApplicationSceneManifest in Info.plist"
+          - point: "State restoration"
+            details: "@SceneStorage for per-window state"
+          - point: "Compact breakpoint"
+            details: "Switch to compact at 400pt width"
+      code_quality:
+        swift:
+          full_quality_pipeline:
+            command: |
+              cd packages/apple && xcodebuild -scheme WeatherOracle build
+      commit:
+        message: "feat(apple): add Stage Manager and multitasking support"
+        files:
+          - "packages/apple/WeatherOracle/Views/iPad/Resizable*"
+          - "packages/apple/WeatherOracle/Views/iPad/Compact*"
+          - "packages/apple/WeatherOracle/SceneDelegate.swift"
+
+    # ═══════════════════════════════════════════════════════════════════════════
+    # TASK 20: watchOS Main App
+    # ═══════════════════════════════════════════════════════════════════════════
+    - task_number: 20
+      name: "watchOS Main Weather App"
+      agent: ios-developer
+      files:
+        - "packages/apple/WeatherOracleWatch/Views/WatchForecastView.swift"
+        - "packages/apple/WeatherOracleWatch/Views/WatchHourlyView.swift"
+        - "packages/apple/WeatherOracleWatch/Views/WatchDailyView.swift"
+        - "packages/apple/WeatherOracleWatch/ViewModels/WatchViewModel.swift"
+      depends_on:
+        - file: "plan-01-foundation.yaml"
+          task: 6
+        - file: "plan-02-ui-components.yaml"
+          task: 8
+      estimated_time: "2h"
+      description: |
+        # Task 20: watchOS Main Weather App
+
+        ## IMPLEMENTATION REQUIREMENTS
+        Create glanceable weather app optimized for Apple Watch.
+        Focus on most essential information due to small screen.
+
+        **Watch Layout:**
+        1. Current conditions (icon + temp)
+        2. High/Low for today
+        3. Hourly scroll (next 12 hours)
+        4. 5-day outlook (simplified)
+        5. Confidence indicator
+
+        **MUST implement:**
+        - `WatchForecastView` main screen
+        - `WatchHourlyView` horizontal paging
+        - `WatchDailyView` simplified 5-day
+        - `WatchViewModel` with Watch Connectivity
+
+        **PROHIBITED:** TODO comments, overly complex UI
+      success_criteria:
+        - "Main view shows current temp prominently"
+        - "Hourly view pages through next 12 hours"
+        - "Daily view shows 5-day simplified forecast"
+        - "Confidence shown as simple icon"
+        - "Data syncs from iPhone via WatchConnectivity"
+        - "Standalone mode fetches directly if needed"
+      test_commands:
+        - "cd packages/apple && xcodebuild -scheme WeatherOracleWatch -destination 'platform=watchOS Simulator,name=Apple Watch Series 10 (46mm)' build"
+      implementation:
+        approach: |
+          Design for glanceability and quick interactions:
+          1. Large, readable typography
+          2. TabView with vertical paging
+          3. WatchConnectivity for iPhone data sync
+          4. Fallback to direct API if standalone
+        key_points:
+          - point: "Glanceable design"
+            details: "Essential info visible in 2 seconds"
+          - point: "WatchConnectivity"
+            details: "transferUserInfo for background updates"
+          - point: "Standalone fallback"
+            details: "Fetch directly when iPhone unavailable"
+      code_quality:
+        swift:
+          full_quality_pipeline:
+            command: |
+              cd packages/apple && xcodebuild -scheme WeatherOracleWatch -destination 'platform=watchOS Simulator,name=Apple Watch Series 10 (46mm)' build
+      commit:
+        message: "feat(apple): add watchOS main weather app"
+        files:
+          - "packages/apple/WeatherOracleWatch/Views/"
+          - "packages/apple/WeatherOracleWatch/ViewModels/"
+
+    # ═══════════════════════════════════════════════════════════════════════════
+    # TASK 21: watchOS Complications
+    # ═══════════════════════════════════════════════════════════════════════════
+    - task_number: 21
+      name: "watchOS Complications"
+      agent: ios-developer
+      files:
+        - "packages/apple/WeatherOracleWatch/Complications/ComplicationController.swift"
+        - "packages/apple/WeatherOracleWatch/Complications/ComplicationViews.swift"
+        - "packages/apple/WeatherOracleWatch/Complications/ComplicationDataProvider.swift"
+      depends_on:
+        - 20
+      estimated_time: "1.5h"
+      description: |
+        # Task 21: watchOS Complications
+
+        ## IMPLEMENTATION REQUIREMENTS
+        Create watch face complications showing weather at a glance.
+        Support multiple complication families.
+
+        **Complication Families:**
+        - Circular: Weather icon
+        - Rectangular: Temp + condition
+        - Inline: "72° Sunny"
+        - Corner: Icon + temp
+        - Extra Large: Full current conditions
+
+        **MUST implement:**
+        - `ComplicationController` for WidgetKit
+        - `ComplicationViews` for each family
+        - `ComplicationDataProvider` timeline provider
+        - Background refresh scheduling
+
+        **PROHIBITED:** TODO comments, stale data
+      success_criteria:
+        - "All 5 complication families supported"
+        - "Complications show current temperature"
+        - "Weather icon matches current condition"
+        - "Timeline provides hourly updates"
+        - "Tapping complication launches app"
+        - "Complications update in background"
+      test_commands:
+        - "cd packages/apple && xcodebuild -scheme WeatherOracleWatch build"
+      implementation:
+        approach: |
+          Use WidgetKit for watchOS complications:
+          1. TimelineProvider for data
+          2. ViewBuilder for each family
+          3. Background app refresh for updates
+          4. Shared data with main watch app
+        key_points:
+          - point: "WidgetKit on watchOS"
+            details: "Same API as iOS widgets"
+          - point: "Timeline refresh"
+            details: "Hourly timeline entries"
+          - point: "Background refresh"
+            details: "WKRefreshBackgroundTask for updates"
+      code_quality:
+        swift:
+          full_quality_pipeline:
+            command: |
+              cd packages/apple && xcodebuild -scheme WeatherOracleWatch build
+      commit:
+        message: "feat(apple): add watchOS complications"
+        files:
+          - "packages/apple/WeatherOracleWatch/Complications/"
+
+    # ═══════════════════════════════════════════════════════════════════════════
+    # TASK 22: Watch Connectivity
+    # ═══════════════════════════════════════════════════════════════════════════
+    - task_number: 22
+      name: "Watch Connectivity (iPhone ↔ Watch Sync)"
+      agent: ios-developer
+      files:
+        - "packages/apple/Shared/Sources/Services/WatchConnectivityManager.swift"
+        - "packages/apple/WeatherOracle/Services/iPhoneConnectivityDelegate.swift"
+        - "packages/apple/WeatherOracleWatch/Services/WatchConnectivityDelegate.swift"
+      depends_on:
+        - 20
+        - file: "plan-01-foundation.yaml"
+          task: 6
+      estimated_time: "1h"
+      description: |
+        # Task 22: Watch Connectivity
+
+        ## IMPLEMENTATION REQUIREMENTS
+        Implement bi-directional sync between iPhone and Watch.
+        Prioritize battery-efficient background transfers.
+
+        **Sync Features:**
+        - Send forecast from iPhone to Watch (background)
+        - Sync saved locations list
+        - Sync user preferences
+        - Request refresh from Watch
+
+        **MUST implement:**
+        - `WatchConnectivityManager` shared manager
+        - `iPhoneConnectivityDelegate` for iOS app
+        - `WatchConnectivityDelegate` for Watch app
+        - Background transfer with transferUserInfo
+
+        **PROHIBITED:** TODO comments, battery-draining sync
+      success_criteria:
+        - "Forecast syncs from iPhone to Watch automatically"
+        - "Saved locations appear on both devices"
+        - "Preferences sync (units, etc.)"
+        - "Watch can request manual refresh"
+        - "Works in background without draining battery"
+        - "Handles disconnected state gracefully"
+      test_commands:
+        - "cd packages/apple && xcodebuild -scheme WeatherOracle build && xcodebuild -scheme WeatherOracleWatch build"
+      implementation:
+        approach: |
+          Use WatchConnectivity framework efficiently:
+          1. transferUserInfo for background sync (queued)
+          2. sendMessage for immediate sync (foreground only)
+          3. updateApplicationContext for settings
+          4. Handle reachability changes
+        key_points:
+          - point: "Background transfers"
+            details: "transferUserInfo queues for battery efficiency"
+          - point: "Reachability handling"
+            details: "Check isReachable before sendMessage"
+          - point: "Context vs info"
+            details: "applicationContext for settings, userInfo for data"
+      code_quality:
+        swift:
+          full_quality_pipeline:
+            command: |
+              cd packages/apple && xcodebuild -scheme WeatherOracle build
+      commit:
+        message: "feat(apple): add Watch Connectivity for iPhone-Watch sync"
+        files:
+          - "packages/apple/Shared/Sources/Services/WatchConnectivityManager.swift"
+          - "packages/apple/WeatherOracle/Services/*Connectivity*"
+          - "packages/apple/WeatherOracleWatch/Services/*Connectivity*"

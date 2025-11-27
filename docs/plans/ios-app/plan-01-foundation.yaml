@@ -1,0 +1,598 @@
+# ═══════════════════════════════════════════════════════════════════════════════
+# WEATHER ORACLE: iOS/iPadOS/watchOS APP - FOUNDATION
+# ═══════════════════════════════════════════════════════════════════════════════
+# Feature: Native Apple platform app with Liquid Glass design
+# Platforms: iOS 26, iPadOS 26, watchOS 26
+# Style: Apple Weather inspired with multi-model confidence
+# ═══════════════════════════════════════════════════════════════════════════════
+#
+# DATA FLOW REGISTRY
+# ═══════════════════════════════════════════════════════════════════════════════
+# PRODUCERS:
+#   Task 1 → Xcode project structure, Swift Package targets
+#   Task 2 → WeatherModel, DailyForecast, HourlyForecast, Confidence types
+#   Task 3 → OpenMeteoClient, GeocodingClient
+#   Task 4 → WeatherCache (SwiftData), CacheManager
+#   Task 5 → LocationManager, LocationPermissionHandler
+#   Task 6 → WeatherService (orchestrates API + Cache + Location)
+#
+# CONSUMERS:
+#   Task 2 → depends_on [1] (needs project structure)
+#   Task 3 → depends_on [1, 2] (needs project + types)
+#   Task 4 → depends_on [1, 2] (needs project + types)
+#   Task 5 → depends_on [1] (needs project structure)
+#   Task 6 → depends_on [2, 3, 4, 5] (orchestrates all foundation)
+#
+# VALIDATION: All consumers depend_on their producers ✓
+# ═══════════════════════════════════════════════════════════════════════════════
+#
+# SUCCESS CRITERIA CLASSIFICATION
+# ═══════════════════════════════════════════════════════════════════════════════
+# All component tasks have CAPABILITY-only criteria ✓
+# Task 6 (WeatherService) is integration layer ✓
+# ═══════════════════════════════════════════════════════════════════════════════
+
+conductor:
+  default_agent: ios-developer
+  worktree_groups:
+    - group_id: "project-setup"
+      description: "Initial project structure"
+      tasks: [1]
+      rationale: "Must complete before all other tasks"
+    - group_id: "core-layers"
+      description: "Models, networking, cache, location - can parallelize after setup"
+      tasks: [2, 3, 4, 5]
+      rationale: "Independent components that depend only on project structure"
+    - group_id: "service-layer"
+      description: "Orchestration service combining all components"
+      tasks: [6]
+      rationale: "Depends on all core layers"
+
+plan:
+  metadata:
+    feature_name: "Weather Oracle iOS App - Foundation"
+    created: "2025-11-27"
+    estimated_total_time: "8-10 hours"
+    platforms:
+      - iOS 26
+      - iPadOS 26
+      - watchOS 26
+    design_language: "Liquid Glass (iOS 26)"
+    inspiration: "Apple Weather"
+
+  context:
+    framework: "SwiftUI + Swift 6"
+    architecture: "MVVM with Service Layer"
+    data_persistence: "SwiftData"
+    networking: "URLSession with async/await"
+    minimum_deployment:
+      iOS: "26.0"
+      iPadOS: "26.0"
+      watchOS: "26.0"
+    existing_patterns:
+      - "Multi-model weather aggregation from core package"
+      - "Confidence scoring based on model agreement"
+      - "7 weather models: ECMWF, GFS, ICON, Météo-France, UKMO, JMA, GEM"
+
+  tasks:
+    # ═══════════════════════════════════════════════════════════════════════════
+    # TASK 1: Xcode Project Setup
+    # ═══════════════════════════════════════════════════════════════════════════
+    - task_number: 1
+      name: "Xcode Project Setup with Multi-Platform Targets"
+      agent: ios-developer
+      files:
+        - "packages/apple/WeatherOracle.xcodeproj/project.pbxproj"
+        - "packages/apple/WeatherOracle/WeatherOracleApp.swift"
+        - "packages/apple/WeatherOracle/ContentView.swift"
+        - "packages/apple/WeatherOracle/Info.plist"
+        - "packages/apple/WeatherOracleWatch/WeatherOracleWatchApp.swift"
+        - "packages/apple/WeatherOracleWatch/ContentView.swift"
+        - "packages/apple/WeatherOracleWatch/Info.plist"
+        - "packages/apple/WeatherOracleWidgets/WeatherOracleWidgets.swift"
+        - "packages/apple/Shared/Package.swift"
+      depends_on: []
+      estimated_time: "1.5h"
+      description: |
+        # Task 1: Xcode Project Setup with Multi-Platform Targets
+
+        ## IMPLEMENTATION REQUIREMENTS
+        Create a new Xcode project with targets for iOS, iPadOS, watchOS, and WidgetKit.
+        Use Swift Package for shared code between targets.
+
+        **Project Structure:**
+        ```
+        packages/apple/
+        ├── WeatherOracle.xcodeproj/
+        ├── WeatherOracle/              # iOS/iPadOS app
+        │   ├── WeatherOracleApp.swift
+        │   ├── ContentView.swift
+        │   └── Info.plist
+        ├── WeatherOracleWatch/         # watchOS app
+        │   ├── WeatherOracleWatchApp.swift
+        │   ├── ContentView.swift
+        │   └── Info.plist
+        ├── WeatherOracleWidgets/       # WidgetKit extension
+        │   └── WeatherOracleWidgets.swift
+        └── Shared/                     # Swift Package for shared code
+            ├── Package.swift
+            └── Sources/
+                ├── Models/
+                ├── Services/
+                └── Utilities/
+        ```
+
+        **MUST configure:**
+        - iOS 26.0 minimum deployment
+        - iPadOS 26.0 minimum deployment
+        - watchOS 26.0 minimum deployment
+        - Swift 6 language version
+        - Strict concurrency checking enabled
+        - App Groups for widget data sharing
+
+        **PROHIBITED:** TODO comments, placeholder code
+      success_criteria:
+        - "Xcode project builds successfully for all targets"
+        - "iOS app target configured with iOS 26.0 minimum deployment"
+        - "watchOS app target configured with watchOS 26.0 minimum deployment"
+        - "Widget extension target configured for WidgetKit"
+        - "Shared Swift Package created with proper target dependencies"
+        - "App Groups capability configured for data sharing"
+        - "Swift 6 strict concurrency enabled in build settings"
+        - "Project follows Apple Human Interface Guidelines structure"
+      test_commands:
+        - "cd packages/apple && xcodebuild -scheme WeatherOracle -destination 'platform=iOS Simulator,name=iPhone 16 Pro' build"
+        - "cd packages/apple && xcodebuild -scheme WeatherOracleWatch -destination 'platform=watchOS Simulator,name=Apple Watch Series 10' build"
+      implementation:
+        approach: |
+          Create Xcode project using latest project format with:
+          1. Main iOS/iPadOS app target (universal)
+          2. watchOS app target with Watch companion
+          3. Widget extension for all widget types
+          4. Local Swift Package for shared code
+        key_points:
+          - point: "Use App Groups for data sharing"
+            details: "group.com.weatheroracle.shared for widget/watch sync"
+          - point: "Swift 6 strict concurrency"
+            details: "Enable SWIFT_STRICT_CONCURRENCY=complete in build settings"
+          - point: "Shared Package structure"
+            details: "Models, Services, Utilities modules for code reuse"
+      verification:
+        checklist:
+          - "All targets build without errors"
+          - "Shared package properly linked to all targets"
+          - "App Groups entitlement configured"
+          - "Minimum deployment versions correct"
+      code_quality:
+        swift:
+          full_quality_pipeline:
+            command: |
+              cd packages/apple && xcodebuild -scheme WeatherOracle build
+      commit:
+        message: "feat(apple): initialize Xcode project with iOS, watchOS, and widget targets"
+        files:
+          - "packages/apple/"
+
+    # ═══════════════════════════════════════════════════════════════════════════
+    # TASK 2: Core Data Models
+    # ═══════════════════════════════════════════════════════════════════════════
+    - task_number: 2
+      name: "Core Data Models (Swift Types)"
+      agent: ios-developer
+      files:
+        - "packages/apple/Shared/Sources/Models/WeatherTypes.swift"
+        - "packages/apple/Shared/Sources/Models/Location.swift"
+        - "packages/apple/Shared/Sources/Models/Forecast.swift"
+        - "packages/apple/Shared/Sources/Models/Confidence.swift"
+        - "packages/apple/Shared/Sources/Models/WeatherModel.swift"
+        - "packages/apple/Shared/Tests/ModelsTests/WeatherTypesTests.swift"
+      depends_on: [1]
+      estimated_time: "1h"
+      description: |
+        # Task 2: Core Data Models
+
+        ## PHASE 0: DEPENDENCY VERIFICATION
+        ```bash
+        test -d packages/apple/Shared/Sources && echo "✓ Task 1 ready" || echo "❌ STOP"
+        ```
+
+        ## IMPLEMENTATION REQUIREMENTS
+        Create Swift types matching the TypeScript core package models.
+        Use Codable for JSON parsing, Sendable for concurrency safety.
+
+        **MUST export:**
+        - `WeatherModel` enum (ecmwf, gfs, icon, meteofrance, ukmo, jma, gem)
+        - `Coordinates` struct with latitude, longitude
+        - `Location` struct with name, country, coordinates, timezone
+        - `DailyForecast` struct with date, temps, precip, wind, confidence
+        - `HourlyForecast` struct with time, temp, precip, wind, humidity
+        - `Confidence` struct with level (high/medium/low), score, explanation
+        - `AggregatedForecast` struct combining all model data
+
+        **PROHIBITED:** TODO comments, Any types, force unwrapping
+      success_criteria:
+        - "WeatherModel enum has 7 cases matching core package models"
+        - "All structs conform to Codable and Sendable protocols"
+        - "Temperature values use Measurement<UnitTemperature> for unit safety"
+        - "All types have proper documentation comments"
+        - "Unit tests verify JSON decoding from Open-Meteo format"
+        - "No force unwrapping (!) in production code"
+        - "No Any types used"
+      test_commands:
+        - "cd packages/apple && swift test --filter ModelsTests"
+      test_first:
+        rationale: "Models have clear contracts based on existing TypeScript types"
+        tests_to_write:
+          - description: "WeatherModel enum has all 7 models"
+            expected: "CaseIterable.allCases.count == 7"
+          - description: "Location decodes from JSON"
+            input: '{"name":"London","country":"UK","lat":51.5,"lon":-0.12}'
+            expected: "Location with correct values"
+          - description: "DailyForecast handles optional fields"
+            expected: "Graceful nil handling for missing data"
+      implementation:
+        approach: |
+          Mirror the TypeScript types from packages/core/src/types/ with Swift idioms:
+          1. Use enums with raw String values for serialization
+          2. Use Measurement types for temperatures (automatic unit conversion)
+          3. Use Date for timestamps with ISO8601 decoding
+          4. Implement Sendable for safe concurrency
+        key_points:
+          - point: "Measurement<UnitTemperature> for temps"
+            details: "Enables automatic C/F conversion and localized formatting"
+          - point: "Sendable conformance"
+            details: "All types must be Sendable for Swift 6 concurrency"
+          - point: "Match Open-Meteo JSON structure"
+            details: "Use CodingKeys to map snake_case API responses"
+      verification:
+        checklist:
+          - "All 7 weather models represented"
+          - "JSON decoding works with Open-Meteo responses"
+          - "Sendable conformance verified by compiler"
+          - "Documentation on all public types"
+      code_quality:
+        swift:
+          full_quality_pipeline:
+            command: |
+              cd packages/apple && swift build && swift test --filter ModelsTests
+      commit:
+        message: "feat(apple): add core weather data models with Codable/Sendable"
+        files:
+          - "packages/apple/Shared/Sources/Models/"
+          - "packages/apple/Shared/Tests/ModelsTests/"
+
+    # ═══════════════════════════════════════════════════════════════════════════
+    # TASK 3: Open-Meteo API Client
+    # ═══════════════════════════════════════════════════════════════════════════
+    - task_number: 3
+      name: "Open-Meteo API Client"
+      agent: ios-developer
+      files:
+        - "packages/apple/Shared/Sources/Services/OpenMeteoClient.swift"
+        - "packages/apple/Shared/Sources/Services/GeocodingClient.swift"
+        - "packages/apple/Shared/Sources/Services/APIError.swift"
+        - "packages/apple/Shared/Sources/Services/Endpoints.swift"
+        - "packages/apple/Shared/Tests/ServicesTests/OpenMeteoClientTests.swift"
+      depends_on: [1, 2]
+      estimated_time: "1.5h"
+      description: |
+        # Task 3: Open-Meteo API Client
+
+        ## PHASE 0: DEPENDENCY VERIFICATION
+        ```bash
+        test -f packages/apple/Shared/Sources/Models/WeatherTypes.swift && echo "✓ Task 2 ready" || echo "❌ STOP"
+        ```
+
+        ## IMPLEMENTATION REQUIREMENTS
+        Create async/await networking clients for Open-Meteo APIs.
+        Support all 7 weather models with parallel fetching.
+
+        **MUST implement:**
+        - `OpenMeteoClient` actor for thread-safe API calls
+        - `GeocodingClient` for location search
+        - Parallel model fetching with TaskGroup
+        - Proper error handling with typed errors
+        - Request/response logging for debugging
+
+        **API Endpoints:**
+        - Forecast: https://api.open-meteo.com/v1/{model}
+        - Geocoding: https://geocoding-api.open-meteo.com/v1/search
+
+        **PROHIBITED:** TODO comments, force unwrapping, synchronous networking
+      success_criteria:
+        - "OpenMeteoClient fetches from all 7 model endpoints"
+        - "Parallel fetching uses Swift TaskGroup for performance"
+        - "GeocodingClient returns Location array from search"
+        - "APIError enum covers network, decoding, and API errors"
+        - "All methods are async and throw typed errors"
+        - "Unit tests mock URLProtocol for offline testing"
+        - "No force unwrapping in production code"
+      test_commands:
+        - "cd packages/apple && swift test --filter ServicesTests"
+      implementation:
+        approach: |
+          Use modern Swift concurrency with actors for thread safety:
+          1. Actor-based clients for safe concurrent access
+          2. URLSession with async/await
+          3. TaskGroup for parallel multi-model fetching
+          4. Structured error types with recovery suggestions
+        key_points:
+          - point: "Actor isolation for thread safety"
+            details: "OpenMeteoClient as actor prevents data races"
+          - point: "TaskGroup for parallel fetching"
+            details: "Fetch all 7 models concurrently, aggregate results"
+          - point: "URLProtocol mocking for tests"
+            details: "Custom URLProtocol subclass for deterministic testing"
+        code_structure: |
+          actor OpenMeteoClient {
+            func fetchForecast(for location: Coordinates, models: [WeatherModel]) async throws -> [ModelForecast]
+            func fetchAllModels(for location: Coordinates) async throws -> AggregatedForecast
+          }
+          
+          actor GeocodingClient {
+            func search(query: String) async throws -> [Location]
+            func reverseGeocode(coordinates: Coordinates) async throws -> Location
+          }
+      verification:
+        checklist:
+          - "All 7 model endpoints implemented"
+          - "Parallel fetching with TaskGroup"
+          - "Error handling covers all failure modes"
+          - "Tests use mocked URLSession"
+      code_quality:
+        swift:
+          full_quality_pipeline:
+            command: |
+              cd packages/apple && swift build && swift test --filter ServicesTests
+      commit:
+        message: "feat(apple): add Open-Meteo API client with parallel model fetching"
+        files:
+          - "packages/apple/Shared/Sources/Services/"
+          - "packages/apple/Shared/Tests/ServicesTests/"
+
+    # ═══════════════════════════════════════════════════════════════════════════
+    # TASK 4: SwiftData Cache Layer
+    # ═══════════════════════════════════════════════════════════════════════════
+    - task_number: 4
+      name: "SwiftData Cache Layer"
+      agent: ios-developer
+      files:
+        - "packages/apple/Shared/Sources/Cache/CachedForecast.swift"
+        - "packages/apple/Shared/Sources/Cache/CacheManager.swift"
+        - "packages/apple/Shared/Sources/Cache/CacheConfiguration.swift"
+        - "packages/apple/Shared/Tests/CacheTests/CacheManagerTests.swift"
+      depends_on: [1, 2]
+      estimated_time: "1h"
+      description: |
+        # Task 4: SwiftData Cache Layer
+
+        ## PHASE 0: DEPENDENCY VERIFICATION
+        ```bash
+        test -f packages/apple/Shared/Sources/Models/Forecast.swift && echo "✓ Task 2 ready" || echo "❌ STOP"
+        ```
+
+        ## IMPLEMENTATION REQUIREMENTS
+        Create SwiftData-based caching for offline support and API rate limiting.
+        Cache forecasts with configurable TTL and automatic cleanup.
+
+        **MUST implement:**
+        - `CachedForecast` SwiftData model
+        - `CacheManager` actor for thread-safe cache operations
+        - Configurable TTL (default 5 minutes)
+        - Automatic stale entry cleanup
+        - App Group container for widget sharing
+
+        **PROHIBITED:** TODO comments, synchronous file I/O on main thread
+      success_criteria:
+        - "CachedForecast is a SwiftData @Model class"
+        - "CacheManager stores/retrieves forecasts by location"
+        - "TTL expiration removes stale entries automatically"
+        - "Cache uses App Group container for widget access"
+        - "CacheConfiguration allows customizing TTL and max entries"
+        - "Unit tests verify cache hit/miss/expiration behavior"
+      test_commands:
+        - "cd packages/apple && swift test --filter CacheTests"
+      implementation:
+        approach: |
+          Use SwiftData for persistent caching with automatic cleanup:
+          1. @Model class for cached forecasts
+          2. Actor-based manager for thread safety
+          3. Background cleanup task for expired entries
+          4. App Group storage for cross-target access
+        key_points:
+          - point: "SwiftData @Model"
+            details: "Automatic persistence, migration, and querying"
+          - point: "App Group container"
+            details: "FileManager.containerURL(forSecurityApplicationGroupIdentifier:)"
+          - point: "Background cleanup"
+            details: "Timer-based or on-access cleanup of expired entries"
+      verification:
+        checklist:
+          - "SwiftData model compiles and persists"
+          - "TTL expiration works correctly"
+          - "App Group container accessible"
+          - "Thread-safe access via actor"
+      code_quality:
+        swift:
+          full_quality_pipeline:
+            command: |
+              cd packages/apple && swift build && swift test --filter CacheTests
+      commit:
+        message: "feat(apple): add SwiftData cache layer with TTL and App Group support"
+        files:
+          - "packages/apple/Shared/Sources/Cache/"
+          - "packages/apple/Shared/Tests/CacheTests/"
+
+    # ═══════════════════════════════════════════════════════════════════════════
+    # TASK 5: Location Services
+    # ═══════════════════════════════════════════════════════════════════════════
+    - task_number: 5
+      name: "Location Services Manager"
+      agent: ios-developer
+      files:
+        - "packages/apple/Shared/Sources/Location/LocationManager.swift"
+        - "packages/apple/Shared/Sources/Location/LocationPermission.swift"
+        - "packages/apple/WeatherOracle/Info.plist"
+      depends_on: [1]
+      estimated_time: "45m"
+      description: |
+        # Task 5: Location Services Manager
+
+        ## PHASE 0: DEPENDENCY VERIFICATION
+        ```bash
+        test -d packages/apple/WeatherOracle && echo "✓ Task 1 ready" || echo "❌ STOP"
+        ```
+
+        ## IMPLEMENTATION REQUIREMENTS
+        Create CoreLocation wrapper with proper permission handling.
+        Support "When In Use" and "Always" authorization for widgets.
+
+        **MUST implement:**
+        - `LocationManager` ObservableObject for SwiftUI
+        - `LocationPermission` enum (notDetermined, whenInUse, always, denied)
+        - Permission request flow with user-friendly messaging
+        - Current location fetching with accuracy control
+        - Background location for widget updates
+
+        **Info.plist keys required:**
+        - NSLocationWhenInUseUsageDescription
+        - NSLocationAlwaysAndWhenInUseUsageDescription
+
+        **PROHIBITED:** TODO comments, force unwrapping CLLocation
+      success_criteria:
+        - "LocationManager conforms to ObservableObject for SwiftUI binding"
+        - "Permission state published as @Published property"
+        - "requestWhenInUseAuthorization() triggers system prompt"
+        - "getCurrentLocation() returns async Coordinates"
+        - "Info.plist contains required usage description keys"
+        - "Handles all CLAuthorizationStatus cases gracefully"
+      test_commands:
+        - "cd packages/apple && xcodebuild -scheme WeatherOracle build"
+      implementation:
+        approach: |
+          Wrap CLLocationManager with modern Swift concurrency:
+          1. ObservableObject for SwiftUI state binding
+          2. Continuation-based async wrapper for location requests
+          3. Clear permission state machine
+          4. Graceful degradation for denied permissions
+        key_points:
+          - point: "AsyncStream for location updates"
+            details: "Convert delegate callbacks to async/await"
+          - point: "Permission messaging"
+            details: "Clear user-facing strings explaining why location is needed"
+          - point: "Widget background access"
+            details: "Request 'Always' for widget location updates"
+      verification:
+        checklist:
+          - "Permission flow works correctly"
+          - "Location fetching returns valid coordinates"
+          - "Info.plist has required keys"
+          - "Handles denied permission gracefully"
+      code_quality:
+        swift:
+          full_quality_pipeline:
+            command: |
+              cd packages/apple && xcodebuild -scheme WeatherOracle build
+      commit:
+        message: "feat(apple): add location services manager with permission handling"
+        files:
+          - "packages/apple/Shared/Sources/Location/"
+          - "packages/apple/WeatherOracle/Info.plist"
+
+    # ═══════════════════════════════════════════════════════════════════════════
+    # TASK 6: Weather Service (Orchestration)
+    # ═══════════════════════════════════════════════════════════════════════════
+    - task_number: 6
+      name: "Weather Service Orchestration Layer"
+      agent: ios-developer
+      files:
+        - "packages/apple/Shared/Sources/Services/WeatherService.swift"
+        - "packages/apple/Shared/Sources/Services/ForecastAggregator.swift"
+        - "packages/apple/Shared/Sources/Services/ConfidenceCalculator.swift"
+        - "packages/apple/Shared/Tests/ServicesTests/WeatherServiceTests.swift"
+      depends_on: [2, 3, 4, 5]
+      estimated_time: "1.5h"
+      description: |
+        # Task 6: Weather Service Orchestration Layer
+
+        ## PHASE 0: DEPENDENCY VERIFICATION
+        ```bash
+        test -f packages/apple/Shared/Sources/Services/OpenMeteoClient.swift && \
+        test -f packages/apple/Shared/Sources/Cache/CacheManager.swift && \
+        test -f packages/apple/Shared/Sources/Location/LocationManager.swift && \
+        echo "✓ Tasks 3,4,5 ready" || echo "❌ STOP"
+        ```
+
+        ## IMPLEMENTATION REQUIREMENTS
+        Create the main service that orchestrates API calls, caching, and aggregation.
+        This is the primary interface for ViewModels.
+
+        **MUST implement:**
+        - `WeatherService` actor combining API + Cache + Location
+        - `ForecastAggregator` for multi-model statistical aggregation
+        - `ConfidenceCalculator` for model agreement scoring
+        - Cache-first strategy with background refresh
+        - Offline mode support
+
+        **Aggregation methods (matching core package):**
+        - Temperature: Trimmed mean (exclude outliers)
+        - Precipitation: Ensemble probability
+        - Wind: Median
+        - Confidence: Based on model agreement
+
+        **PROHIBITED:** TODO comments, blocking main thread
+      success_criteria:
+        - "WeatherService.getForecast() returns cached data immediately if available"
+        - "Background refresh fetches fresh data and updates cache"
+        - "ForecastAggregator combines 7 models using statistical methods"
+        - "ConfidenceCalculator returns high/medium/low based on model spread"
+        - "Offline mode returns cached data with staleness indicator"
+        - "All async operations are non-blocking"
+        - "Unit tests cover cache hit, miss, and refresh scenarios"
+      test_commands:
+        - "cd packages/apple && swift test --filter WeatherServiceTests"
+      implementation:
+        approach: |
+          Implement cache-first strategy with background refresh:
+          1. Check cache for valid (non-expired) data
+          2. Return cached data immediately if available
+          3. Trigger background refresh if data is stale
+          4. Update UI when fresh data arrives
+          5. Support full offline mode with stale data
+        key_points:
+          - point: "Cache-first for instant UI"
+            details: "Never block UI waiting for network"
+          - point: "Trimmed mean for temperatures"
+            details: "Remove highest and lowest, average the rest"
+          - point: "Ensemble probability for precipitation"
+            details: "% of models predicting > 0.1mm"
+          - point: "Confidence from spread"
+            details: "High if models within 2°C, Medium within 5°C, Low otherwise"
+        integration:
+          imports:
+            - "OpenMeteoClient from Task 3"
+            - "CacheManager from Task 4"
+            - "LocationManager from Task 5"
+            - "Model types from Task 2"
+          services_to_inject:
+            - "OpenMeteoClient"
+            - "CacheManager"
+      verification:
+        checklist:
+          - "Cache-first strategy implemented"
+          - "Background refresh works"
+          - "Aggregation matches core package logic"
+          - "Confidence calculation accurate"
+          - "Offline mode functional"
+      code_quality:
+        swift:
+          full_quality_pipeline:
+            command: |
+              cd packages/apple && swift build && swift test --filter WeatherServiceTests
+      commit:
+        message: "feat(apple): add weather service with cache-first strategy and aggregation"
+        files:
+          - "packages/apple/Shared/Sources/Services/WeatherService.swift"
+          - "packages/apple/Shared/Sources/Services/ForecastAggregator.swift"
+          - "packages/apple/Shared/Sources/Services/ConfidenceCalculator.swift"
+          - "packages/apple/Shared/Tests/ServicesTests/"

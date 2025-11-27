@@ -1,0 +1,409 @@
+# ═══════════════════════════════════════════════════════════════════════════════
+# WEATHER ORACLE: iOS/iPadOS WIDGETS
+# ═══════════════════════════════════════════════════════════════════════════════
+# Widgets: Small, Medium, Large, Lock Screen, Interactive
+# Framework: WidgetKit with App Intents
+# ═══════════════════════════════════════════════════════════════════════════════
+
+conductor:
+  default_agent: ios-developer
+  worktree_groups:
+    - group_id: "widget-foundation"
+      description: "Widget infrastructure and data provider"
+      tasks: [23]
+      rationale: "Foundation for all widgets"
+    - group_id: "widget-variants"
+      description: "Individual widget implementations"
+      tasks: [24, 25, 26, 27]
+      rationale: "Can parallelize after foundation"
+    - group_id: "widget-interactive"
+      description: "Interactive and configurable widgets"
+      tasks: [28]
+      rationale: "Depends on widget variants"
+
+plan:
+  metadata:
+    feature_name: "Weather Oracle - iOS Widgets"
+    created: "2025-11-27"
+    estimated_total_time: "6-8 hours"
+
+  tasks:
+    # ═══════════════════════════════════════════════════════════════════════════
+    # TASK 23: Widget Infrastructure
+    # ═══════════════════════════════════════════════════════════════════════════
+    - task_number: 23
+      name: "Widget Infrastructure & Timeline Provider"
+      agent: ios-developer
+      files:
+        - "packages/apple/WeatherOracleWidgets/WeatherOracleWidgets.swift"
+        - "packages/apple/WeatherOracleWidgets/Providers/WeatherTimelineProvider.swift"
+        - "packages/apple/WeatherOracleWidgets/Models/WidgetEntry.swift"
+        - "packages/apple/WeatherOracleWidgets/Utilities/WidgetDataFetcher.swift"
+      depends_on:
+        - file: "plan-01-foundation.yaml"
+          task: 4
+        - file: "plan-01-foundation.yaml"
+          task: 6
+      estimated_time: "1.5h"
+      description: |
+        # Task 23: Widget Infrastructure
+
+        ## IMPLEMENTATION REQUIREMENTS
+        Create shared infrastructure for all widget types.
+        Use App Groups for data sharing with main app.
+
+        **MUST implement:**
+        - `WeatherTimelineProvider` providing hourly entries
+        - `WidgetEntry` containing forecast snapshot
+        - `WidgetDataFetcher` accessing shared cache
+        - App Group data access for main app sync
+
+        **Timeline Strategy:**
+        - Generate 24 hours of entries
+        - Update every hour
+        - Use cached data from main app when available
+        - Fetch fresh data if cache expired
+
+        **PROHIBITED:** TODO comments, blocking widget refresh
+      success_criteria:
+        - "TimelineProvider generates 24 hourly entries"
+        - "WidgetEntry contains all needed display data"
+        - "Data fetcher reads from App Group cache"
+        - "Fallback to API if cache unavailable"
+        - "Placeholder entry shown during loading"
+        - "Background refresh scheduled properly"
+      test_commands:
+        - "cd packages/apple && xcodebuild -scheme WeatherOracleWidgets build"
+      implementation:
+        approach: |
+          Create efficient widget data pipeline:
+          1. Check App Group for cached forecast
+          2. Return cached data immediately if valid
+          3. Schedule background fetch for fresh data
+          4. Generate timeline entries for next 24 hours
+        key_points:
+          - point: "App Group access"
+            details: "FileManager.containerURL(forSecurityApplicationGroupIdentifier:)"
+          - point: "Timeline policy"
+            details: ".atEnd to refresh when timeline exhausted"
+          - point: "Placeholder view"
+            details: "Show skeleton/placeholder during initial load"
+      code_quality:
+        swift:
+          full_quality_pipeline:
+            command: |
+              cd packages/apple && xcodebuild -scheme WeatherOracleWidgets build
+      commit:
+        message: "feat(apple): add widget infrastructure and timeline provider"
+        files:
+          - "packages/apple/WeatherOracleWidgets/"
+
+    # ═══════════════════════════════════════════════════════════════════════════
+    # TASK 24: Small Widget
+    # ═══════════════════════════════════════════════════════════════════════════
+    - task_number: 24
+      name: "Small Home Screen Widget"
+      agent: ios-developer
+      files:
+        - "packages/apple/WeatherOracleWidgets/Views/SmallWeatherWidget.swift"
+        - "packages/apple/WeatherOracleWidgets/Views/Components/CompactTemperature.swift"
+      depends_on:
+        - 23
+        - file: "plan-02-ui-components.yaml"
+          task: 8
+        - file: "plan-02-ui-components.yaml"
+          task: 9
+      estimated_time: "45m"
+      description: |
+        # Task 24: Small Home Screen Widget
+
+        ## IMPLEMENTATION REQUIREMENTS
+        Create compact 2x2 widget showing essential weather.
+        Apple Weather style with gradient background.
+
+        **Layout:**
+        - Location name (small)
+        - Current temperature (large)
+        - Weather icon
+        - High/Low temps
+
+        **PROHIBITED:** TODO comments, overcrowded layout
+      success_criteria:
+        - "Shows current temp prominently"
+        - "Weather icon visible and recognizable"
+        - "Location name fits without truncation"
+        - "Gradient background reflects temperature"
+        - "Tapping opens main app to that location"
+      test_commands:
+        - "cd packages/apple && xcodebuild -scheme WeatherOracleWidgets build"
+      implementation:
+        approach: |
+          Maximally efficient use of 2x2 space:
+          1. Temperature as hero element (large font)
+          2. Icon in corner or beside temp
+          3. Location at top (small font)
+          4. High/Low at bottom
+        key_points:
+          - point: "Visual hierarchy"
+            details: "Temperature > Icon > Location > Details"
+          - point: "Contrast"
+            details: "Ensure readability on gradient background"
+      code_quality:
+        swift:
+          full_quality_pipeline:
+            command: |
+              cd packages/apple && xcodebuild -scheme WeatherOracleWidgets build
+      commit:
+        message: "feat(apple): add small home screen widget"
+        files:
+          - "packages/apple/WeatherOracleWidgets/Views/SmallWeatherWidget.swift"
+
+    # ═══════════════════════════════════════════════════════════════════════════
+    # TASK 25: Medium Widget
+    # ═══════════════════════════════════════════════════════════════════════════
+    - task_number: 25
+      name: "Medium Home Screen Widget"
+      agent: ios-developer
+      files:
+        - "packages/apple/WeatherOracleWidgets/Views/MediumWeatherWidget.swift"
+        - "packages/apple/WeatherOracleWidgets/Views/Components/HourlyWidgetRow.swift"
+      depends_on:
+        - 23
+        - file: "plan-02-ui-components.yaml"
+          task: 8
+        - file: "plan-02-ui-components.yaml"
+          task: 9
+        - file: "plan-02-ui-components.yaml"
+          task: 10
+      estimated_time: "1h"
+      description: |
+        # Task 25: Medium Home Screen Widget
+
+        ## IMPLEMENTATION REQUIREMENTS
+        Create 4x2 widget with current + hourly forecast.
+        Show next 6 hours at a glance.
+
+        **Layout:**
+        - Left: Current conditions (like small widget)
+        - Right: 6-hour forecast row
+
+        **PROHIBITED:** TODO comments, unbalanced layout
+      success_criteria:
+        - "Current conditions on left side"
+        - "6 hourly entries on right side"
+        - "Each hour shows icon + temp"
+        - "Balanced visual weight left/right"
+        - "Confidence indicator if space permits"
+      test_commands:
+        - "cd packages/apple && xcodebuild -scheme WeatherOracleWidgets build"
+      implementation:
+        approach: |
+          Split layout with current and forecast:
+          1. HStack with leading current, trailing hourly
+          2. Hourly as evenly spaced icons + temps
+          3. Gradient spanning full width
+        key_points:
+          - point: "Balanced layout"
+            details: "Current section ~40%, hourly ~60%"
+          - point: "Hourly spacing"
+            details: "Use .flexibleSpace() or fixed widths"
+      code_quality:
+        swift:
+          full_quality_pipeline:
+            command: |
+              cd packages/apple && xcodebuild -scheme WeatherOracleWidgets build
+      commit:
+        message: "feat(apple): add medium home screen widget"
+        files:
+          - "packages/apple/WeatherOracleWidgets/Views/MediumWeatherWidget.swift"
+
+    # ═══════════════════════════════════════════════════════════════════════════
+    # TASK 26: Large Widget
+    # ═══════════════════════════════════════════════════════════════════════════
+    - task_number: 26
+      name: "Large Home Screen Widget"
+      agent: ios-developer
+      files:
+        - "packages/apple/WeatherOracleWidgets/Views/LargeWeatherWidget.swift"
+        - "packages/apple/WeatherOracleWidgets/Views/Components/DailyWidgetRow.swift"
+      depends_on:
+        - 23
+        - 24
+        - 25
+      estimated_time: "1h"
+      description: |
+        # Task 26: Large Home Screen Widget
+
+        ## IMPLEMENTATION REQUIREMENTS
+        Create 4x4 widget with comprehensive forecast.
+        Show current, hourly, and 5-day forecast.
+
+        **Layout:**
+        - Top: Current conditions (expanded)
+        - Middle: 8-hour forecast row
+        - Bottom: 5-day forecast list
+
+        **PROHIBITED:** TODO comments, cramped information
+      success_criteria:
+        - "Current conditions with detailed info"
+        - "8-hour forecast visible"
+        - "5-day forecast with icons and temps"
+        - "Model confidence badge visible"
+        - "Information hierarchy clear"
+      test_commands:
+        - "cd packages/apple && xcodebuild -scheme WeatherOracleWidgets build"
+      implementation:
+        approach: |
+          Full-featured widget with all key info:
+          1. VStack with three sections
+          2. Current: Large icon + temp + condition text
+          3. Hourly: HStack of 8 entries
+          4. Daily: VStack of 5 DailyWidgetRow
+        key_points:
+          - point: "Section separation"
+            details: "Use Divider or spacing between sections"
+          - point: "Daily row"
+            details: "Day name | icon | high | temp bar | low"
+      code_quality:
+        swift:
+          full_quality_pipeline:
+            command: |
+              cd packages/apple && xcodebuild -scheme WeatherOracleWidgets build
+      commit:
+        message: "feat(apple): add large home screen widget"
+        files:
+          - "packages/apple/WeatherOracleWidgets/Views/LargeWeatherWidget.swift"
+
+    # ═══════════════════════════════════════════════════════════════════════════
+    # TASK 27: Lock Screen Widgets
+    # ═══════════════════════════════════════════════════════════════════════════
+    - task_number: 27
+      name: "Lock Screen Widgets"
+      agent: ios-developer
+      files:
+        - "packages/apple/WeatherOracleWidgets/Views/LockScreen/CircularWidget.swift"
+        - "packages/apple/WeatherOracleWidgets/Views/LockScreen/RectangularWidget.swift"
+        - "packages/apple/WeatherOracleWidgets/Views/LockScreen/InlineWidget.swift"
+      depends_on:
+        - 23
+        - file: "plan-02-ui-components.yaml"
+          task: 8
+      estimated_time: "1h"
+      description: |
+        # Task 27: Lock Screen Widgets
+
+        ## IMPLEMENTATION REQUIREMENTS
+        Create lock screen widget variants.
+        Must work with system tinting (no custom colors).
+
+        **Families:**
+        - Circular: Weather icon
+        - Rectangular: Icon + temp + condition
+        - Inline: "72° Sunny"
+
+        **Lock screen constraints:**
+        - Limited color (system renders with vibrant tint)
+        - Must use AccessoryWidgetGroup
+        - Smaller sizes than home screen
+
+        **PROHIBITED:** TODO comments, custom colors on lock screen
+      success_criteria:
+        - "Circular widget shows recognizable icon"
+        - "Rectangular shows temp and condition"
+        - "Inline formats as 'temp° condition'"
+        - "All variants work with system tinting"
+        - "Gauge variant shows temperature range"
+      test_commands:
+        - "cd packages/apple && xcodebuild -scheme WeatherOracleWidgets build"
+      implementation:
+        approach: |
+          Lock screen widgets with system styling:
+          1. AccessoryWidgetGroup for lock screen
+          2. ViewThatFits for family adaptation
+          3. Gauge for circular temperature range
+          4. Text formatting for inline
+        key_points:
+          - point: "System tinting"
+            details: "Don't fight the system - use semantic colors"
+          - point: "Accessory families"
+            details: ".accessoryCircular, .accessoryRectangular, .accessoryInline"
+          - point: "Gauge for circular"
+            details: "Gauge(value:in:) with temperature range"
+      code_quality:
+        swift:
+          full_quality_pipeline:
+            command: |
+              cd packages/apple && xcodebuild -scheme WeatherOracleWidgets build
+      commit:
+        message: "feat(apple): add lock screen widgets"
+        files:
+          - "packages/apple/WeatherOracleWidgets/Views/LockScreen/"
+
+    # ═══════════════════════════════════════════════════════════════════════════
+    # TASK 28: Interactive Widget Configuration
+    # ═══════════════════════════════════════════════════════════════════════════
+    - task_number: 28
+      name: "Interactive Widget Configuration"
+      agent: ios-developer
+      files:
+        - "packages/apple/WeatherOracleWidgets/Intents/SelectLocationIntent.swift"
+        - "packages/apple/WeatherOracleWidgets/Intents/LocationOptionsProvider.swift"
+        - "packages/apple/WeatherOracleWidgets/Views/ConfigurableWeatherWidget.swift"
+      depends_on:
+        - 24
+        - 25
+        - 26
+        - file: "plan-03-ios-screens.yaml"
+          task: 16
+      estimated_time: "1h"
+      description: |
+        # Task 28: Interactive Widget Configuration
+
+        ## IMPLEMENTATION REQUIREMENTS
+        Allow users to configure widget location and style.
+        Use App Intents for configuration.
+
+        **Configuration Options:**
+        - Location selection (saved locations)
+        - Show/hide confidence badge
+        - Temperature unit override
+
+        **MUST implement:**
+        - `SelectLocationIntent` App Intent
+        - `LocationOptionsProvider` for saved locations
+        - Configuration UI in widget gallery
+        - Interactive elements (iOS 17+)
+
+        **PROHIBITED:** TODO comments, broken configuration
+      success_criteria:
+        - "Long-press widget shows Edit Widget option"
+        - "Location picker shows saved locations"
+        - "Selected location persists across refreshes"
+        - "Interactive buttons work (refresh, change location)"
+        - "Configuration syncs via App Group"
+      test_commands:
+        - "cd packages/apple && xcodebuild -scheme WeatherOracleWidgets build"
+      implementation:
+        approach: |
+          Use App Intents for widget configuration:
+          1. AppIntent with @Parameter for location
+          2. DynamicOptionsProvider for location list
+          3. IntentConfiguration for widget
+          4. Button with intent for interactivity
+        key_points:
+          - point: "App Intents"
+            details: "Modern replacement for SiriKit Intents"
+          - point: "Dynamic options"
+            details: "Query saved locations from App Group"
+          - point: "Interactive widgets"
+            details: "Button(intent:) for in-widget actions"
+      code_quality:
+        swift:
+          full_quality_pipeline:
+            command: |
+              cd packages/apple && xcodebuild -scheme WeatherOracleWidgets build
+      commit:
+        message: "feat(apple): add interactive widget configuration"
+        files:
+          - "packages/apple/WeatherOracleWidgets/Intents/"
+          - "packages/apple/WeatherOracleWidgets/Views/ConfigurableWeatherWidget.swift"

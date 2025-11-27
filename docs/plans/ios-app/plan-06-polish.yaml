@@ -1,0 +1,394 @@
+# ═══════════════════════════════════════════════════════════════════════════════
+# WEATHER ORACLE: iOS APP - POLISH & RELEASE
+# ═══════════════════════════════════════════════════════════════════════════════
+# Tasks: Accessibility, Localization, App Store Assets, Performance
+# ═══════════════════════════════════════════════════════════════════════════════
+
+conductor:
+  default_agent: ios-developer
+  worktree_groups:
+    - group_id: "accessibility-localization"
+      description: "A11y and i18n"
+      tasks: [29, 30]
+      rationale: "Can parallelize"
+    - group_id: "performance"
+      description: "Performance optimization"
+      tasks: [31]
+      rationale: "After features complete"
+    - group_id: "release"
+      description: "App Store preparation"
+      tasks: [32, 33]
+      rationale: "Final steps"
+
+plan:
+  metadata:
+    feature_name: "Weather Oracle iOS App - Polish & Release"
+    created: "2025-11-27"
+    estimated_total_time: "5-6 hours"
+
+  tasks:
+    # ═══════════════════════════════════════════════════════════════════════════
+    # TASK 29: Accessibility
+    # ═══════════════════════════════════════════════════════════════════════════
+    - task_number: 29
+      name: "Accessibility Implementation"
+      agent: ios-developer
+      files:
+        - "packages/apple/Shared/Sources/Accessibility/WeatherAccessibility.swift"
+        - "packages/apple/Shared/Sources/Accessibility/VoiceOverDescriptions.swift"
+        - "packages/apple/WeatherOracle/Views/Accessibility+Extensions.swift"
+      depends_on:
+        - file: "plan-03-ios-screens.yaml"
+          task: 17
+      estimated_time: "1.5h"
+      description: |
+        # Task 29: Accessibility Implementation
+
+        ## IMPLEMENTATION REQUIREMENTS
+        Ensure full VoiceOver, Dynamic Type, and reduced motion support.
+        Weather apps are used by everyone - accessibility is critical.
+
+        **Requirements:**
+        - VoiceOver labels for all interactive elements
+        - Descriptive weather announcements
+        - Dynamic Type support for all text
+        - High contrast mode support
+        - Reduced motion alternatives
+
+        **VoiceOver Descriptions:**
+        - Temperature: "72 degrees Fahrenheit"
+        - Condition: "Currently sunny"
+        - Forecast: "Tomorrow, high of 75, low of 60, partly cloudy"
+        - Confidence: "High confidence forecast, 6 of 7 models agree"
+
+        **PROHIBITED:** TODO comments, inaccessible elements
+      success_criteria:
+        - "All elements have accessibilityLabel"
+        - "Charts have accessibilityChartDescriptor"
+        - "Text scales with Dynamic Type"
+        - "Animations respect reduceMotion"
+        - "Color contrast meets WCAG AA"
+        - "VoiceOver navigation logical"
+      test_commands:
+        - "cd packages/apple && xcodebuild -scheme WeatherOracle build"
+      implementation:
+        approach: |
+          Systematic accessibility implementation:
+          1. Audit all views for accessibility traits
+          2. Add meaningful labels (not just UI text)
+          3. Implement AccessibilityChartDescriptor for charts
+          4. Test with VoiceOver in Simulator
+        key_points:
+          - point: "Meaningful labels"
+            details: "Say 'High of 75 degrees' not just '75'"
+          - point: "Chart accessibility"
+            details: "Describe trend, not individual points"
+          - point: "Action descriptions"
+            details: "accessibilityHint for non-obvious actions"
+      code_quality:
+        swift:
+          full_quality_pipeline:
+            command: |
+              cd packages/apple && xcodebuild -scheme WeatherOracle build
+      commit:
+        message: "feat(apple): add comprehensive accessibility support"
+        files:
+          - "packages/apple/Shared/Sources/Accessibility/"
+          - "packages/apple/WeatherOracle/Views/Accessibility+Extensions.swift"
+
+    # ═══════════════════════════════════════════════════════════════════════════
+    # TASK 30: Localization Setup
+    # ═══════════════════════════════════════════════════════════════════════════
+    - task_number: 30
+      name: "Localization Infrastructure"
+      agent: ios-developer
+      files:
+        - "packages/apple/WeatherOracle/Resources/Localizable.xcstrings"
+        - "packages/apple/Shared/Sources/Localization/LocalizedStrings.swift"
+        - "packages/apple/Shared/Sources/Localization/WeatherFormatter.swift"
+      depends_on:
+        - file: "plan-03-ios-screens.yaml"
+          task: 17
+      estimated_time: "1h"
+      description: |
+        # Task 30: Localization Infrastructure
+
+        ## IMPLEMENTATION REQUIREMENTS
+        Set up localization for future translation.
+        Start with English, prepare for expansion.
+
+        **Localization Areas:**
+        - UI strings (buttons, labels, headers)
+        - Weather condition descriptions
+        - Date/time formatting
+        - Number formatting (temperatures)
+        - Pluralization rules
+
+        **MUST implement:**
+        - String catalogs (.xcstrings)
+        - `LocalizedStrings` namespace
+        - `WeatherFormatter` for localized weather text
+        - Comment hints for translators
+
+        **PROHIBITED:** TODO comments, hardcoded strings
+      success_criteria:
+        - "All UI strings in .xcstrings catalog"
+        - "No hardcoded user-facing strings"
+        - "Temperature uses Measurement.formatted()"
+        - "Dates use .formatted() with locale"
+        - "Pluralization works (1 hour, 2 hours)"
+        - "Translator comments on ambiguous strings"
+      test_commands:
+        - "cd packages/apple && xcodebuild -scheme WeatherOracle build"
+      implementation:
+        approach: |
+          Modern localization with String catalogs:
+          1. Extract all strings to .xcstrings
+          2. Use String(localized:) or LocalizedStringKey
+          3. Measurement.formatted() for temperatures
+          4. Date.formatted() for dates/times
+        key_points:
+          - point: "String catalogs"
+            details: "Xcode 15+ .xcstrings format with plurals"
+          - point: "Measurement formatting"
+            details: "Automatic unit localization"
+          - point: "Context comments"
+            details: "Help translators understand context"
+      code_quality:
+        swift:
+          full_quality_pipeline:
+            command: |
+              cd packages/apple && xcodebuild -scheme WeatherOracle build
+      commit:
+        message: "feat(apple): add localization infrastructure"
+        files:
+          - "packages/apple/WeatherOracle/Resources/"
+          - "packages/apple/Shared/Sources/Localization/"
+
+    # ═══════════════════════════════════════════════════════════════════════════
+    # TASK 31: Performance Optimization
+    # ═══════════════════════════════════════════════════════════════════════════
+    - task_number: 31
+      name: "Performance Optimization"
+      agent: ios-developer
+      files:
+        - "packages/apple/Shared/Sources/Performance/ImageCache.swift"
+        - "packages/apple/Shared/Sources/Performance/LazyDataLoader.swift"
+        - "packages/apple/WeatherOracle/Views/Performance+Extensions.swift"
+      depends_on:
+        - file: "plan-03-ios-screens.yaml"
+          task: 17
+        - file: "plan-04-ipad-watchos.yaml"
+          task: 18
+      estimated_time: "1.5h"
+      description: |
+        # Task 31: Performance Optimization
+
+        ## IMPLEMENTATION REQUIREMENTS
+        Optimize app performance for smooth 60fps UI.
+        Focus on scroll performance and memory usage.
+
+        **Optimization Areas:**
+        - LazyVStack/LazyHStack for lists
+        - Image caching and downsampling
+        - Async data loading
+        - Memory pressure handling
+        - Launch time optimization
+
+        **MUST implement:**
+        - `ImageCache` for weather icons
+        - `LazyDataLoader` for pagination
+        - View identity optimization
+        - Background task management
+
+        **Performance Targets:**
+        - Launch: < 1 second to content
+        - Scroll: 60fps sustained
+        - Memory: < 100MB typical usage
+
+        **PROHIBITED:** TODO comments, synchronous heavy operations
+      success_criteria:
+        - "App launches to content in < 1 second"
+        - "Scroll maintains 60fps (no hitches)"
+        - "Memory stays under 100MB typical"
+        - "No main thread blocking"
+        - "Background fetches don't drain battery"
+        - "Instruments shows no major issues"
+      test_commands:
+        - "cd packages/apple && xcodebuild -scheme WeatherOracle build"
+      implementation:
+        approach: |
+          Profile-driven optimization:
+          1. Instrument with Time Profiler
+          2. Identify and fix hitches
+          3. Implement lazy loading
+          4. Add caching where needed
+        key_points:
+          - point: "Lazy containers"
+            details: "LazyVStack, LazyHStack for lists"
+          - point: "View identity"
+            details: "Stable id() for efficient diffing"
+          - point: "Async loading"
+            details: ".task modifier for async operations"
+      code_quality:
+        swift:
+          full_quality_pipeline:
+            command: |
+              cd packages/apple && xcodebuild -scheme WeatherOracle build
+      commit:
+        message: "feat(apple): add performance optimizations"
+        files:
+          - "packages/apple/Shared/Sources/Performance/"
+          - "packages/apple/WeatherOracle/Views/Performance+Extensions.swift"
+
+    # ═══════════════════════════════════════════════════════════════════════════
+    # TASK 32: App Store Screenshots & Assets
+    # ═══════════════════════════════════════════════════════════════════════════
+    - task_number: 32
+      name: "App Store Screenshots and Assets"
+      agent: ios-developer
+      files:
+        - "packages/apple/Fastlane/Fastfile"
+        - "packages/apple/Fastlane/Snapfile"
+        - "packages/apple/WeatherOracle/Preview Content/PreviewData.swift"
+        - "packages/apple/Marketing/AppIcon.swift"
+      depends_on:
+        - 29
+        - 30
+        - 31
+      estimated_time: "1.5h"
+      description: |
+        # Task 32: App Store Screenshots and Assets
+
+        ## IMPLEMENTATION REQUIREMENTS
+        Create automated screenshot generation and app assets.
+        Use Fastlane snapshot for consistent screenshots.
+
+        **Required Screenshots (per device):**
+        1. Main forecast view
+        2. Model comparison
+        3. Widget showcase
+        4. Apple Watch
+        5. iPad split view
+
+        **App Assets:**
+        - App Icon (all sizes)
+        - Preview video (optional)
+        - Feature graphic
+
+        **MUST implement:**
+        - Fastlane snapshot configuration
+        - Preview data for consistent screenshots
+        - App icon in all required sizes
+        - Screenshot frames/device bezels
+
+        **PROHIBITED:** TODO comments, inconsistent preview data
+      success_criteria:
+        - "Fastlane generates screenshots for all devices"
+        - "Screenshots show weather in best light"
+        - "App icon renders at all sizes"
+        - "Preview data is realistic and attractive"
+        - "Screenshots match current app UI"
+      test_commands:
+        - "cd packages/apple && fastlane snapshot"
+      implementation:
+        approach: |
+          Automated screenshot pipeline:
+          1. Create preview data with attractive weather
+          2. Configure Fastlane snapshot
+          3. Generate for all device sizes
+          4. Add device frames (optional)
+        key_points:
+          - point: "Preview data"
+            details: "Sunny 72°F for main, varied for others"
+          - point: "Device matrix"
+            details: "iPhone 16 Pro Max, iPad Pro, Watch"
+          - point: "Localized screenshots"
+            details: "Prepare for multiple languages"
+      code_quality:
+        swift:
+          full_quality_pipeline:
+            command: |
+              cd packages/apple && xcodebuild -scheme WeatherOracle build
+      commit:
+        message: "feat(apple): add App Store screenshot automation"
+        files:
+          - "packages/apple/Fastlane/"
+          - "packages/apple/WeatherOracle/Preview Content/"
+          - "packages/apple/Marketing/"
+
+    # ═══════════════════════════════════════════════════════════════════════════
+    # TASK 33: App Store Metadata & Submission Prep
+    # ═══════════════════════════════════════════════════════════════════════════
+    - task_number: 33
+      name: "App Store Submission Preparation"
+      agent: ios-developer
+      files:
+        - "packages/apple/Fastlane/metadata/en-US/description.txt"
+        - "packages/apple/Fastlane/metadata/en-US/keywords.txt"
+        - "packages/apple/Fastlane/metadata/en-US/release_notes.txt"
+        - "packages/apple/Fastlane/Deliverfile"
+        - "packages/apple/PRIVACY_POLICY.md"
+      depends_on:
+        - 32
+      estimated_time: "1h"
+      description: |
+        # Task 33: App Store Submission Preparation
+
+        ## IMPLEMENTATION REQUIREMENTS
+        Prepare all metadata and legal requirements for App Store.
+
+        **Metadata:**
+        - App name: "Weather Oracle"
+        - Subtitle: "Multi-Model Forecast Confidence"
+        - Description (4000 chars max)
+        - Keywords (100 chars max)
+        - Category: Weather
+        - Age rating: 4+
+
+        **Legal:**
+        - Privacy policy URL
+        - Terms of service (if needed)
+        - Data collection disclosure
+
+        **MUST implement:**
+        - Fastlane metadata files
+        - Privacy policy document
+        - App Store Connect configuration
+        - Review notes for Apple
+
+        **PROHIBITED:** TODO comments, missing metadata
+      success_criteria:
+        - "App description highlights key features"
+        - "Keywords optimized for discoverability"
+        - "Privacy policy covers location data"
+        - "Age rating appropriate (4+)"
+        - "All required metadata fields complete"
+        - "Review notes explain features clearly"
+      test_commands:
+        - "cd packages/apple && fastlane deliver --validate_only"
+      implementation:
+        approach: |
+          Complete App Store Connect requirements:
+          1. Write compelling description
+          2. Research optimal keywords
+          3. Create privacy policy
+          4. Configure Fastlane deliver
+        key_points:
+          - point: "Description focus"
+            details: "Emphasize confidence scoring as differentiator"
+          - point: "Keywords research"
+            details: "weather, forecast, multi-model, confidence"
+          - point: "Privacy policy"
+            details: "Disclose location usage, no data collection"
+      code_quality:
+        swift:
+          full_quality_pipeline:
+            command: |
+              echo "Metadata validation only"
+      commit:
+        message: "feat(apple): add App Store metadata and submission prep"
+        files:
+          - "packages/apple/Fastlane/metadata/"
+          - "packages/apple/Fastlane/Deliverfile"
+          - "packages/apple/PRIVACY_POLICY.md"

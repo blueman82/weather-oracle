@@ -1,0 +1,534 @@
+# ═══════════════════════════════════════════════════════════════════════════════
+# WEATHER ORACLE: iOS APP - UI COMPONENTS
+# ═══════════════════════════════════════════════════════════════════════════════
+# Design: Liquid Glass (iOS 26) + Apple Weather inspired
+# Features: Gradients, animations, weather icons, model confidence viz
+# ═══════════════════════════════════════════════════════════════════════════════
+#
+# DATA FLOW REGISTRY
+# ═══════════════════════════════════════════════════════════════════════════════
+# PRODUCERS:
+#   Task 7 → DesignSystem, ColorPalette, LiquidGlassModifier
+#   Task 8 → WeatherIconView, animated SF Symbols
+#   Task 9 → TemperatureGradient, GradientBackground
+#   Task 10 → SparklineChart, TrendIndicator
+#   Task 11 → ConfidenceBadge, ModelAgreementView
+#   Task 12 → WeatherAnimations, LoadingSpinner
+#
+# CROSS-FILE DEPENDENCIES:
+#   All tasks depend on Task 2 (Models) from plan-01-foundation.yaml
+#
+# VALIDATION: All consumers depend_on their producers ✓
+# ═══════════════════════════════════════════════════════════════════════════════
+
+conductor:
+  default_agent: ios-developer
+  worktree_groups:
+    - group_id: "design-foundation"
+      description: "Design system and color palette"
+      tasks: [7]
+      rationale: "Foundation for all UI components"
+    - group_id: "visual-components"
+      description: "Independent visual components"
+      tasks: [8, 9, 10, 11, 12]
+      rationale: "Can parallelize after design system"
+
+plan:
+  metadata:
+    feature_name: "Weather Oracle iOS App - UI Components"
+    created: "2025-11-27"
+    estimated_total_time: "6-8 hours"
+    design_language: "Liquid Glass (iOS 26)"
+
+  context:
+    framework: "SwiftUI"
+    design_system: "Liquid Glass + Apple Weather"
+    animation_framework: "SwiftUI Animations + SF Symbols 6"
+    charts: "Swift Charts framework"
+
+  tasks:
+    # ═══════════════════════════════════════════════════════════════════════════
+    # TASK 7: Design System & Liquid Glass
+    # ═══════════════════════════════════════════════════════════════════════════
+    - task_number: 7
+      name: "Design System with Liquid Glass"
+      agent: ios-developer
+      files:
+        - "packages/apple/Shared/Sources/DesignSystem/Colors.swift"
+        - "packages/apple/Shared/Sources/DesignSystem/Typography.swift"
+        - "packages/apple/Shared/Sources/DesignSystem/Spacing.swift"
+        - "packages/apple/Shared/Sources/DesignSystem/LiquidGlass.swift"
+        - "packages/apple/Shared/Sources/DesignSystem/WeatherTheme.swift"
+      depends_on:
+        - file: "plan-01-foundation.yaml"
+          task: 1
+      estimated_time: "1.5h"
+      description: |
+        # Task 7: Design System with Liquid Glass
+
+        ## IMPLEMENTATION REQUIREMENTS
+        Create a comprehensive design system implementing iOS 26 Liquid Glass aesthetic.
+        Match Apple Weather's visual style with translucent, blurred backgrounds.
+
+        **MUST implement:**
+        - `ColorPalette` with weather-contextual colors (sunny yellow, rainy blue, etc.)
+        - `LiquidGlassModifier` ViewModifier for translucent glass effect
+        - `Typography` scale matching Apple Weather
+        - `Spacing` constants following Apple HIG
+        - `WeatherTheme` environment object for dynamic theming
+
+        **Liquid Glass characteristics:**
+        - Translucent backgrounds with blur
+        - Subtle border/edge highlights
+        - Dynamic adaptation to background content
+        - Smooth transitions between states
+
+        **PROHIBITED:** TODO comments, hardcoded colors/sizes
+      success_criteria:
+        - "ColorPalette provides semantic colors for all weather conditions"
+        - "LiquidGlassModifier applies blur, transparency, and border effects"
+        - "Typography uses SF Pro with Apple Weather-matching sizes"
+        - "All colors support both light and dark mode"
+        - "WeatherTheme injectable via SwiftUI Environment"
+        - "No hardcoded color/size values in components"
+      test_commands:
+        - "cd packages/apple && swift build"
+      implementation:
+        approach: |
+          Create design tokens and modifiers that can be applied consistently:
+          1. Semantic color definitions (weatherSunny, weatherRainy, etc.)
+          2. Glass effect using Material + overlay + border
+          3. Typography scale with dynamic type support
+          4. Environment-based theme injection
+        key_points:
+          - point: "Liquid Glass with Material"
+            details: ".ultraThinMaterial + custom overlay for glass effect"
+          - point: "Dynamic Type support"
+            details: "Use @ScaledMetric for accessibility"
+          - point: "Weather-contextual theming"
+            details: "Background colors shift based on conditions"
+        code_structure: |
+          struct LiquidGlassModifier: ViewModifier {
+            var intensity: Double = 0.8
+            func body(content: Content) -> some View {
+              content
+                .background(.ultraThinMaterial)
+                .overlay(RoundedRectangle(...).stroke(...))
+                .clipShape(RoundedRectangle(...))
+            }
+          }
+          
+          extension View {
+            func liquidGlass(intensity: Double = 0.8) -> some View
+          }
+      verification:
+        checklist:
+          - "Glass effect renders correctly"
+          - "Colors adapt to light/dark mode"
+          - "Typography scales with Dynamic Type"
+          - "Theme environment works"
+      code_quality:
+        swift:
+          full_quality_pipeline:
+            command: |
+              cd packages/apple && swift build
+      commit:
+        message: "feat(apple): add Liquid Glass design system"
+        files:
+          - "packages/apple/Shared/Sources/DesignSystem/"
+
+    # ═══════════════════════════════════════════════════════════════════════════
+    # TASK 8: Weather Icons (Animated SF Symbols)
+    # ═══════════════════════════════════════════════════════════════════════════
+    - task_number: 8
+      name: "Animated Weather Icons"
+      agent: ios-developer
+      files:
+        - "packages/apple/Shared/Sources/Components/WeatherIconView.swift"
+        - "packages/apple/Shared/Sources/Components/WeatherCondition.swift"
+        - "packages/apple/Shared/Sources/Components/IconAnimations.swift"
+      depends_on:
+        - 7
+        - file: "plan-01-foundation.yaml"
+          task: 2
+      estimated_time: "1h"
+      description: |
+        # Task 8: Animated Weather Icons
+
+        ## PHASE 0: DEPENDENCY VERIFICATION
+        ```bash
+        test -f packages/apple/Shared/Sources/DesignSystem/Colors.swift && echo "✓ Task 7 ready" || echo "❌ STOP"
+        ```
+
+        ## IMPLEMENTATION REQUIREMENTS
+        Create weather icons using SF Symbols 6 with native animations.
+        Map WMO weather codes to appropriate SF Symbols.
+
+        **MUST implement:**
+        - `WeatherIconView` rendering appropriate SF Symbol for condition
+        - `WeatherCondition` enum mapping WMO codes to icons
+        - Native SF Symbol animations (variableColor, bounce, etc.)
+        - Size variants (small, medium, large, hero)
+
+        **SF Symbols for weather:**
+        - sun.max.fill - Clear/Sunny
+        - cloud.fill - Cloudy
+        - cloud.rain.fill - Rain
+        - cloud.snow.fill - Snow
+        - cloud.bolt.fill - Thunderstorm
+        - cloud.fog.fill - Fog
+        - wind - Windy
+
+        **PROHIBITED:** TODO comments, custom icon assets (use SF Symbols only)
+      success_criteria:
+        - "WeatherIconView renders correct SF Symbol for all WMO codes"
+        - "Animations use native SF Symbol effects"
+        - "Icons tint with weather-contextual colors from design system"
+        - "Size variants scale appropriately"
+        - "Accessibility labels describe weather condition"
+      test_commands:
+        - "cd packages/apple && swift build"
+      implementation:
+        approach: |
+          Use SF Symbols 6 with native animations:
+          1. Map WMO codes (0-99) to SF Symbol names
+          2. Apply symbolEffect modifiers for animation
+          3. Use symbolRenderingMode for multicolor icons
+          4. Scale with design system size tokens
+        key_points:
+          - point: "WMO code mapping"
+            details: "See Open-Meteo docs for WMO weather code meanings"
+          - point: "SF Symbol animations"
+            details: ".symbolEffect(.variableColor.iterative) for animated weather"
+          - point: "Multicolor rendering"
+            details: ".symbolRenderingMode(.multicolor) for realistic icons"
+      verification:
+        checklist:
+          - "All WMO codes mapped to icons"
+          - "Animations play smoothly"
+          - "Colors match design system"
+          - "Accessibility labels present"
+      code_quality:
+        swift:
+          full_quality_pipeline:
+            command: |
+              cd packages/apple && swift build
+      commit:
+        message: "feat(apple): add animated weather icons with SF Symbols"
+        files:
+          - "packages/apple/Shared/Sources/Components/Weather*"
+
+    # ═══════════════════════════════════════════════════════════════════════════
+    # TASK 9: Temperature Gradients
+    # ═══════════════════════════════════════════════════════════════════════════
+    - task_number: 9
+      name: "Temperature Gradient Backgrounds"
+      agent: ios-developer
+      files:
+        - "packages/apple/Shared/Sources/Components/TemperatureGradient.swift"
+        - "packages/apple/Shared/Sources/Components/GradientBackground.swift"
+        - "packages/apple/Shared/Sources/Components/TimeOfDayGradient.swift"
+      depends_on:
+        - 7
+      estimated_time: "1h"
+      description: |
+        # Task 9: Temperature Gradient Backgrounds
+
+        ## PHASE 0: DEPENDENCY VERIFICATION
+        ```bash
+        test -f packages/apple/Shared/Sources/DesignSystem/Colors.swift && echo "✓ Task 7 ready" || echo "❌ STOP"
+        ```
+
+        ## IMPLEMENTATION REQUIREMENTS
+        Create dynamic gradient backgrounds like Apple Weather.
+        Gradients should reflect temperature, time of day, and conditions.
+
+        **MUST implement:**
+        - `TemperatureGradient` mapping temp ranges to color gradients
+        - `TimeOfDayGradient` for dawn/day/dusk/night transitions
+        - `GradientBackground` combining both with weather conditions
+        - Smooth animated transitions between gradient states
+
+        **Temperature color mapping:**
+        - < 0°C: Deep blue/purple
+        - 0-10°C: Light blue
+        - 10-20°C: Teal/green
+        - 20-30°C: Yellow/orange
+        - > 30°C: Orange/red
+
+        **PROHIBITED:** TODO comments, jarring color transitions
+      success_criteria:
+        - "TemperatureGradient returns appropriate colors for temperature ranges"
+        - "TimeOfDayGradient calculates colors based on solar position"
+        - "GradientBackground combines temperature, time, and conditions"
+        - "Transitions animate smoothly over 0.5-1 second"
+        - "Gradients render efficiently (no frame drops)"
+      test_commands:
+        - "cd packages/apple && swift build"
+      implementation:
+        approach: |
+          Create composable gradient system:
+          1. Temperature → base color palette
+          2. Time of day → overlay adjustment
+          3. Weather condition → saturation/brightness modifier
+          4. Animate changes with withAnimation
+        key_points:
+          - point: "Perceptually uniform gradients"
+            details: "Interpolate in LAB color space for smooth transitions"
+          - point: "Solar position calculation"
+            details: "Use location + date to determine sun position"
+          - point: "GPU-efficient rendering"
+            details: "Use MeshGradient for complex gradients (iOS 18+)"
+      verification:
+        checklist:
+          - "Temperature mapping covers full range"
+          - "Time of day calculation accurate"
+          - "Animations smooth (60fps)"
+          - "No jarring color jumps"
+      code_quality:
+        swift:
+          full_quality_pipeline:
+            command: |
+              cd packages/apple && swift build
+      commit:
+        message: "feat(apple): add dynamic temperature and time-of-day gradients"
+        files:
+          - "packages/apple/Shared/Sources/Components/*Gradient*"
+
+    # ═══════════════════════════════════════════════════════════════════════════
+    # TASK 10: Sparkline Charts
+    # ═══════════════════════════════════════════════════════════════════════════
+    - task_number: 10
+      name: "Sparkline Temperature Charts"
+      agent: ios-developer
+      files:
+        - "packages/apple/Shared/Sources/Components/SparklineChart.swift"
+        - "packages/apple/Shared/Sources/Components/HourlyTrendChart.swift"
+        - "packages/apple/Shared/Sources/Components/TrendIndicator.swift"
+      depends_on:
+        - 7
+        - 9
+      estimated_time: "1h"
+      description: |
+        # Task 10: Sparkline Temperature Charts
+
+        ## PHASE 0: DEPENDENCY VERIFICATION
+        ```bash
+        test -f packages/apple/Shared/Sources/Components/TemperatureGradient.swift && echo "✓ Task 9 ready" || echo "❌ STOP"
+        ```
+
+        ## IMPLEMENTATION REQUIREMENTS
+        Create compact sparkline charts for temperature trends.
+        Use Swift Charts framework with gradient fills.
+
+        **MUST implement:**
+        - `SparklineChart` compact line chart with gradient fill
+        - `HourlyTrendChart` showing 24-hour temperature curve
+        - `TrendIndicator` showing temperature direction (↑↓→)
+        - Integration with temperature gradients for fills
+
+        **Chart features:**
+        - Gradient fill below line matching temperature colors
+        - Optional min/max annotations
+        - Touch interaction for value inspection
+        - Compact and expanded variants
+
+        **PROHIBITED:** TODO comments, third-party chart libraries
+      success_criteria:
+        - "SparklineChart uses Swift Charts framework"
+        - "Gradient fill colors match temperature values"
+        - "HourlyTrendChart shows 24 data points"
+        - "Touch interaction reveals exact values"
+        - "TrendIndicator accurately shows direction"
+        - "Charts are accessible with VoiceOver"
+      test_commands:
+        - "cd packages/apple && swift build"
+      implementation:
+        approach: |
+          Use Swift Charts with custom styling:
+          1. AreaMark with gradient fill
+          2. LineMark for the trend line
+          3. ChartOverlay for touch interaction
+          4. AccessibilityChartDescriptor for VoiceOver
+        key_points:
+          - point: "Swift Charts AreaMark"
+            details: "AreaMark with .foregroundStyle(gradient) for fills"
+          - point: "Touch interaction"
+            details: "ChartProxy.value(atX:) for touch-to-value mapping"
+          - point: "Accessibility"
+            details: "Implement AccessibilityChartDescriptor protocol"
+      verification:
+        checklist:
+          - "Charts render with Swift Charts"
+          - "Gradient fills work correctly"
+          - "Touch reveals values"
+          - "VoiceOver describes chart"
+      code_quality:
+        swift:
+          full_quality_pipeline:
+            command: |
+              cd packages/apple && swift build
+      commit:
+        message: "feat(apple): add sparkline charts with gradient fills"
+        files:
+          - "packages/apple/Shared/Sources/Components/*Chart*"
+          - "packages/apple/Shared/Sources/Components/TrendIndicator*"
+
+    # ═══════════════════════════════════════════════════════════════════════════
+    # TASK 11: Model Confidence Visualization
+    # ═══════════════════════════════════════════════════════════════════════════
+    - task_number: 11
+      name: "Model Confidence Visualization"
+      agent: ios-developer
+      files:
+        - "packages/apple/Shared/Sources/Components/ConfidenceBadge.swift"
+        - "packages/apple/Shared/Sources/Components/ModelAgreementView.swift"
+        - "packages/apple/Shared/Sources/Components/ModelComparisonCard.swift"
+      depends_on:
+        - 7
+        - file: "plan-01-foundation.yaml"
+          task: 2
+      estimated_time: "1h"
+      description: |
+        # Task 11: Model Confidence Visualization
+
+        ## PHASE 0: DEPENDENCY VERIFICATION
+        ```bash
+        test -f packages/apple/Shared/Sources/Models/Confidence.swift && echo "✓ Foundation Task 2 ready" || echo "❌ STOP"
+        ```
+
+        ## IMPLEMENTATION REQUIREMENTS
+        Create visual components for displaying model agreement and confidence.
+        This is a key differentiator - showing WHY we're confident in the forecast.
+
+        **MUST implement:**
+        - `ConfidenceBadge` showing high/medium/low with color coding
+        - `ModelAgreementView` visualizing model spread (like CLI constellation)
+        - `ModelComparisonCard` showing individual model predictions
+
+        **Confidence colors:**
+        - High (>75%): Green with checkmark
+        - Medium (50-75%): Yellow with tilde
+        - Low (<50%): Orange with question mark
+
+        **PROHIBITED:** TODO comments, placeholder visualizations
+      success_criteria:
+        - "ConfidenceBadge displays level with appropriate color and icon"
+        - "ModelAgreementView shows temperature spread across 7 models"
+        - "ModelComparisonCard displays individual model name and prediction"
+        - "All components support VoiceOver accessibility"
+        - "Animations for confidence changes"
+      test_commands:
+        - "cd packages/apple && swift build"
+      implementation:
+        approach: |
+          Create informative confidence visualizations:
+          1. Badge with icon + color + percentage
+          2. Horizontal spread chart showing model positions
+          3. Cards for detailed model-by-model view
+          4. Accessible descriptions for all confidence levels
+        key_points:
+          - point: "Model spread visualization"
+            details: "Position markers on a temperature scale showing each model"
+          - point: "Educational tooltips"
+            details: "Explain what confidence means to users"
+          - point: "Accessible descriptions"
+            details: "'High confidence: 6 of 7 models agree within 2 degrees'"
+      verification:
+        checklist:
+          - "Badge shows correct level and color"
+          - "Spread visualization positions models correctly"
+          - "Accessibility labels descriptive"
+          - "Animations smooth"
+      code_quality:
+        swift:
+          full_quality_pipeline:
+            command: |
+              cd packages/apple && swift build
+      commit:
+        message: "feat(apple): add model confidence visualization components"
+        files:
+          - "packages/apple/Shared/Sources/Components/Confidence*"
+          - "packages/apple/Shared/Sources/Components/Model*"
+
+    # ═══════════════════════════════════════════════════════════════════════════
+    # TASK 12: Weather Animations & Loading States
+    # ═══════════════════════════════════════════════════════════════════════════
+    - task_number: 12
+      name: "Weather Animations and Loading States"
+      agent: ios-developer
+      files:
+        - "packages/apple/Shared/Sources/Components/WeatherAnimations.swift"
+        - "packages/apple/Shared/Sources/Components/LoadingOverlay.swift"
+        - "packages/apple/Shared/Sources/Components/RefreshIndicator.swift"
+        - "packages/apple/Shared/Sources/Components/TransitionEffects.swift"
+      depends_on:
+        - 7
+        - 8
+      estimated_time: "1h"
+      description: |
+        # Task 12: Weather Animations and Loading States
+
+        ## PHASE 0: DEPENDENCY VERIFICATION
+        ```bash
+        test -f packages/apple/Shared/Sources/Components/WeatherIconView.swift && echo "✓ Task 8 ready" || echo "❌ STOP"
+        ```
+
+        ## IMPLEMENTATION REQUIREMENTS
+        Create delightful animations for weather transitions and loading states.
+        Animations should feel natural and Apple-like.
+
+        **MUST implement:**
+        - `WeatherAnimations` namespace with condition transition effects
+        - `LoadingOverlay` with weather-themed loading indicator
+        - `RefreshIndicator` for pull-to-refresh feedback
+        - `TransitionEffects` for screen transitions
+
+        **Animation characteristics:**
+        - Spring-based physics for natural feel
+        - Weather-themed loading (sun/cloud rotation)
+        - Subtle parallax on scroll
+        - Reduced motion support
+
+        **PROHIBITED:** TODO comments, jarring animations, ignoring reduced motion
+      success_criteria:
+        - "Condition transitions animate smoothly"
+        - "Loading indicator has weather theme"
+        - "Pull-to-refresh provides haptic feedback"
+        - "Respects accessibilityReduceMotion preference"
+        - "Animations use spring physics"
+        - "Frame rate stays at 60fps during animations"
+      test_commands:
+        - "cd packages/apple && swift build"
+      implementation:
+        approach: |
+          Create polished animations respecting system preferences:
+          1. Spring animations with appropriate response/dampingFraction
+          2. SF Symbol animations for loading
+          3. Check accessibilityReduceMotion before complex animations
+          4. Use Canvas for high-performance custom animations
+        key_points:
+          - point: "Reduced motion support"
+            details: "@Environment(\\.accessibilityReduceMotion) var reduceMotion"
+          - point: "Spring physics"
+            details: ".spring(response: 0.5, dampingFraction: 0.7)"
+          - point: "Weather-themed loading"
+            details: "Rotating sun with orbiting clouds"
+      verification:
+        checklist:
+          - "Animations feel natural"
+          - "Reduced motion respected"
+          - "Loading indicator themed"
+          - "60fps maintained"
+      code_quality:
+        swift:
+          full_quality_pipeline:
+            command: |
+              cd packages/apple && swift build
+      commit:
+        message: "feat(apple): add weather animations and loading states"
+        files:
+          - "packages/apple/Shared/Sources/Components/*Animation*"
+          - "packages/apple/Shared/Sources/Components/Loading*"
+          - "packages/apple/Shared/Sources/Components/Refresh*"
+          - "packages/apple/Shared/Sources/Components/Transition*"

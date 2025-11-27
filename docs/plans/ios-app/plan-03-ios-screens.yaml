@@ -1,0 +1,430 @@
+# ═══════════════════════════════════════════════════════════════════════════════
+# WEATHER ORACLE: iOS APP - MAIN SCREENS
+# ═══════════════════════════════════════════════════════════════════════════════
+# Screens: Forecast, Compare, Settings, Search
+# Pattern: MVVM with @Observable ViewModels
+# ═══════════════════════════════════════════════════════════════════════════════
+#
+# DATA FLOW REGISTRY
+# ═══════════════════════════════════════════════════════════════════════════════
+# PRODUCERS:
+#   Task 13 → ForecastView, ForecastViewModel
+#   Task 14 → CompareView, CompareViewModel
+#   Task 15 → SettingsView, SettingsViewModel, UserPreferences
+#   Task 16 → SearchView, SearchViewModel, SavedLocations
+#   Task 17 → MainTabView, NavigationCoordinator
+#
+# CROSS-FILE DEPENDENCIES:
+#   Tasks 13-17 depend on Tasks 6 (WeatherService) from plan-01-foundation.yaml
+#   Tasks 13-17 depend on Tasks 7-12 (UI Components) from plan-02-ui-components.yaml
+# ═══════════════════════════════════════════════════════════════════════════════
+
+conductor:
+  default_agent: ios-developer
+  worktree_groups:
+    - group_id: "main-screens"
+      description: "Primary app screens"
+      tasks: [13, 14, 15, 16]
+      rationale: "Can parallelize - independent screens"
+    - group_id: "navigation"
+      description: "App shell and navigation"
+      tasks: [17]
+      rationale: "Depends on all screens"
+
+plan:
+  metadata:
+    feature_name: "Weather Oracle iOS App - Main Screens"
+    created: "2025-11-27"
+    estimated_total_time: "8-10 hours"
+
+  context:
+    pattern: "MVVM with @Observable"
+    navigation: "NavigationStack + TabView"
+    state_management: "@Observable ViewModels"
+
+  tasks:
+    # ═══════════════════════════════════════════════════════════════════════════
+    # TASK 13: Forecast Screen (Main)
+    # ═══════════════════════════════════════════════════════════════════════════
+    - task_number: 13
+      name: "Forecast Screen (Main Weather View)"
+      agent: ios-developer
+      files:
+        - "packages/apple/WeatherOracle/Views/ForecastView.swift"
+        - "packages/apple/WeatherOracle/ViewModels/ForecastViewModel.swift"
+        - "packages/apple/WeatherOracle/Views/Components/CurrentConditionsCard.swift"
+        - "packages/apple/WeatherOracle/Views/Components/HourlyForecastRow.swift"
+        - "packages/apple/WeatherOracle/Views/Components/DailyForecastRow.swift"
+        - "packages/apple/WeatherOracle/Views/Components/WeatherDetailCard.swift"
+      depends_on:
+        - file: "plan-01-foundation.yaml"
+          task: 6
+        - file: "plan-02-ui-components.yaml"
+          task: 7
+        - file: "plan-02-ui-components.yaml"
+          task: 8
+        - file: "plan-02-ui-components.yaml"
+          task: 9
+        - file: "plan-02-ui-components.yaml"
+          task: 10
+        - file: "plan-02-ui-components.yaml"
+          task: 11
+      estimated_time: "2.5h"
+      description: |
+        # Task 13: Forecast Screen (Main Weather View)
+
+        ## IMPLEMENTATION REQUIREMENTS
+        Create the main forecast screen matching Apple Weather's layout.
+        This is the hero screen users see first.
+
+        **Layout (scrollable):**
+        1. Location name + current temp (hero)
+        2. Current conditions card (feels like, high/low)
+        3. Hourly forecast (horizontal scroll)
+        4. 7-day forecast (vertical list)
+        5. Weather details grid (UV, humidity, wind, etc.)
+        6. Model confidence section
+
+        **MUST implement:**
+        - `ForecastView` main screen with pull-to-refresh
+        - `ForecastViewModel` @Observable managing state
+        - `CurrentConditionsCard` with animated weather icon
+        - `HourlyForecastRow` horizontal scrolling hours
+        - `DailyForecastRow` with min/max temps and condition
+        - `WeatherDetailCard` for UV, humidity, wind, pressure
+
+        **PROHIBITED:** TODO comments, blocking main thread
+      success_criteria:
+        - "ForecastView displays all required sections"
+        - "Pull-to-refresh triggers data reload"
+        - "Gradient background reflects current temperature"
+        - "Hourly scroll shows 24 hours of data"
+        - "7-day forecast shows correct min/max and conditions"
+        - "Model confidence badge visible in header"
+        - "Loading state shows weather-themed indicator"
+        - "Error state provides retry option"
+        - "VoiceOver reads all weather data correctly"
+      test_commands:
+        - "cd packages/apple && xcodebuild -scheme WeatherOracle build"
+      implementation:
+        approach: |
+          Build Apple Weather-inspired layout with SwiftUI:
+          1. ScrollView with LazyVStack for performance
+          2. @Observable ViewModel with async data loading
+          3. Pull-to-refresh with .refreshable modifier
+          4. Combine all UI components from Task 7-12
+        key_points:
+          - point: "ScrollView performance"
+            details: "Use LazyVStack for large lists"
+          - point: "@Observable pattern"
+            details: "iOS 17+ @Observable macro for reactive state"
+          - point: "Error handling"
+            details: "Show user-friendly error with retry button"
+        integration:
+          imports:
+            - "WeatherService from Foundation Task 6"
+            - "All UI components from Tasks 7-12"
+      code_quality:
+        swift:
+          full_quality_pipeline:
+            command: |
+              cd packages/apple && xcodebuild -scheme WeatherOracle build
+      commit:
+        message: "feat(apple): add main forecast screen with Apple Weather layout"
+        files:
+          - "packages/apple/WeatherOracle/Views/Forecast*"
+          - "packages/apple/WeatherOracle/ViewModels/Forecast*"
+          - "packages/apple/WeatherOracle/Views/Components/"
+
+    # ═══════════════════════════════════════════════════════════════════════════
+    # TASK 14: Compare Screen (Model Comparison)
+    # ═══════════════════════════════════════════════════════════════════════════
+    - task_number: 14
+      name: "Compare Screen (Model Comparison)"
+      agent: ios-developer
+      files:
+        - "packages/apple/WeatherOracle/Views/CompareView.swift"
+        - "packages/apple/WeatherOracle/ViewModels/CompareViewModel.swift"
+        - "packages/apple/WeatherOracle/Views/Components/ModelCard.swift"
+        - "packages/apple/WeatherOracle/Views/Components/ComparisonChart.swift"
+      depends_on:
+        - file: "plan-01-foundation.yaml"
+          task: 6
+        - file: "plan-02-ui-components.yaml"
+          task: 7
+        - file: "plan-02-ui-components.yaml"
+          task: 11
+      estimated_time: "1.5h"
+      description: |
+        # Task 14: Compare Screen (Model Comparison)
+
+        ## IMPLEMENTATION REQUIREMENTS
+        Create the model comparison screen showing all 7 models side-by-side.
+        Unique feature differentiating Weather Oracle from other apps.
+
+        **Layout:**
+        1. Header with consensus temperature
+        2. Model agreement visualization (spread chart)
+        3. Individual model cards (7 cards)
+        4. Expandable detail for each model
+
+        **MUST implement:**
+        - `CompareView` showing all models
+        - `CompareViewModel` managing comparison data
+        - `ModelCard` for individual model display
+        - `ComparisonChart` showing temperature spread
+
+        **PROHIBITED:** TODO comments, missing model data
+      success_criteria:
+        - "CompareView shows all 7 weather models"
+        - "Model spread chart visualizes temperature differences"
+        - "Each model card shows provider name, temp, and condition"
+        - "Cards are tappable for expanded details"
+        - "Consensus value highlighted at top"
+        - "VoiceOver announces each model's prediction"
+      test_commands:
+        - "cd packages/apple && xcodebuild -scheme WeatherOracle build"
+      implementation:
+        approach: |
+          Create comparison view emphasizing model differences:
+          1. Aggregate view with spread visualization
+          2. Grid of model cards
+          3. Tap-to-expand for details
+          4. Highlight outliers vs consensus
+        key_points:
+          - point: "Model identification"
+            details: "Each model has distinct color/icon"
+          - point: "Outlier highlighting"
+            details: "Models far from consensus visually distinct"
+          - point: "Educational content"
+            details: "Explain why models differ"
+      code_quality:
+        swift:
+          full_quality_pipeline:
+            command: |
+              cd packages/apple && xcodebuild -scheme WeatherOracle build
+      commit:
+        message: "feat(apple): add model comparison screen"
+        files:
+          - "packages/apple/WeatherOracle/Views/Compare*"
+          - "packages/apple/WeatherOracle/ViewModels/Compare*"
+
+    # ═══════════════════════════════════════════════════════════════════════════
+    # TASK 15: Settings Screen
+    # ═══════════════════════════════════════════════════════════════════════════
+    - task_number: 15
+      name: "Settings Screen"
+      agent: ios-developer
+      files:
+        - "packages/apple/WeatherOracle/Views/SettingsView.swift"
+        - "packages/apple/WeatherOracle/ViewModels/SettingsViewModel.swift"
+        - "packages/apple/Shared/Sources/Services/UserPreferences.swift"
+      depends_on:
+        - file: "plan-01-foundation.yaml"
+          task: 1
+        - file: "plan-02-ui-components.yaml"
+          task: 7
+      estimated_time: "1h"
+      description: |
+        # Task 15: Settings Screen
+
+        ## IMPLEMENTATION REQUIREMENTS
+        Create settings screen for user preferences.
+        Persist settings with @AppStorage for simplicity.
+
+        **Settings options:**
+        - Temperature units (Celsius/Fahrenheit)
+        - Default models to query
+        - Cache duration
+        - Notification preferences
+        - About section with version
+
+        **MUST implement:**
+        - `SettingsView` with grouped Form layout
+        - `SettingsViewModel` managing preferences
+        - `UserPreferences` singleton with @AppStorage
+        - Unit toggle (metric/imperial)
+        - Model selection (multi-select)
+
+        **PROHIBITED:** TODO comments, hardcoded defaults
+      success_criteria:
+        - "SettingsView uses native Form/List styling"
+        - "Unit toggle persists and applies immediately"
+        - "Model selection allows enabling/disabling models"
+        - "Settings persist across app launches"
+        - "About section shows app version and credits"
+        - "Reset option restores defaults"
+      test_commands:
+        - "cd packages/apple && xcodebuild -scheme WeatherOracle build"
+      implementation:
+        approach: |
+          Use SwiftUI Form with @AppStorage persistence:
+          1. Grouped sections for organization
+          2. @AppStorage for automatic persistence
+          3. Live preview of setting changes
+          4. Confirmation for destructive actions
+        key_points:
+          - point: "@AppStorage for persistence"
+            details: "Automatic sync with UserDefaults"
+          - point: "App Group for widget sync"
+            details: "Use App Group UserDefaults for widget access"
+          - point: "Immediate application"
+            details: "Changes reflect in app immediately"
+      code_quality:
+        swift:
+          full_quality_pipeline:
+            command: |
+              cd packages/apple && xcodebuild -scheme WeatherOracle build
+      commit:
+        message: "feat(apple): add settings screen with user preferences"
+        files:
+          - "packages/apple/WeatherOracle/Views/Settings*"
+          - "packages/apple/WeatherOracle/ViewModels/Settings*"
+          - "packages/apple/Shared/Sources/Services/UserPreferences.swift"
+
+    # ═══════════════════════════════════════════════════════════════════════════
+    # TASK 16: Search/Location Screen
+    # ═══════════════════════════════════════════════════════════════════════════
+    - task_number: 16
+      name: "Search and Saved Locations Screen"
+      agent: ios-developer
+      files:
+        - "packages/apple/WeatherOracle/Views/SearchView.swift"
+        - "packages/apple/WeatherOracle/ViewModels/SearchViewModel.swift"
+        - "packages/apple/WeatherOracle/Views/Components/LocationRow.swift"
+        - "packages/apple/Shared/Sources/Services/SavedLocationsManager.swift"
+      depends_on:
+        - file: "plan-01-foundation.yaml"
+          task: 3
+        - file: "plan-01-foundation.yaml"
+          task: 5
+        - file: "plan-02-ui-components.yaml"
+          task: 7
+      estimated_time: "1.5h"
+      description: |
+        # Task 16: Search and Saved Locations Screen
+
+        ## IMPLEMENTATION REQUIREMENTS
+        Create location search and saved locations management.
+        Allow users to search and save favorite locations.
+
+        **Features:**
+        - Search bar with geocoding results
+        - Current location option
+        - Saved locations list
+        - Reorder saved locations
+        - Delete saved locations
+        - Quick weather preview for each location
+
+        **MUST implement:**
+        - `SearchView` with search + saved locations
+        - `SearchViewModel` managing search state
+        - `LocationRow` showing location with mini weather
+        - `SavedLocationsManager` persisting favorites
+
+        **PROHIBITED:** TODO comments, missing current location
+      success_criteria:
+        - "Search queries Open-Meteo geocoding API"
+        - "Results appear as user types (debounced)"
+        - "Current location option at top of list"
+        - "Saved locations persist across launches"
+        - "Locations can be reordered with drag"
+        - "Swipe to delete saved locations"
+        - "Each location shows current temp preview"
+      test_commands:
+        - "cd packages/apple && xcodebuild -scheme WeatherOracle build"
+      implementation:
+        approach: |
+          Combine search and saved locations in one view:
+          1. SearchBar with debounced text binding
+          2. Geocoding results in dropdown
+          3. Saved locations in editable list
+          4. Mini forecast fetch for previews
+        key_points:
+          - point: "Debounced search"
+            details: "Wait 300ms after typing before API call"
+          - point: "EditMode for reordering"
+            details: "Use .editMode environment for drag/delete"
+          - point: "Background preview fetch"
+            details: "Fetch current temps for saved locations asynchronously"
+      code_quality:
+        swift:
+          full_quality_pipeline:
+            command: |
+              cd packages/apple && xcodebuild -scheme WeatherOracle build
+      commit:
+        message: "feat(apple): add search and saved locations screen"
+        files:
+          - "packages/apple/WeatherOracle/Views/Search*"
+          - "packages/apple/WeatherOracle/ViewModels/Search*"
+          - "packages/apple/Shared/Sources/Services/SavedLocationsManager.swift"
+
+    # ═══════════════════════════════════════════════════════════════════════════
+    # TASK 17: Main Tab View & Navigation
+    # ═══════════════════════════════════════════════════════════════════════════
+    - task_number: 17
+      name: "Main Tab View and Navigation"
+      agent: ios-developer
+      files:
+        - "packages/apple/WeatherOracle/Views/MainTabView.swift"
+        - "packages/apple/WeatherOracle/Navigation/NavigationCoordinator.swift"
+        - "packages/apple/WeatherOracle/ContentView.swift"
+      depends_on:
+        - 13
+        - 14
+        - 15
+        - 16
+      estimated_time: "1h"
+      description: |
+        # Task 17: Main Tab View and Navigation
+
+        ## IMPLEMENTATION REQUIREMENTS
+        Create the app shell with tab navigation.
+        Coordinate navigation between all screens.
+
+        **Tabs:**
+        1. Forecast (house icon) - Main weather view
+        2. Compare (chart.bar icon) - Model comparison
+        3. Locations (mappin icon) - Search + saved
+        4. Settings (gear icon) - Preferences
+
+        **MUST implement:**
+        - `MainTabView` with 4 tabs
+        - `NavigationCoordinator` for deep linking
+        - Proper NavigationStack in each tab
+        - Tab badge for weather alerts (future)
+
+        **PROHIBITED:** TODO comments, broken navigation
+      success_criteria:
+        - "4 tabs with appropriate SF Symbols"
+        - "Each tab has independent NavigationStack"
+        - "Deep links resolve to correct screen"
+        - "Tab selection persists across launches"
+        - "Smooth tab switching animations"
+      test_commands:
+        - "cd packages/apple && xcodebuild -scheme WeatherOracle build"
+      implementation:
+        approach: |
+          Standard TabView with NavigationStack per tab:
+          1. TabView with 4 items
+          2. NavigationStack wrapping each tab content
+          3. Coordinator pattern for deep links
+          4. Scene storage for tab persistence
+        key_points:
+          - point: "Independent navigation stacks"
+            details: "Each tab maintains its own navigation history"
+          - point: "Deep linking"
+            details: "Handle weather://location/{id} URLs"
+          - point: "Scene storage"
+            details: "@SceneStorage for tab persistence"
+      code_quality:
+        swift:
+          full_quality_pipeline:
+            command: |
+              cd packages/apple && xcodebuild -scheme WeatherOracle build
+      commit:
+        message: "feat(apple): add main tab view and navigation coordinator"
+        files:
+          - "packages/apple/WeatherOracle/Views/MainTabView.swift"
+          - "packages/apple/WeatherOracle/Navigation/"
+          - "packages/apple/WeatherOracle/ContentView.swift"
