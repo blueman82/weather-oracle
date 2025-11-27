@@ -87,9 +87,10 @@ function generateHeatmapGrid(forecasts: DailyForecast[]): HeatmapCell[][] {
  * @param date - Date object
  * @returns Short day name (e.g., "Mon", "Tue")
  */
-function formatDayLabel(date: Date): string {
+function formatDayLabel(date: Date | string): string {
   const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-  return days[date.getDay()];
+  const d = typeof date === "string" ? new Date(date) : date;
+  return days[d.getDay()];
 }
 
 /**

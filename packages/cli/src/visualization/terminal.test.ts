@@ -55,11 +55,11 @@ describe("Terminal Capability Detection", () => {
 
   describe("RenderTier enum", () => {
     test("has correct values", () => {
-      expect(RenderTier.RICH).toBe("rich");
-      expect(RenderTier.FULL).toBe("full");
-      expect(RenderTier.STANDARD).toBe("standard");
-      expect(RenderTier.COMPAT).toBe("compat");
-      expect(RenderTier.PLAIN).toBe("plain");
+      expect(RenderTier.RICH as string).toBe("rich");
+      expect(RenderTier.FULL as string).toBe("full");
+      expect(RenderTier.STANDARD as string).toBe("standard");
+      expect(RenderTier.COMPAT as string).toBe("compat");
+      expect(RenderTier.PLAIN as string).toBe("plain");
     });
   });
 

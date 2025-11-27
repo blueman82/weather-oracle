@@ -2,9 +2,9 @@
  * Tests for Animation System
  */
 
-import { describe, test, expect, beforeEach, afterEach, mock, spyOn } from "bun:test";
+import { describe, test, expect, beforeEach, afterEach, spyOn } from "bun:test";
+import type { AnimationConfig } from "./animation";
 import {
-  AnimationConfig,
   LOADING_SPINNERS,
   weatherSpinner,
   revealAnimation,

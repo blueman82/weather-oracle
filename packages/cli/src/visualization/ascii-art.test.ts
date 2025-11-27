@@ -7,7 +7,6 @@ import {
   WEATHER_ART,
   renderWeatherIcon,
   getCompactIcon,
-  type WeatherArt,
 } from "./ascii-art";
 import { getThemeForConditions, type WeatherTheme } from "./themes";
 
@@ -25,7 +24,7 @@ describe("ASCII Weather Art", () => {
     });
 
     test("each art has valid dimensions", () => {
-      for (const [key, art] of Object.entries(WEATHER_ART)) {
+      for (const [_key, art] of Object.entries(WEATHER_ART)) {
         expect(art.lines).toBeInstanceOf(Array);
         expect(art.lines.length).toBe(art.height);
         expect(art.width).toBeGreaterThan(0);
@@ -34,7 +33,7 @@ describe("ASCII Weather Art", () => {
     });
 
     test("each art has consistent line count", () => {
-      for (const [key, art] of Object.entries(WEATHER_ART)) {
+      for (const [_key, art] of Object.entries(WEATHER_ART)) {
         expect(art.lines.length).toBe(5);
       }
     });

@@ -15,6 +15,16 @@ import type {
 } from "@weather-oracle/core";
 
 /**
+ * Convert date to ISO string, handling both Date objects and strings
+ */
+function toISOString(date: Date | string): string {
+  if (typeof date === "string") {
+    return new Date(date).toISOString();
+  }
+  return date.toISOString();
+}
+
+/**
  * JSON output structure for weather forecast
  */
 export interface JsonOutput {
@@ -200,9 +210,9 @@ export class JsonFormatter implements OutputFormatter {
         },
         timezone: location.resolved.timezone as string,
       },
-      generatedAt: aggregated.generatedAt.toISOString(),
-      validFrom: aggregated.validFrom.toISOString(),
-      validTo: aggregated.validTo.toISOString(),
+      generatedAt: toISOString(aggregated.generatedAt),
+      validFrom: toISOString(aggregated.validFrom),
+      validTo: toISOString(aggregated.validTo),
       models: aggregated.models.slice(),
       confidence: {
         level: aggregated.overallConfidence.level,
@@ -244,7 +254,7 @@ export class JsonFormatter implements OutputFormatter {
     const forecast = day.forecast;
 
     const daily: JsonDailyForecast = {
-      date: day.date.toISOString().split("T")[0],
+      date: toISOString(day.date).split("T")[0],
       temperature: {
         high: forecast.temperature.max as number,
         low: forecast.temperature.min as number,
@@ -305,7 +315,7 @@ export class JsonFormatter implements OutputFormatter {
     const metrics = hour.metrics;
 
     return {
-      timestamp: hour.timestamp.toISOString(),
+      timestamp: toISOString(hour.timestamp),
       temperature: metrics.temperature as number,
       feelsLike: metrics.feelsLike as number,
       humidity: metrics.humidity as number,

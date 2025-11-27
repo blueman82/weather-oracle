@@ -15,6 +15,7 @@ const WEATHER_API = "https://api.open-meteo.com/v1";
 
 /**
  * Model endpoint mappings
+ * Note: UKMO uses /forecast with models= query param, not its own endpoint
  */
 const MODEL_ENDPOINTS: Record<ModelName, string> = {
   ecmwf: `${WEATHER_API}/ecmwf`,
@@ -23,7 +24,7 @@ const MODEL_ENDPOINTS: Record<ModelName, string> = {
   jma: `${WEATHER_API}/jma`,
   gem: `${WEATHER_API}/gem`,
   meteofrance: `${WEATHER_API}/meteofrance`,
-  ukmo: `${WEATHER_API}/ukmo`,
+  ukmo: `${WEATHER_API}/forecast`, // UKMO uses /forecast?models=ukmo_seamless
 };
 
 /**
@@ -122,31 +123,66 @@ export const handlers = [
     return HttpResponse.json(response);
   }),
 
-  // Weather model API handlers
-  ...Object.entries(MODEL_ENDPOINTS).map(([model, endpoint]) =>
-    http.get(endpoint, async ({ request }) => {
-      const url = new URL(request.url);
-      mockState.requestLog.push({ url: request.url, timestamp: new Date() });
+  // Weather model API handlers (excluding ukmo which uses /forecast)
+  ...Object.entries(MODEL_ENDPOINTS)
+    .filter(([model]) => model !== "ukmo")
+    .map(([model, endpoint]) =>
+      http.get(endpoint, async ({ request }) => {
+        const url = new URL(request.url);
+        mockState.requestLog.push({ url: request.url, timestamp: new Date() });
 
-      if (mockState.networkDelay > 0) {
-        await delay(mockState.networkDelay);
-      }
+        if (mockState.networkDelay > 0) {
+          await delay(mockState.networkDelay);
+        }
 
-      const lat = parseFloat(url.searchParams.get("latitude") ?? "0");
-      const lon = parseFloat(url.searchParams.get("longitude") ?? "0");
-      const days = parseInt(url.searchParams.get("forecast_days") ?? "7", 10);
+        const lat = parseFloat(url.searchParams.get("latitude") ?? "0");
+        const lon = parseFloat(url.searchParams.get("longitude") ?? "0");
+        const days = parseInt(url.searchParams.get("forecast_days") ?? "7", 10);
 
-      // Simulate model failure
-      if (mockState.failingModels.has(model as ModelName)) {
-        return HttpResponse.json(
-          { error: true, reason: `${model} service temporarily unavailable` },
-          { status: 200 }
-        );
-      }
+        // Simulate model failure
+        if (mockState.failingModels.has(model as ModelName)) {
+          return HttpResponse.json(
+            { error: true, reason: `${model} service temporarily unavailable` },
+            { status: 200 }
+          );
+        }
 
-      // Return mock forecast response
-      const response = createMockForecastResponse(lat, lon, days, model as ModelName);
-      return HttpResponse.json(response);
-    })
-  ),
+        // Return mock forecast response
+        const response = createMockForecastResponse(lat, lon, days, model as ModelName);
+        return HttpResponse.json(response);
+      })
+    ),
+
+  // UKMO uses /forecast endpoint with models=ukmo_seamless query param
+  http.get(`${WEATHER_API}/forecast`, async ({ request }) => {
+    const url = new URL(request.url);
+    mockState.requestLog.push({ url: request.url, timestamp: new Date() });
+
+    if (mockState.networkDelay > 0) {
+      await delay(mockState.networkDelay);
+    }
+
+    const lat = parseFloat(url.searchParams.get("latitude") ?? "0");
+    const lon = parseFloat(url.searchParams.get("longitude") ?? "0");
+    const days = parseInt(url.searchParams.get("forecast_days") ?? "7", 10);
+    const models = url.searchParams.get("models");
+
+    // Determine model from query param (e.g., ukmo_seamless -> ukmo)
+    let model: ModelName = "ukmo";
+    if (models?.includes("ukmo")) {
+      model = "ukmo";
+    }
+
+    // Simulate model failure
+    if (mockState.failingModels.has(model)) {
+      return HttpResponse.json(
+        { error: true, reason: `${model} service temporarily unavailable` },
+        { status: 200 }
+      );
+    }
+
+    // Return mock forecast response
+    const response = createMockForecastResponse(lat, lon, days, model);
+    return HttpResponse.json(response);
+  }),
 ];

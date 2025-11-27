@@ -11,7 +11,6 @@ import {
   type BorderStyle,
   type BoxChars,
 } from "./themes";
-import type { RGB } from "./color-space";
 
 describe("Weather Mood Theming", () => {
   describe("MOOD_THEMES", () => {

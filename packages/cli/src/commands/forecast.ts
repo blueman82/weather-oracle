@@ -361,8 +361,8 @@ export async function forecastHandler(
     let output: string;
     if (format === "minimal") {
       output = renderMinimalOutput(location, aggregated, effectiveOptions);
-    } else if (format === "table" || format === "json" || format === "narrative") {
-      // Use formatter factory for table, json, and narrative
+    } else if (format === "table" || format === "json" || format === "narrative" || format === "rich") {
+      // Use formatter factory for table, json, narrative, and rich
       const formatterInput: FormatterInput = {
         location,
         aggregated,
@@ -424,11 +424,11 @@ export function registerForecastCommand(program: Command): void {
     )
     .option(
       "-f, --format <type>",
-      "Output format (table/json/narrative/minimal)",
+      "Output format (table/json/narrative/rich/minimal)",
       (v) => {
         const normalized = v.toLowerCase();
-        if (!["table", "json", "narrative", "minimal"].includes(normalized)) {
-          throw new Error('Format must be "table", "json", "narrative", or "minimal"');
+        if (!["table", "json", "narrative", "rich", "minimal"].includes(normalized)) {
+          throw new Error('Format must be "table", "json", "narrative", "rich", or "minimal"');
         }
         return normalized as OutputFormatType | "minimal";
       }

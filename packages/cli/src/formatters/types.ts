@@ -13,7 +13,7 @@ import type { ConfidenceResult, NarrativeSummary } from "@weather-oracle/core";
 /**
  * Supported output format types
  */
-export type OutputFormatType = "table" | "narrative" | "json";
+export type OutputFormatType = "table" | "narrative" | "json" | "rich";
 
 /**
  * Input data for formatters
