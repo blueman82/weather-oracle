@@ -12,8 +12,11 @@ import type { WeatherTheme } from "./themes";
  * Configuration for animation sequences.
  */
 export interface AnimationConfig {
+  /** Total duration of animation in milliseconds */
   duration: number;
-  frames: string[];
+  /** Number of animation frames */
+  frames: number;
+  /** Interval between frames in milliseconds */
   interval: number;
 }
 

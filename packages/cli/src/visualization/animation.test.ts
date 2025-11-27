@@ -17,12 +17,25 @@ describe("Animation System", () => {
     test("can create valid AnimationConfig", () => {
       const config: AnimationConfig = {
         duration: 500,
-        frames: ["a", "b", "c"],
-        interval: 100,
+        frames: 10,
+        interval: 50,
       };
       expect(config.duration).toBe(500);
-      expect(config.frames).toEqual(["a", "b", "c"]);
-      expect(config.interval).toBe(100);
+      expect(config.frames).toBe(10);
+      expect(config.interval).toBe(50);
+    });
+
+    test("AnimationConfig values follow brief animation pattern", () => {
+      const config: AnimationConfig = {
+        duration: 500,
+        frames: 10,
+        interval: 50,
+      };
+      // Duration should be 0.5-1s for brief animations
+      expect(config.duration).toBeLessThanOrEqual(1000);
+      expect(config.duration).toBeGreaterThanOrEqual(500);
+      // frames * interval should approximately equal duration
+      expect(config.frames * config.interval).toBe(config.duration);
     });
   });
 
