@@ -141,7 +141,7 @@ export class RichFormatter implements OutputFormatter {
     const icon = getCompactIcon(weatherCode);
 
     const headerLine = this.colorize(
-      `${icon} ${locationName}, ${country}`,
+      `${icon}  ${locationName}, ${country}`,
       theme.primary
     );
     const tempLine = tempColorFn(`Currently: ${tempStr}`);
@@ -202,7 +202,7 @@ export class RichFormatter implements OutputFormatter {
       const icon = getCompactIcon(day.forecast.weatherCode);
 
       lines.push(
-        `  ${dayName} ${icon} ${maxColor(this.formatTemperatureValue(maxTemp))} / ${minColor(this.formatTemperatureValue(minTemp))}`
+        `  ${dayName} ${icon}  ${maxColor(this.formatTemperatureValue(maxTemp))} / ${minColor(this.formatTemperatureValue(minTemp))}`
       );
     }
 
