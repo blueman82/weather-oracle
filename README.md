@@ -27,6 +27,7 @@ Weather Oracle fetches forecasts from multiple weather models (ECMWF, GFS, ICON,
 - [Usage](#usage)
   - [CLI Commands](#cli-commands)
   - [CLI Options](#cli-options)
+  - [Output Formats](#output-formats)
   - [Available Models](#available-models)
   - [Web Interface](#web-interface)
   - [REST API](#rest-api)
@@ -144,6 +145,119 @@ bun run packages/cli/src/index.ts config get display.units          # Get value
 | `-v, --verbose` | Show detailed output including model notes |
 | `--no-cache` | Fetch fresh data from API |
 | `--no-color` | Disable colored output |
+
+### Output Formats
+
+Weather Oracle supports four output formats, each suited for different use cases:
+
+#### Table Format (default)
+
+Best for quick terminal viewing with a clean, scannable layout.
+
+```bash
+weather-oracle forecast "London" --format table
+```
+
+```
+Weather Forecast for London, United Kingdom
+Based on 7 weather models
+
+┌──────────────┬──────────┬──────────┬────────────┬──────────────┬────────┐
+│ Day          │ High     │ Low      │ Precip     │ Wind         │ Conf   │
+├──────────────┼──────────┼──────────┼────────────┼──────────────┼────────┤
+│ today        │ 14°C     │ 9°C      │ 2.7mm      │ 46km/h SW    │ ✓      │
+│ tomorrow     │ 9°C      │ 6°C      │ 5.8mm      │ 44km/h WSW   │ ✓      │
+│ Saturday     │ 7°C      │ 2°C      │ 1.8mm      │ 16km/h NW    │ ✓      │
+└──────────────┴──────────┴──────────┴────────────┴──────────────┴────────┘
+
+Overall Confidence: High (75%)
+```
+
+#### Rich Format
+
+Visual format with sparklines, temperature heatmaps, and model consensus visualization. Best for detailed analysis.
+
+```bash
+weather-oracle forecast "London" --format rich
+```
+
+```
+🌧  London, United Kingdom
+Currently: 13°C
+────────────────────────────────────────────────────────────
+
+Temperature Trend
+
+  Next 24h: ▇▇▇▇█████▇▇▇▆▆▅▄▃▃▂▂▂▂▁▁
+  Range: 9°C - 13°C
+
+Daily Summary
+  today      🌧  14°C / 9°C
+  tomorrow   🌧  9°C / 6°C
+  Saturday   🌧  7°C / 2°C
+
+Model Consensus
+╭───────────────────────────────────────────────────────────╮
+│   Temperature (°C)                                        │
+│   12.5──────────────────────────────────────────13.4      │
+│   ◐               ◐     ◐    ◐     ◐               ◐      │
+│ High confidence (75%) - models strongly agree             │
+╰───────────────────────────────────────────────────────────╯
+```
+
+#### JSON Format
+
+Machine-readable output for scripting, piping to other tools, or API integrations.
+
+```bash
+weather-oracle forecast "London" --format json
+```
+
+```json
+{
+  "location": {
+    "name": "London",
+    "country": "United Kingdom",
+    "coordinates": { "latitude": 51.5074, "longitude": -0.1278 }
+  },
+  "confidence": {
+    "level": "high",
+    "score": 0.75,
+    "explanation": "High confidence: 6 of 7 models agree"
+  },
+  "daily": [
+    {
+      "date": "2025-01-15",
+      "temperature": { "high": 14, "low": 9 },
+      "precipitation": { "probability": 85.7, "total": 2.7 }
+    }
+  ]
+}
+```
+
+#### Minimal Format
+
+Single-line output, perfect for status bars, scripts, or quick glances.
+
+```bash
+weather-oracle forecast "London" --format minimal
+```
+
+```
+🌧️ London: 9-14°C, 86% rain
+```
+
+#### Setting a Default Format
+
+To change your default output format so you don't need to specify `--format` each time:
+
+```bash
+# Set rich as your default format
+weather-oracle config set display.outputFormat rich
+
+# Or use any of: table, json, rich, minimal
+weather-oracle config set display.outputFormat json
+```
 
 ### Available Models
 
