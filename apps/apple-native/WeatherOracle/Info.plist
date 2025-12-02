@@ -34,7 +34,13 @@
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>fetch</string>
+		<string>processing</string>
 		<string>remote-notification</string>
+	</array>
+	<key>BGTaskSchedulerPermittedIdentifiers</key>
+	<array>
+		<string>com.weatheroracle.refresh</string>
+		<string>com.weatheroracle.processing</string>
 	</array>
 	<key>UILaunchScreen</key>
 	<dict/>
