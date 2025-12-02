@@ -1,6 +1,8 @@
 import AppIntents
 import SwiftUI
 
+// MARK: - GetWeatherIntent
+
 struct GetWeatherIntent: AppIntent {
     static var title: LocalizedStringResource = "Get Weather"
     static var description = IntentDescription("Get the current weather forecast")
@@ -22,6 +24,8 @@ struct GetWeatherIntent: AppIntent {
     }
 }
 
+// MARK: - WeatherOracleShortcuts
+
 struct WeatherOracleShortcuts: AppShortcutsProvider {
     static var appShortcuts: [AppShortcut] {
         AppShortcut(
@@ -29,7 +33,7 @@ struct WeatherOracleShortcuts: AppShortcutsProvider {
             phrases: [
                 "Get weather from \(.applicationName)",
                 "What's the weather in \(.applicationName)",
-                "Check \(.applicationName) forecast"
+                "Check \(.applicationName) forecast",
             ],
             shortTitle: "Get Weather",
             systemImageName: "cloud.sun"

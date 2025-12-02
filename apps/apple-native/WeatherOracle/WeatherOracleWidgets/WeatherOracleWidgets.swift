@@ -1,11 +1,15 @@
-import WidgetKit
 import SwiftUI
+import WidgetKit
+
+// MARK: - WeatherEntry
 
 struct WeatherEntry: TimelineEntry {
     let date: Date
     let temperature: String
     let condition: String
 }
+
+// MARK: - Provider
 
 struct Provider: TimelineProvider {
     func placeholder(in context: Context) -> WeatherEntry {
@@ -24,6 +28,8 @@ struct Provider: TimelineProvider {
         completion(timeline)
     }
 }
+
+// MARK: - WeatherOracleWidgetEntryView
 
 struct WeatherOracleWidgetEntryView: View {
     var entry: Provider.Entry
@@ -47,6 +53,8 @@ struct WeatherOracleWidgetEntryView: View {
         .containerBackground(.fill.tertiary, for: .widget)
     }
 }
+
+// MARK: - WeatherOracleWidget
 
 @main
 struct WeatherOracleWidget: Widget {

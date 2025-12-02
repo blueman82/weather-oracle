@@ -5,7 +5,14 @@ import SharedKit
 // MARK: - Location Weather State
 
 /// Weather data state for a single location
-public struct LocationWeatherState: Identifiable, Sendable {
+public struct LocationWeatherState: Identifiable, Sendable, Hashable {
+    public static func == (lhs: LocationWeatherState, rhs: LocationWeatherState) -> Bool {
+        lhs.id == rhs.id
+    }
+
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(id)
+    }
     public let id: UUID
     public let location: LocationEntity
     public var forecast: AggregatedForecast?

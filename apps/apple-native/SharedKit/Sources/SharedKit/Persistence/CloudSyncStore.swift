@@ -9,6 +9,7 @@ public protocol KeyValueStoreProtocol: Sendable {
     func object(forKey key: String) -> Any?
     func set(_ value: Any?, forKey key: String)
     func removeObject(forKey key: String)
+    @discardableResult
     func synchronize() -> Bool
     func dictionaryRepresentation() -> [String: Any]
 }
@@ -287,7 +288,7 @@ public final class CloudSyncStore: ObservableObject {
 
         // Mark migration complete
         store.set(PreferenceSchemaVersion.current.rawValue, forKey: PreferenceKey.schemaVersion.rawValue)
-        _ = store.synchronize()
+        store.synchronize()
     }
 
     // MARK: - Private Methods
@@ -390,7 +391,7 @@ public final class CloudSyncStore: ObservableObject {
         store.set(newPreferences.lastModified.timeIntervalSince1970, forKey: PreferenceKey.lastSyncTimestamp.rawValue)
 
         // Synchronize
-        _ = store.synchronize()
+        store.synchronize()
 
         // Update published property
         preferences = newPreferences
@@ -446,12 +447,29 @@ public final class CloudSyncStore: ObservableObject {
 
     /// Resolve conflicts using last-write-wins strategy.
     /// Called when external changes are detected.
-    private func resolveConflict(local: UserPreferences, remote: UserPreferences) -> UserPreferences {
+    /// - Parameters:
+    ///   - local: The local preferences state
+    ///   - remote: The remote preferences state from iCloud
+    /// - Returns: The winning preferences based on timestamp precedence
+    public func resolveConflict(local: UserPreferences, remote: UserPreferences) -> UserPreferences {
         // Simple last-write-wins based on lastModified timestamp
         if remote.lastModified > local.lastModified {
             return remote
         }
         return local
+    }
+
+    /// Simulate external change notification for testing.
+    /// - Parameter changedKeys: The keys that changed externally
+    public func simulateExternalChange(changedKeys: [String]) {
+        // Reload preferences from store
+        loadPreferences()
+    }
+
+    /// Get the underlying change subject for testing debounce behavior.
+    /// - Parameter change: The preference change to emit
+    public func emitChange(_ change: PreferenceChange) {
+        changeSubject.send(change)
     }
 }
 

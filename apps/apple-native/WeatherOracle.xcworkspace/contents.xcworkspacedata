@@ -2,7 +2,7 @@
 <Workspace
    version = "1.0">
    <FileRef
-      location = "group:WeatherOracle/WeatherOracle.xcodeproj">
+      location = "group:WeatherOracle.xcodeproj">
    </FileRef>
    <FileRef
       location = "group:SharedKit">

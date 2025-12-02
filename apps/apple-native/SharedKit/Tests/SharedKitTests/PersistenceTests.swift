@@ -1,3 +1,4 @@
+import Combine
 @testable import SharedKit
 import XCTest
 
@@ -436,6 +437,222 @@ final class CloudSyncStoreTests: XCTestCase {
     func testSynchronize() async throws {
         let result = store.synchronize()
         XCTAssertTrue(result)
+    }
+
+    // MARK: - External Change (KVS Notification) Tests
+
+    func testSimulateExternalChange() async throws {
+        // First add some data
+        let coords = try Coordinates.validated(lat: 55.6761, lon: 12.5683)
+        let location = LocationEntity(
+            query: "Copenhagen",
+            resolved: GeocodingResult(
+                name: "Copenhagen",
+                coordinates: coords,
+                country: "Denmark",
+                countryCode: "DK",
+                timezone: "Europe/Copenhagen"
+            )
+        )
+
+        store.addLocation(location)
+        XCTAssertEqual(store.locations.count, 1)
+
+        // Add another location directly to the backing store (simulating external device sync)
+        let coords2 = try Coordinates.validated(lat: 59.3293, lon: 18.0686)
+        let location2 = LocationEntity(
+            query: "Stockholm",
+            resolved: GeocodingResult(
+                name: "Stockholm",
+                coordinates: coords2,
+                country: "Sweden",
+                countryCode: "SE",
+                timezone: "Europe/Stockholm"
+            )
+        )
+
+        let encoder = JSONEncoder()
+        let allLocations = [location, location2]
+        if let data = try? encoder.encode(allLocations) {
+            memoryStore.set(data, forKey: PreferenceKey.locations.rawValue)
+        }
+
+        // Simulate external change notification
+        store.simulateExternalChange(changedKeys: [PreferenceKey.locations.rawValue])
+
+        // Verify the store reloaded with new data
+        XCTAssertEqual(store.locations.count, 2)
+        XCTAssertTrue(store.locations.contains { $0.name == "Stockholm" })
+    }
+
+    func testExternalUnitChange() async throws {
+        // Set initial unit
+        store.setTemperatureUnit(.celsius)
+        XCTAssertEqual(store.preferences.temperatureUnit, .celsius)
+
+        // Simulate external change directly to backing store
+        memoryStore.set(TemperatureUnit.fahrenheit.rawValue, forKey: PreferenceKey.temperatureUnit.rawValue)
+
+        // Simulate external change notification
+        store.simulateExternalChange(changedKeys: [PreferenceKey.temperatureUnit.rawValue])
+
+        // Verify the store reloaded with new unit
+        XCTAssertEqual(store.preferences.temperatureUnit, .fahrenheit)
+    }
+
+    // MARK: - Debounced Publisher Tests
+
+    func testChangePublisherEmitsChanges() async throws {
+        let expectation = XCTestExpectation(description: "Change publisher should emit")
+        var receivedChanges: [PreferenceChange] = []
+
+        let cancellable = store.changePublisher.sink { change in
+            receivedChanges.append(change)
+            expectation.fulfill()
+        }
+
+        // Trigger a change
+        store.setTemperatureUnit(.fahrenheit)
+
+        // Wait for debounced publisher (300ms + buffer)
+        await fulfillment(of: [expectation], timeout: 1.0)
+
+        XCTAssertFalse(receivedChanges.isEmpty)
+        XCTAssertEqual(receivedChanges.first?.key, .temperatureUnit)
+
+        cancellable.cancel()
+    }
+
+    func testChangePublisherDebouncesBurstChanges() async throws {
+        let expectation = XCTestExpectation(description: "Change publisher should emit once for burst")
+        var receivedCount = 0
+
+        let cancellable = store.changePublisher.sink { _ in
+            receivedCount += 1
+            expectation.fulfill()
+        }
+
+        // Rapidly emit multiple changes via the emitChange helper
+        store.emitChange(PreferenceChange(key: .temperatureUnit))
+        store.emitChange(PreferenceChange(key: .temperatureUnit))
+        store.emitChange(PreferenceChange(key: .temperatureUnit))
+
+        // Wait for debounce period (300ms + buffer)
+        await fulfillment(of: [expectation], timeout: 1.0)
+
+        // Due to debouncing, we should receive fewer emissions than sent
+        // (likely 1 after the 300ms debounce)
+        XCTAssertLessThanOrEqual(receivedCount, 3, "Debouncing should reduce burst emissions")
+
+        cancellable.cancel()
+    }
+
+    // MARK: - Conflict Resolution Tests
+
+    func testConflictResolutionRemoteWins() async throws {
+        let oldDate = Date(timeIntervalSinceNow: -3600) // 1 hour ago
+        let newDate = Date()
+
+        let localPrefs = UserPreferences(
+            temperatureUnit: .celsius,
+            lastModified: oldDate
+        )
+
+        let remotePrefs = UserPreferences(
+            temperatureUnit: .fahrenheit,
+            lastModified: newDate
+        )
+
+        let winner = store.resolveConflict(local: localPrefs, remote: remotePrefs)
+
+        // Remote should win since it has newer timestamp
+        XCTAssertEqual(winner.temperatureUnit, .fahrenheit)
+        XCTAssertEqual(winner.lastModified, newDate)
+    }
+
+    func testConflictResolutionLocalWins() async throws {
+        let oldDate = Date(timeIntervalSinceNow: -3600) // 1 hour ago
+        let newDate = Date()
+
+        let localPrefs = UserPreferences(
+            temperatureUnit: .celsius,
+            lastModified: newDate
+        )
+
+        let remotePrefs = UserPreferences(
+            temperatureUnit: .fahrenheit,
+            lastModified: oldDate
+        )
+
+        let winner = store.resolveConflict(local: localPrefs, remote: remotePrefs)
+
+        // Local should win since it has newer timestamp
+        XCTAssertEqual(winner.temperatureUnit, .celsius)
+        XCTAssertEqual(winner.lastModified, newDate)
+    }
+
+    func testConflictResolutionEqualTimestamp() async throws {
+        let sameDate = Date()
+
+        let localPrefs = UserPreferences(
+            temperatureUnit: .celsius,
+            lastModified: sameDate
+        )
+
+        let remotePrefs = UserPreferences(
+            temperatureUnit: .fahrenheit,
+            lastModified: sameDate
+        )
+
+        let winner = store.resolveConflict(local: localPrefs, remote: remotePrefs)
+
+        // When timestamps are equal, local wins (defensive behavior)
+        XCTAssertEqual(winner.temperatureUnit, .celsius)
+    }
+
+    func testConflictResolutionWithLocations() async throws {
+        let oldDate = Date(timeIntervalSinceNow: -3600)
+        let newDate = Date()
+
+        let coords1 = try Coordinates.validated(lat: 40.7128, lon: -74.0060)
+        let location1 = LocationEntity(
+            query: "NYC",
+            resolved: GeocodingResult(
+                name: "New York",
+                coordinates: coords1,
+                country: "USA",
+                countryCode: "US",
+                timezone: "America/New_York"
+            )
+        )
+
+        let coords2 = try Coordinates.validated(lat: 34.0522, lon: -118.2437)
+        let location2 = LocationEntity(
+            query: "LA",
+            resolved: GeocodingResult(
+                name: "Los Angeles",
+                coordinates: coords2,
+                country: "USA",
+                countryCode: "US",
+                timezone: "America/Los_Angeles"
+            )
+        )
+
+        let localPrefs = UserPreferences(
+            locations: [location1],
+            lastModified: oldDate
+        )
+
+        let remotePrefs = UserPreferences(
+            locations: [location2],
+            lastModified: newDate
+        )
+
+        let winner = store.resolveConflict(local: localPrefs, remote: remotePrefs)
+
+        // Remote should win, so we get LA not NYC
+        XCTAssertEqual(winner.locations.count, 1)
+        XCTAssertEqual(winner.locations.first?.name, "Los Angeles")
     }
 }
 

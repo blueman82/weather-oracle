@@ -34,6 +34,7 @@ Weather Oracle fetches forecasts from multiple weather models (ECMWF, GFS, ICON,
   - [Configuration Options](#configuration-options)
   - [Example Config File](#example-config-file)
 - [Project Structure](#project-structure)
+- [Apple Native Apps](#apple-native-apps)
 - [How It Works](#how-it-works)
 - [Contributing](#contributing)
 - [License](#license)
@@ -257,6 +258,8 @@ See the [CLI README](packages/cli/README.md#config-command) for complete configu
 
 ```
 weather-oracle/
+├── apps/
+│   └── apple-native/   # Native Apple apps (iOS, iPadOS, watchOS, Widgets)
 ├── packages/
 │   ├── core/           # Shared types, API clients, aggregation engine
 │   ├── cli/            # Command-line interface
@@ -264,6 +267,49 @@ weather-oracle/
 ├── docs/               # Documentation
 └── package.json        # Workspace root
 ```
+
+## Apple Native Apps
+
+The `apps/apple-native` directory contains native SwiftUI applications for Apple platforms.
+
+### Prerequisites
+
+- Xcode 15.0 or later
+- macOS Sonoma or later
+
+### Opening the Workspace
+
+```bash
+# Open the Xcode workspace
+open apps/apple-native/WeatherOracle.xcworkspace
+```
+
+Or from Xcode: **File → Open → Navigate to `apps/apple-native/WeatherOracle.xcworkspace`**
+
+### Targets
+
+| Target | Description |
+|--------|-------------|
+| WeatherOracle | Main iOS/iPadOS app |
+| WeatherOracleWatch | watchOS companion app |
+| WeatherOracleWidgets | Home screen and Lock Screen widgets |
+| WeatherOracleIntents | App Intents for Shortcuts and Siri |
+| SharedKit | Local Swift package with shared business logic |
+
+### Building
+
+1. Open `WeatherOracle.xcworkspace` (not the `.xcodeproj`)
+2. Select the desired scheme (e.g., WeatherOracle)
+3. Choose a simulator or device
+4. Press ⌘B to build or ⌘R to run
+
+### Capabilities
+
+The app is configured with:
+- Push Notifications
+- CloudKit (iCloud sync)
+- App Groups (for widget data sharing)
+- Background Modes (fetch)
 
 <p align="right"><a href="#top">⬆️ Back to top</a></p>
 

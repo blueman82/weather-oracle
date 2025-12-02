@@ -8,13 +8,13 @@ let package = Package(
     platforms: [
         .iOS(.v17),
         .watchOS(.v10),
-        .macOS(.v14)
+        .macOS(.v14),
     ],
     products: [
         .library(
             name: "SharedKit",
             targets: ["SharedKit"]
-        )
+        ),
     ],
     dependencies: [],
     targets: [
@@ -27,6 +27,6 @@ let package = Package(
             name: "SharedKitTests",
             dependencies: ["SharedKit"],
             path: "Tests/SharedKitTests"
-        )
+        ),
     ]
 )

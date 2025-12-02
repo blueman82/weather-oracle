@@ -1,0 +1,143 @@
+{
+  "description": "Test fixture for aggregation parity tests",
+  "testCases": [
+    {
+      "name": "statistics",
+      "tests": [
+        {
+          "name": "mean_basic",
+          "input": [1, 2, 3, 4, 5],
+          "expected": 3.0
+        },
+        {
+          "name": "mean_empty",
+          "input": [],
+          "expected": 0.0
+        },
+        {
+          "name": "median_odd",
+          "input": [1, 3, 5, 7, 9],
+          "expected": 5.0
+        },
+        {
+          "name": "median_even",
+          "input": [1, 2, 3, 4],
+          "expected": 2.5
+        },
+        {
+          "name": "stddev_basic",
+          "input": [2, 4, 4, 4, 5, 5, 7, 9],
+          "expected": 2.0
+        },
+        {
+          "name": "trimmedMean_basic",
+          "input": [1, 2, 3, 4, 5, 6, 7, 8, 9, 100],
+          "expected": 5.0,
+          "tolerance": 0.5
+        },
+        {
+          "name": "trimmedMean_small",
+          "input": [5, 10],
+          "expected": 7.5
+        },
+        {
+          "name": "ensembleProbability_gt",
+          "input": [0.0, 0.5, 1.0, 2.0, 5.0],
+          "threshold": 0.1,
+          "comparison": "gt",
+          "expected": 80.0
+        }
+      ]
+    },
+    {
+      "name": "confidence",
+      "tests": [
+        {
+          "name": "fromStdDev_high",
+          "stdDev": 1.0,
+          "highThreshold": 1.5,
+          "lowThreshold": 4.0,
+          "expected": 1.0
+        },
+        {
+          "name": "fromStdDev_low",
+          "stdDev": 5.0,
+          "highThreshold": 1.5,
+          "lowThreshold": 4.0,
+          "expected": 0.3
+        },
+        {
+          "name": "fromStdDev_mid",
+          "stdDev": 2.75,
+          "highThreshold": 1.5,
+          "lowThreshold": 4.0,
+          "expected": 0.65,
+          "tolerance": 0.01
+        },
+        {
+          "name": "fromRange_high",
+          "range": 5.0,
+          "highThreshold": 10.0,
+          "lowThreshold": 25.0,
+          "expected": 1.0
+        },
+        {
+          "name": "fromRange_mid",
+          "range": 17.5,
+          "highThreshold": 10.0,
+          "lowThreshold": 25.0,
+          "expected": 0.65,
+          "tolerance": 0.01
+        },
+        {
+          "name": "fromTimeHorizon_day0",
+          "daysAhead": 0,
+          "expected": 1.0
+        },
+        {
+          "name": "fromTimeHorizon_day5",
+          "daysAhead": 5,
+          "expected": 0.75
+        },
+        {
+          "name": "fromTimeHorizon_day10",
+          "daysAhead": 10,
+          "expected": 0.5
+        }
+      ]
+    },
+    {
+      "name": "outliers",
+      "tests": [
+        {
+          "name": "findOutliers_basic",
+          "input": [10, 11, 12, 10, 11, 50],
+          "threshold": 2.0,
+          "expectedIndices": [5]
+        },
+        {
+          "name": "findOutliers_none",
+          "input": [10, 11, 12, 10, 11, 12],
+          "threshold": 2.0,
+          "expectedIndices": []
+        },
+        {
+          "name": "findOutliers_multiple",
+          "input": [10, 10, 10, 10, 10, 50],
+          "threshold": 2.0,
+          "expectedIndices": [5]
+        }
+      ]
+    },
+    {
+      "name": "modelAggregation",
+      "description": "Sample multi-model temperature aggregation",
+      "models": ["ecmwf", "gfs", "icon", "meteofrance", "ukmo"],
+      "temperatures": [20.0, 21.0, 19.5, 20.5, 20.0],
+      "expectedMean": 20.2,
+      "expectedTrimmedMean": 20.17,
+      "expectedMedian": 20.0,
+      "tolerance": 0.1
+    }
+  ]
+}

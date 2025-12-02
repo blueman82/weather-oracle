@@ -1,5 +1,5 @@
-import XCTest
 @testable import SharedKit
+import XCTest
 
 final class SharedKitTests: XCTestCase {
     func testTemperatureConversion() throws {
@@ -16,6 +16,6 @@ final class SharedKitTests: XCTestCase {
 
     func testWeatherConditionIcons() throws {
         XCTAssertEqual(WeatherCondition.sunny.systemImageName, "sun.max.fill")
-        XCTAssertEqual(WeatherCondition.rainy.systemImageName, "cloud.rain.fill")
+        XCTAssertEqual(WeatherCondition.rain.systemImageName, "cloud.rain.fill")
     }
 }
