@@ -3,319 +3,245 @@ import SharedKit
 
 // MARK: - Model Constellation View
 
-/// Renders model relationships as constellation using Canvas
+/// Renders model relationships as constellation (nodes and edges) with deterministic layout
 public struct ModelConstellationView: View {
     let nodes: [ModelNode]
     let edges: [ModelEdge]
-    let theme: VisualizationTheme
     let size: CGSize
+    let showLabels: Bool
 
     public init(
         nodes: [ModelNode],
         edges: [ModelEdge],
-        theme: VisualizationTheme = .default,
-        size: CGSize = CGSize(width: 300, height: 300)
+        size: CGSize = CGSize(width: 300, height: 300),
+        showLabels: Bool = true
     ) {
         self.nodes = nodes
         self.edges = edges
-        self.theme = theme
         self.size = size
+        self.showLabels = showLabels
     }
 
     public var body: some View {
-        Canvas { context, canvasSize in
-            // Draw edges first (background layer)
+        VStack(spacing: 12) {
+            if showLabels {
+                header
+            }
+
+            constellation
+                .frame(width: size.width, height: size.height)
+
+            if showLabels {
+                legend
+            }
+        }
+    }
+
+    // MARK: - Subviews
+
+    private var header: some View {
+        HStack {
+            Text("Model Agreement")
+                .font(.headline)
+                .foregroundStyle(.primary)
+
+            Spacer()
+
+            let agreementCount = nodes.filter { !$0.isOutlier }.count
+            let totalCount = nodes.count
+
+            HStack(spacing: 4) {
+                Image(systemName: "checkmark.circle.fill")
+                    .font(.caption)
+                    .foregroundStyle(.green)
+
+                Text("\(agreementCount)/\(totalCount)")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
+        }
+    }
+
+    private var constellation: some View {
+        Canvas { context, size in
+            // Draw edges first (behind nodes)
             for edge in edges {
-                if let fromNode = nodes.first(where: { $0.model == edge.from }),
-                   let toNode = nodes.first(where: { $0.model == edge.to }) {
-                    drawEdge(
+                guard let fromNode = nodes.first(where: { $0.model == edge.from }),
+                      let toNode = nodes.first(where: { $0.model == edge.to }) else {
+                    continue
+                }
+
+                drawEdge(
+                    context: context,
+                    from: fromNode.position,
+                    to: toNode.position,
+                    strength: edge.strength
+                )
+            }
+
+            // Draw nodes on top
+            for node in nodes {
+                drawNode(
+                    context: context,
+                    node: node
+                )
+            }
+
+            // Draw labels if enabled
+            if showLabels {
+                for node in nodes {
+                    drawLabel(
                         context: context,
-                        from: fromNode.position,
-                        to: toNode.position,
-                        edge: edge
+                        node: node
                     )
                 }
             }
-
-            // Draw nodes (foreground layer)
-            for node in nodes {
-                drawNode(context: context, node: node)
-            }
-
-            // Draw labels
-            for node in nodes {
-                drawLabel(context: context, node: node)
-            }
         }
-        .frame(width: size.width, height: size.height)
-        .background(theme.backgroundColor)
     }
 
-    // MARK: - Drawing Functions
+    private var legend: some View {
+        ScrollView(.horizontal, showsIndicators: false) {
+            HStack(spacing: 16) {
+                ForEach(nodes) { node in
+                    HStack(spacing: 6) {
+                        Circle()
+                            .fill(node.color)
+                            .frame(width: 12, height: 12)
+                            .overlay(
+                                Circle()
+                                    .strokeBorder(
+                                        node.isOutlier ? Color.red : Color.clear,
+                                        lineWidth: 2
+                                    )
+                            )
+
+                        Text(modelName(node.model))
+                            .font(.caption)
+                            .foregroundStyle(node.isOutlier ? .secondary : .primary)
+
+                        if node.isOutlier {
+                            Image(systemName: "exclamationmark.triangle.fill")
+                                .font(.caption2)
+                                .foregroundStyle(.orange)
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    // MARK: - Canvas Drawing
 
     private func drawEdge(
         context: GraphicsContext,
         from: CGPoint,
         to: CGPoint,
-        edge: ModelEdge
+        strength: Double
     ) {
         var path = Path()
         path.move(to: from)
         path.addLine(to: to)
 
+        // Edge opacity based on strength
+        let opacity = 0.1 + strength * 0.3
+
         context.stroke(
             path,
-            with: .color(edge.color),
-            lineWidth: 1 + (edge.strength * 2)
+            with: .color(.white.opacity(opacity)),
+            lineWidth: strength > 0.5 ? 2 : 1
         )
     }
 
-    private func drawNode(context: GraphicsContext, node: ModelNode) {
-        let radius: CGFloat = node.isOutlier ? 12 : 10
-        let circle = Circle().path(in: CGRect(
+    private func drawNode(
+        context: GraphicsContext,
+        node: ModelNode
+    ) {
+        let radius: CGFloat = node.isOutlier ? 16 : 14
+
+        // Draw node circle
+        let circle = Path(ellipseIn: CGRect(
             x: node.position.x - radius,
             y: node.position.y - radius,
             width: radius * 2,
             height: radius * 2
         ))
 
-        // Fill
         context.fill(circle, with: .color(node.color))
 
-        // Stroke
-        context.stroke(
-            circle,
-            with: .color(.white),
-            lineWidth: node.isOutlier ? 2 : 1
-        )
+        // Draw border for outliers
+        if node.isOutlier {
+            context.stroke(
+                circle,
+                with: .color(.red),
+                lineWidth: 2
+            )
+        } else {
+            context.stroke(
+                circle,
+                with: .color(.white.opacity(0.5)),
+                lineWidth: 1
+            )
+        }
+
+        // Draw glow effect for non-outliers
+        if !node.isOutlier {
+            let glowCircle = Path(ellipseIn: CGRect(
+                x: node.position.x - radius - 3,
+                y: node.position.y - radius - 3,
+                width: (radius + 3) * 2,
+                height: (radius + 3) * 2
+            ))
+
+            context.stroke(
+                glowCircle,
+                with: .color(node.color.opacity(0.3)),
+                lineWidth: 2
+            )
+        }
     }
 
-    private func drawLabel(context: GraphicsContext, node: ModelNode) {
-        let labelText = formatModelName(node.model)
-        let labelOffset: CGFloat = 20
+    private func drawLabel(
+        context: GraphicsContext,
+        node: ModelNode
+    ) {
+        let name = modelAbbreviation(node.model)
+        let labelOffset: CGFloat = node.isOutlier ? 24 : 22
 
-        // Calculate label position (outside circle)
-        let center = CGPoint(x: size.width / 2, y: size.height / 2)
-        let dx = node.position.x - center.x
-        let dy = node.position.y - center.y
-        let angle = atan2(dy, dx)
+        let text = Text(name)
+            .font(.caption2)
+            .bold()
+            .foregroundStyle(node.isOutlier ? .red : .white)
 
-        let labelX = node.position.x + cos(angle) * labelOffset
-        let labelY = node.position.y + sin(angle) * labelOffset
-
-        // Draw text
         context.draw(
-            Text(labelText)
-                .font(.caption2)
-                .foregroundStyle(node.isOutlier ? theme.outlierColor : .secondary),
-            at: CGPoint(x: labelX, y: labelY)
+            text,
+            at: CGPoint(
+                x: node.position.x,
+                y: node.position.y + labelOffset
+            )
         )
     }
 
     // MARK: - Helpers
 
-    private func formatModelName(_ model: ModelName) -> String {
+    private func modelName(_ model: ModelName) -> String {
         switch model {
         case .ecmwf: return "ECMWF"
         case .gfs: return "GFS"
         case .icon: return "ICON"
-        case .meteofrance: return "ARPEGE"
-        case .ukmo: return "UKMO"
+        case .meteofrance: return "Météo-France"
+        case .ukmo: return "UK Met"
         case .jma: return "JMA"
         case .gem: return "GEM"
         }
     }
-}
 
-// MARK: - Confidence Sparkline
-
-/// Simple sparkline chart for confidence scores
-public struct ConfidenceSparklineView: View {
-    let dataPoints: [(date: Date, score: Double, color: Color)]
-    let theme: VisualizationTheme
-    let height: CGFloat
-
-    public init(
-        dataPoints: [(date: Date, score: Double, color: Color)],
-        theme: VisualizationTheme = .default,
-        height: CGFloat = 60
-    ) {
-        self.dataPoints = dataPoints
-        self.theme = theme
-        self.height = height
-    }
-
-    public var body: some View {
-        Canvas { context, size in
-            guard !dataPoints.isEmpty else { return }
-
-            let maxScore = 1.0
-            let stepX = size.width / CGFloat(max(1, dataPoints.count - 1))
-
-            // Draw line
-            var path = Path()
-            for (index, point) in dataPoints.enumerated() {
-                let x = CGFloat(index) * stepX
-                let y = size.height * (1 - CGFloat(point.score / maxScore))
-
-                if index == 0 {
-                    path.move(to: CGPoint(x: x, y: y))
-                } else {
-                    path.addLine(to: CGPoint(x: x, y: y))
-                }
-            }
-
-            context.stroke(path, with: .color(theme.mediumConfidenceColor), lineWidth: 2)
-
-            // Draw points
-            for (index, point) in dataPoints.enumerated() {
-                let x = CGFloat(index) * stepX
-                let y = size.height * (1 - CGFloat(point.score / maxScore))
-
-                let circle = Circle().path(in: CGRect(
-                    x: x - 3,
-                    y: y - 3,
-                    width: 6,
-                    height: 6
-                ))
-
-                context.fill(circle, with: .color(point.color))
-                context.stroke(circle, with: .color(.white), lineWidth: 1)
-            }
-        }
-        .frame(height: height)
-    }
-}
-
-// MARK: - Animated Constellation View
-
-/// Constellation view with animated edges
-public struct AnimatedConstellationView: View {
-    let nodes: [ModelNode]
-    let edges: [ModelEdge]
-    let theme: VisualizationTheme
-    let size: CGSize
-
-    @State private var animationProgress: Double = 0
-
-    public init(
-        nodes: [ModelNode],
-        edges: [ModelEdge],
-        theme: VisualizationTheme = .default,
-        size: CGSize = CGSize(width: 300, height: 300)
-    ) {
-        self.nodes = nodes
-        self.edges = edges
-        self.theme = theme
-        self.size = size
-    }
-
-    public var body: some View {
-        Canvas { context, canvasSize in
-            // Draw animated edges
-            for (index, edge) in edges.enumerated() {
-                if let fromNode = nodes.first(where: { $0.model == edge.from }),
-                   let toNode = nodes.first(where: { $0.model == edge.to }) {
-
-                    let edgeDelay = Double(index) * 0.05
-                    let edgeProgress = max(0, min(1, animationProgress - edgeDelay))
-
-                    if edgeProgress > 0 {
-                        drawAnimatedEdge(
-                            context: context,
-                            from: fromNode.position,
-                            to: toNode.position,
-                            edge: edge,
-                            progress: edgeProgress
-                        )
-                    }
-                }
-            }
-
-            // Draw nodes
-            for node in nodes {
-                drawNode(context: context, node: node, scale: animationProgress)
-            }
-
-            // Draw labels
-            if animationProgress > 0.5 {
-                for node in nodes {
-                    drawLabel(context: context, node: node, opacity: (animationProgress - 0.5) * 2)
-                }
-            }
-        }
-        .frame(width: size.width, height: size.height)
-        .background(theme.backgroundColor)
-        .onAppear {
-            withAnimation(.easeInOut(duration: 1.5)) {
-                animationProgress = 1.0
-            }
-        }
-    }
-
-    // MARK: - Drawing Functions
-
-    private func drawAnimatedEdge(
-        context: GraphicsContext,
-        from: CGPoint,
-        to: CGPoint,
-        edge: ModelEdge,
-        progress: Double
-    ) {
-        let endX = from.x + (to.x - from.x) * progress
-        let endY = from.y + (to.y - from.y) * progress
-
-        var path = Path()
-        path.move(to: from)
-        path.addLine(to: CGPoint(x: endX, y: endY))
-
-        context.stroke(
-            path,
-            with: .color(edge.color),
-            lineWidth: 1 + (edge.strength * 2)
-        )
-    }
-
-    private func drawNode(context: GraphicsContext, node: ModelNode, scale: Double) {
-        let radius: CGFloat = (node.isOutlier ? 12 : 10) * scale
-        let circle = Circle().path(in: CGRect(
-            x: node.position.x - radius,
-            y: node.position.y - radius,
-            width: radius * 2,
-            height: radius * 2
-        ))
-
-        context.fill(circle, with: .color(node.color))
-        context.stroke(circle, with: .color(.white), lineWidth: node.isOutlier ? 2 : 1)
-    }
-
-    private func drawLabel(context: GraphicsContext, node: ModelNode, opacity: Double) {
-        let labelText = formatModelName(node.model)
-        let labelOffset: CGFloat = 20
-
-        let center = CGPoint(x: size.width / 2, y: size.height / 2)
-        let dx = node.position.x - center.x
-        let dy = node.position.y - center.y
-        let angle = atan2(dy, dx)
-
-        let labelX = node.position.x + cos(angle) * labelOffset
-        let labelY = node.position.y + sin(angle) * labelOffset
-
-        context.draw(
-            Text(labelText)
-                .font(.caption2)
-                .foregroundStyle((node.isOutlier ? theme.outlierColor : .secondary).opacity(opacity)),
-            at: CGPoint(x: labelX, y: labelY)
-        )
-    }
-
-    private func formatModelName(_ model: ModelName) -> String {
+    private func modelAbbreviation(_ model: ModelName) -> String {
         switch model {
-        case .ecmwf: return "ECMWF"
+        case .ecmwf: return "EC"
         case .gfs: return "GFS"
-        case .icon: return "ICON"
-        case .meteofrance: return "ARPEGE"
-        case .ukmo: return "UKMO"
+        case .icon: return "ICN"
+        case .meteofrance: return "ARG"
+        case .ukmo: return "UK"
         case .jma: return "JMA"
         case .gem: return "GEM"
         }
@@ -324,51 +250,72 @@ public struct AnimatedConstellationView: View {
 
 // MARK: - Preview
 
-#Preview("Model Constellation") {
-    let theme = VisualizationTheme.default
-
-    let nodes = [
-        ModelNode(model: .ecmwf, position: CGPoint(x: 150, y: 50), isOutlier: false, color: theme.modelNodeColor),
-        ModelNode(model: .gfs, position: CGPoint(x: 250, y: 150), isOutlier: true, color: theme.outlierColor),
-        ModelNode(model: .icon, position: CGPoint(x: 150, y: 250), isOutlier: false, color: theme.modelNodeColor),
-        ModelNode(model: .meteofrance, position: CGPoint(x: 50, y: 150), isOutlier: false, color: theme.modelNodeColor),
+#Preview {
+    let sampleNodes = [
+        ModelNode(
+            model: .ecmwf,
+            position: CGPoint(x: 150, y: 50),
+            color: VisualizationTheme.colorForModel(.ecmwf),
+            isOutlier: false
+        ),
+        ModelNode(
+            model: .gfs,
+            position: CGPoint(x: 250, y: 120),
+            color: VisualizationTheme.colorForModel(.gfs),
+            isOutlier: false
+        ),
+        ModelNode(
+            model: .icon,
+            position: CGPoint(x: 230, y: 230),
+            color: VisualizationTheme.colorForModel(.icon),
+            isOutlier: false
+        ),
+        ModelNode(
+            model: .meteofrance,
+            position: CGPoint(x: 100, y: 250),
+            color: VisualizationTheme.colorForModel(.meteofrance),
+            isOutlier: true
+        ),
+        ModelNode(
+            model: .ukmo,
+            position: CGPoint(x: 50, y: 150),
+            color: VisualizationTheme.colorForModel(.ukmo),
+            isOutlier: false
+        )
     ]
 
-    let edges = [
-        ModelEdge(from: .ecmwf, to: .gfs, strength: 0.8, color: theme.modelEdgeColor.opacity(0.8)),
-        ModelEdge(from: .ecmwf, to: .icon, strength: 0.9, color: theme.modelEdgeColor.opacity(0.9)),
-        ModelEdge(from: .ecmwf, to: .meteofrance, strength: 0.85, color: theme.modelEdgeColor.opacity(0.85)),
-        ModelEdge(from: .gfs, to: .icon, strength: 0.3, color: theme.modelEdgeColor.opacity(0.3)),
-        ModelEdge(from: .gfs, to: .meteofrance, strength: 0.4, color: theme.modelEdgeColor.opacity(0.4)),
-        ModelEdge(from: .icon, to: .meteofrance, strength: 0.95, color: theme.modelEdgeColor.opacity(0.95)),
+    let sampleEdges = [
+        ModelEdge(from: .ecmwf, to: .gfs, strength: 0.8),
+        ModelEdge(from: .ecmwf, to: .icon, strength: 0.8),
+        ModelEdge(from: .ecmwf, to: .ukmo, strength: 0.8),
+        ModelEdge(from: .gfs, to: .icon, strength: 0.8),
+        ModelEdge(from: .gfs, to: .ukmo, strength: 0.8),
+        ModelEdge(from: .icon, to: .ukmo, strength: 0.8),
+        ModelEdge(from: .ecmwf, to: .meteofrance, strength: 0.2),
+        ModelEdge(from: .gfs, to: .meteofrance, strength: 0.2),
+        ModelEdge(from: .icon, to: .meteofrance, strength: 0.2),
+        ModelEdge(from: .ukmo, to: .meteofrance, strength: 0.2)
     ]
 
-    return VStack(spacing: 24) {
-        Text("Model Constellation")
-            .font(.headline)
+    return VStack(spacing: 30) {
+        ModelConstellationView(
+            nodes: sampleNodes,
+            edges: sampleEdges
+        )
+        .padding()
+        .background(Color.black.opacity(0.8))
+        .cornerRadius(12)
 
         ModelConstellationView(
-            nodes: nodes,
-            edges: edges,
-            theme: theme,
-            size: CGSize(width: 300, height: 300)
+            nodes: sampleNodes,
+            edges: sampleEdges,
+            size: CGSize(width: 200, height: 200),
+            showLabels: false
         )
-
-        Text("GFS is an outlier (orange)")
-            .font(.caption)
-            .foregroundStyle(.secondary)
-
-        Divider()
-
-        Text("Animated Constellation")
-            .font(.headline)
-
-        AnimatedConstellationView(
-            nodes: nodes,
-            edges: edges,
-            theme: theme,
-            size: CGSize(width: 300, height: 300)
-        )
+        .padding()
+        .background(Color.black.opacity(0.8))
+        .cornerRadius(12)
     }
     .padding()
+    .background(Color(.systemGroupedBackground))
 }
