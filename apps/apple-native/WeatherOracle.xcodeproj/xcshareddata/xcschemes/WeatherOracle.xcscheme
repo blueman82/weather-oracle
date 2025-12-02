@@ -40,6 +40,17 @@
                ReferencedContainer = "container:WeatherOracle.xcodeproj">
             </BuildableReference>
          </TestableReference>
+         <TestableReference
+            skipped = "NO"
+            parallelizable = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "A10000012300000100000071"
+               BuildableName = "WeatherOracleIntentsTests.xctest"
+               BlueprintName = "WeatherOracleIntentsTests"
+               ReferencedContainer = "container:WeatherOracle.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
       </Testables>
    </TestAction>
    <LaunchAction
