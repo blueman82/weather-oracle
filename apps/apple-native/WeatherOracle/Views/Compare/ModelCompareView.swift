@@ -30,6 +30,10 @@ public struct ModelCompareView: View {
                     showLabels: true
                 )
                 .padding(.vertical, 8)
+                .accessibilityElement(children: .ignore)
+                .accessibilityLabel("Model constellation diagram")
+                .accessibilityValue(constellationAccessibilityValue())
+                .accessibilityHint("Visual network showing how closely different weather models agree. Models connected by lines share similar predictions. Isolated models represent outliers.")
             }
 
             Divider()
@@ -51,6 +55,9 @@ public struct ModelCompareView: View {
                 }
             }
             .pickerStyle(.segmented)
+            .accessibilityLabel("Select comparison metric")
+            .accessibilityValue(selectedMetric.displayName)
+            .accessibilityHint("Choose the weather metric to compare across models: Temperature (Celsius), Precipitation (millimeters), or Wind Speed (meters per second)")
 
             // Timeframe selector
             Picker("Timeframe", selection: $selectedTimeframe) {
@@ -60,6 +67,9 @@ public struct ModelCompareView: View {
                 }
             }
             .pickerStyle(.segmented)
+            .accessibilityLabel("Select forecast timeframe")
+            .accessibilityValue(selectedTimeframe.displayName)
+            .accessibilityHint("Choose the time period: Now (current conditions), 6h (in 6 hours), 12h (in 12 hours), or Tomorrow (tomorrow's conditions)")
         }
     }
 
@@ -81,6 +91,7 @@ public struct ModelCompareView: View {
                 }
             }
         }
+        .accessibilityElement(children: .contain)
     }
 
     // MARK: - Spread Metrics Header
@@ -92,6 +103,7 @@ public struct ModelCompareView: View {
                     .font(.caption)
                     .fontWeight(.semibold)
                     .foregroundStyle(.secondary)
+                    .accessibilityAddTraits(.isHeader)
 
                 Spacer()
 
@@ -101,34 +113,82 @@ public struct ModelCompareView: View {
                     Image(systemName: agreement.score > 0.7 ? "checkmark.circle.fill" : "exclamationmark.triangle.fill")
                         .font(.caption)
                         .foregroundStyle(agreement.score > 0.7 ? .green : .orange)
+                        .accessibilityHidden(true)
 
                     Text("\(Int(agreement.score * 100))% agreement")
                         .font(.caption)
                         .foregroundStyle(.secondary)
                 }
+                .accessibilityElement(children: .combine)
+                .accessibilityLabel("Model agreement: \(Int(agreement.score * 100))%")
+                .accessibilityValue("\(Int(agreement.score * 100))% of models agree on this forecast")
+                .accessibilityHint(agreement.score > 0.7 ? "High confidence: Models are in close agreement" : "Lower confidence: Models show some divergence")
             }
 
             // Statistics
             if let stats = currentStatistics {
                 HStack(spacing: 16) {
-                    statCell(label: "Mean", value: formatValue(stats.mean))
-                    statCell(label: "Range", value: formatValue(stats.range))
-                    statCell(label: "Std Dev", value: formatValue(stats.stdDev))
+                    statCell(label: "Mean", value: formatValue(stats.mean), semanticValue: stats.mean)
+                    statCell(label: "Range", value: formatValue(stats.range), semanticValue: stats.range)
+                    statCell(label: "Std Dev", value: formatValue(stats.stdDev), semanticValue: stats.stdDev)
                 }
+                .accessibilityElement(children: .combine)
+                .accessibilityLabel("Spread statistics")
+                .accessibilityValue("Mean: \(formatValue(stats.mean)), Range: \(formatValue(stats.range)), Standard deviation: \(formatValue(stats.stdDev))")
+                .accessibilityHint("Statistical metrics showing model divergence. Higher values indicate greater disagreement between models.")
             }
         }
     }
 
-    private func statCell(label: String, value: String) -> some View {
+    private func statCell(label: String, value: String, semanticValue: Double? = nil) -> some View {
         VStack(alignment: .leading, spacing: 2) {
             Text(label)
                 .font(.caption2)
                 .foregroundStyle(.tertiary)
+                .accessibilityHidden(true)
 
             Text(value)
                 .font(.caption)
                 .fontWeight(.medium)
                 .foregroundStyle(.secondary)
+                .accessibilityHidden(true)
+        }
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel(metricAccessibilityLabel(label))
+        .accessibilityValue(value)
+        .accessibilityHint(metricAccessibilityHint(label, semanticValue: semanticValue))
+    }
+
+    private func metricAccessibilityLabel(_ metric: String) -> String {
+        switch metric {
+        case "Mean":
+            return "Mean value across all models"
+        case "Range":
+            return "Range of predictions"
+        case "Std Dev":
+            return "Standard deviation showing spread"
+        default:
+            return metric
+        }
+    }
+
+    private func metricAccessibilityHint(_ metric: String, semanticValue: Double?) -> String {
+        let valueDescription: String
+        if let value = semanticValue {
+            valueDescription = String(format: "Value: %.1f. ", value)
+        } else {
+            valueDescription = ""
+        }
+
+        switch metric {
+        case "Mean":
+            return "\(valueDescription)Average prediction from all models."
+        case "Range":
+            return "\(valueDescription)Difference between highest and lowest predictions."
+        case "Std Dev":
+            return "\(valueDescription)Measure of how much predictions deviate from the mean. Higher values indicate greater disagreement."
+        default:
+            return ""
         }
     }
 
@@ -140,11 +200,13 @@ public struct ModelCompareView: View {
             Circle()
                 .fill(VisualizationTheme.colorForModel(model))
                 .frame(width: 12, height: 12)
+                .accessibilityHidden(true)
 
             // Model name
             Text(modelDisplayName(model))
                 .font(.subheadline)
                 .fontWeight(.medium)
+                .accessibilityLabel("\(modelDisplayName(model)) model")
 
             Spacer()
 
@@ -153,6 +215,7 @@ public struct ModelCompareView: View {
                 Image(systemName: "exclamationmark.triangle.fill")
                     .font(.caption)
                     .foregroundStyle(.orange)
+                    .accessibilityHidden(true)
             }
 
             // Value with deviation indicator
@@ -162,14 +225,60 @@ public struct ModelCompareView: View {
                         .font(.subheadline)
                         .fontWeight(.semibold)
                         .foregroundStyle(isOutlier(model) ? .orange : .primary)
+                        .accessibilityLabel("Predicted value")
+                        .accessibilityValue(formatValue(value))
 
                     if let deviation = calculateDeviation(value: value) {
                         deviationIndicator(deviation)
+                            .accessibilityHidden(true)
                     }
                 }
             }
         }
         .padding(.vertical, 4)
+        .accessibilityElement(children: .contain)
+        .accessibilityLabel(modelRowAccessibilityLabel(model))
+        .accessibilityValue(modelRowAccessibilityValue(model))
+        .accessibilityHint(modelRowAccessibilityHint(model))
+    }
+
+    private func modelRowAccessibilityLabel(_ model: ModelName) -> String {
+        return "\(modelDisplayName(model)) forecast"
+    }
+
+    private func modelRowAccessibilityValue(_ model: ModelName) -> String {
+        guard let value = modelValue(for: model) else {
+            return "No data available"
+        }
+
+        var valueString = formatValue(value)
+
+        if let stats = currentStatistics {
+            let deviation = value - stats.mean
+            if abs(deviation) > 0.1 {
+                let direction = deviation > 0 ? "above" : "below"
+                valueString += ", \(String(format: "%.1f", abs(deviation))) \(direction) average"
+            }
+        }
+
+        return valueString
+    }
+
+    private func modelRowAccessibilityHint(_ model: ModelName) -> String {
+        guard isOutlier(model) else {
+            return "Prediction from \(modelDisplayName(model)) weather model"
+        }
+
+        if let value = modelValue(for: model), let stats = currentStatistics {
+            let deviation = value - stats.mean
+            let metric = selectedMetric.displayName.lowercased()
+            let deviationAmount = String(format: "%.1f", abs(deviation))
+            let direction = deviation > 0 ? "above" : "below"
+
+            return "Warning: \(deviationAmount) \(metric) \(direction) the average. This model predicts significantly different conditions than other models."
+        }
+
+        return "This model shows divergence from others."
     }
 
     private func deviationIndicator(_ deviation: Double) -> some View {
@@ -184,6 +293,19 @@ public struct ModelCompareView: View {
     }
 
     // MARK: - Helper Methods
+
+    private func constellationAccessibilityValue() -> String {
+        let agreement = currentAgreement
+        let agreementPercent = Int(agreement.score * 100)
+        let agreementCount = agreement.modelsInAgreement.count
+        let outlierCount = agreement.outlierModels.count
+
+        var description = "\(agreementPercent)% agreement. "
+        description += "\(agreementCount) model\(agreementCount == 1 ? "" : "s") agree, "
+        description += "\(outlierCount) model\(outlierCount == 1 ? "" : "s") show divergence."
+
+        return description
+    }
 
     private var currentAgreement: ModelConsensus {
         switch selectedTimeframe {

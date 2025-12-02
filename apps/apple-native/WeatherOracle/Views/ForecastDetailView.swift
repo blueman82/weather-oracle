@@ -36,6 +36,11 @@ public struct ForecastDetailView: View {
             generator.impactOccurred()
             #endif
         }
+        .accessibilityAction(named: "Refresh") {
+            Task {
+                await viewModel.refresh()
+            }
+        }
         .navigationTitle(viewModel.location.name)
         .navigationBarTitleDisplayMode(.large)
         .toolbar {
@@ -46,6 +51,8 @@ public struct ForecastDetailView: View {
                     Image(systemName: "xmark.circle.fill")
                         .symbolRenderingMode(.hierarchical)
                 }
+                .accessibilityLabel("Close")
+                .accessibilityHint("Dismiss forecast detail and return to location list")
             }
 
             ToolbarItem(placement: .primaryAction) {
@@ -53,6 +60,7 @@ public struct ForecastDetailView: View {
                     Text(updated, style: .time)
                         .font(.caption)
                         .foregroundStyle(.secondary)
+                        .accessibilityLabel("Last updated at \(updated.formatted(date: .omitted, time: .shortened))")
                 }
             }
         }
@@ -69,6 +77,7 @@ public struct ForecastDetailView: View {
         VStack(spacing: 16) {
             ProgressView()
                 .scaleEffect(1.5)
+                .accessibilityLabel("Loading")
 
             Text("Loading forecast...")
                 .font(.subheadline)
@@ -76,6 +85,8 @@ public struct ForecastDetailView: View {
         }
         .frame(maxWidth: .infinity)
         .padding(.vertical, 100)
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel("Loading forecast data")
     }
 
     // MARK: - Error State
@@ -85,16 +96,19 @@ public struct ForecastDetailView: View {
             Image(systemName: "exclamationmark.triangle.fill")
                 .font(.system(size: 64))
                 .foregroundStyle(.orange)
+                .accessibilityHidden(true)
 
             Text("Failed to Load Forecast")
                 .font(.title2)
                 .fontWeight(.semibold)
+                .accessibilityAddTraits(.isHeader)
 
             Text(error.localizedDescription)
                 .font(.subheadline)
                 .foregroundStyle(.secondary)
                 .multilineTextAlignment(.center)
                 .padding(.horizontal)
+                .accessibilityLabel("Error details: \(error.localizedDescription)")
 
             Button {
                 Task {
@@ -104,8 +118,11 @@ public struct ForecastDetailView: View {
                 Label("Try Again", systemImage: "arrow.clockwise")
             }
             .buttonStyle(.borderedProminent)
+            .accessibilityLabel("Try again")
+            .accessibilityHint("Attempt to reload forecast data for this location")
         }
         .padding(.vertical, 60)
+        .accessibilityElement(children: .contain)
     }
 
     // MARK: - Empty State
@@ -115,10 +132,12 @@ public struct ForecastDetailView: View {
             Image(systemName: "cloud.slash")
                 .font(.system(size: 64))
                 .foregroundStyle(.secondary)
+                .accessibilityHidden(true)
 
             Text("No Forecast Available")
                 .font(.title2)
                 .fontWeight(.semibold)
+                .accessibilityAddTraits(.isHeader)
 
             Button {
                 Task {
@@ -128,8 +147,11 @@ public struct ForecastDetailView: View {
                 Label("Load Forecast", systemImage: "arrow.clockwise")
             }
             .buttonStyle(.bordered)
+            .accessibilityLabel("Load forecast")
+            .accessibilityHint("Fetch forecast data for this location")
         }
         .padding(.vertical, 60)
+        .accessibilityElement(children: .contain)
     }
 
     // MARK: - Forecast Content
@@ -175,15 +197,21 @@ public struct ForecastDetailView: View {
                 VStack(alignment: .leading, spacing: 8) {
                     Text("\(Int(current.metrics.temperature.rawValue.rounded()))°")
                         .font(.system(size: 72, weight: .thin))
+                        .accessibilityLabel("Temperature")
+                        .accessibilityValue("\(Int(current.metrics.temperature.rawValue.rounded())) degrees Celsius")
 
                     Text(weatherDescription(current.metrics.weatherCode))
                         .font(.title3)
                         .foregroundStyle(.secondary)
+                        .accessibilityLabel("Weather conditions")
+                        .accessibilityValue(weatherDescription(current.metrics.weatherCode))
 
                     // Feels like
                     Text("Feels like \(Int(current.metrics.feelsLike.rawValue.rounded()))°")
                         .font(.subheadline)
                         .foregroundStyle(.tertiary)
+                        .accessibilityLabel("Feels like temperature")
+                        .accessibilityValue("\(Int(current.metrics.feelsLike.rawValue.rounded())) degrees Celsius")
                 }
 
                 Spacer()
@@ -192,7 +220,9 @@ public struct ForecastDetailView: View {
                 Image(systemName: weatherIcon(current.metrics.weatherCode))
                     .font(.system(size: 64))
                     .symbolRenderingMode(.multicolor)
+                    .accessibilityLabel("\(weatherDescription(current.metrics.weatherCode)) weather icon")
             }
+            .accessibilityElement(children: .combine)
 
             Divider()
 
@@ -210,7 +240,7 @@ public struct ForecastDetailView: View {
 
                 metricCell(
                     icon: "wind",
-                    label: "Wind",
+                    label: "Wind Speed",
                     value: String(format: "%.1f m/s", current.metrics.windSpeed.rawValue)
                 )
 
@@ -235,13 +265,16 @@ public struct ForecastDetailView: View {
                 metricCell(
                     icon: "sun.max",
                     label: "UV Index",
-                    value: "\(current.metrics.uvIndex.rawValue)"
+                    value: "\(Int(current.metrics.uvIndex.rawValue))"
                 )
             }
         }
         .padding()
         .background(Color(.secondarySystemGroupedBackground))
         .cornerRadius(16)
+        .accessibilityElement(children: .contain)
+        .accessibilityLabel("Current weather conditions")
+        .accessibilityValue("Temperature \(Int(current.metrics.temperature.rawValue.rounded())) degrees, \(weatherDescription(current.metrics.weatherCode))")
     }
 
     private func metricCell(icon: String, label: String, value: String) -> some View {
@@ -249,15 +282,21 @@ public struct ForecastDetailView: View {
             Image(systemName: icon)
                 .font(.title3)
                 .foregroundStyle(.secondary)
+                .accessibilityHidden(true)
 
             Text(label)
                 .font(.caption2)
                 .foregroundStyle(.tertiary)
+                .accessibilityHidden(true)
 
             Text(value)
                 .font(.subheadline)
                 .fontWeight(.semibold)
+                .accessibilityHidden(true)
         }
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel(label)
+        .accessibilityValue(value)
     }
 
     // MARK: - Narrative Module
@@ -267,27 +306,40 @@ public struct ForecastDetailView: View {
             Label("Forecast Summary", systemImage: "text.quote")
                 .font(.headline)
                 .foregroundStyle(.primary)
+                .accessibilityAddTraits(.isHeader)
 
             VStack(alignment: .leading, spacing: 8) {
                 Text(narrative.headline)
                     .font(.title3)
                     .fontWeight(.semibold)
+                    .accessibilityLabel("Summary headline")
+                    .accessibilityValue(narrative.headline)
 
                 if !narrative.body.isEmpty {
                     Text(narrative.body)
                         .font(.subheadline)
                         .foregroundStyle(.secondary)
+                        .accessibilityLabel("Summary details")
+                        .accessibilityValue(narrative.body)
                 }
             }
 
             // Alerts
             if !narrative.alerts.isEmpty {
                 VStack(alignment: .leading, spacing: 8) {
+                    Text("Alerts")
+                        .font(.caption)
+                        .fontWeight(.semibold)
+                        .foregroundStyle(.orange)
+                        .accessibilityAddTraits(.isHeader)
+                        .accessibilityHidden(true)
+
                     ForEach(narrative.alerts, id: \.self) { alert in
                         HStack(alignment: .top, spacing: 8) {
                             Image(systemName: "exclamationmark.triangle.fill")
                                 .font(.caption)
                                 .foregroundStyle(.orange)
+                                .accessibilityHidden(true)
 
                             Text(alert)
                                 .font(.caption)
@@ -297,6 +349,9 @@ public struct ForecastDetailView: View {
                         .frame(maxWidth: .infinity, alignment: .leading)
                         .background(Color.orange.opacity(0.1))
                         .cornerRadius(8)
+                        .accessibilityElement(children: .combine)
+                        .accessibilityLabel("Weather alert")
+                        .accessibilityValue(alert)
                     }
                 }
             }
@@ -310,6 +365,7 @@ public struct ForecastDetailView: View {
                         .font(.caption)
                         .fontWeight(.semibold)
                         .foregroundStyle(.secondary)
+                        .accessibilityAddTraits(.isHeader)
 
                     ForEach(narrative.modelNotes, id: \.self) { note in
                         HStack(alignment: .top, spacing: 6) {
@@ -317,11 +373,15 @@ public struct ForecastDetailView: View {
                                 .font(.system(size: 4))
                                 .foregroundStyle(.tertiary)
                                 .padding(.top, 6)
+                                .accessibilityHidden(true)
 
                             Text(note)
                                 .font(.caption)
                                 .foregroundStyle(.secondary)
                         }
+                        .accessibilityElement(children: .combine)
+                        .accessibilityLabel("Model difference")
+                        .accessibilityValue(note)
                     }
                 }
             }
@@ -329,6 +389,8 @@ public struct ForecastDetailView: View {
         .padding()
         .background(Color(.secondarySystemGroupedBackground))
         .cornerRadius(16)
+        .accessibilityElement(children: .contain)
+        .accessibilityLabel("Forecast summary and narrative")
     }
 
     // MARK: - Hourly Module
@@ -338,6 +400,7 @@ public struct ForecastDetailView: View {
             Label("Hourly Forecast", systemImage: "clock")
                 .font(.headline)
                 .foregroundStyle(.primary)
+                .accessibilityAddTraits(.isHeader)
 
             // Temperature heatmap
             if let chartSeries = viewModel.chartSeries {
@@ -346,6 +409,9 @@ public struct ForecastDetailView: View {
                     height: 60,
                     showLabels: true
                 )
+                .accessibilityLabel("Temperature heatmap for next 24 hours")
+                .accessibilityValue("Temperature range from \(String(format: "%.0f", chartSeries.temperatureData.prefix(24).min() ?? 0)) to \(String(format: "%.0f", chartSeries.temperatureData.prefix(24).max() ?? 0)) degrees")
+                .accessibilityHint("Visual representation of temperature changes throughout the day")
             }
 
             Divider()
@@ -356,11 +422,16 @@ public struct ForecastDetailView: View {
                         hourlyCell(hour)
                     }
                 }
+                .accessibilityElement(children: .contain)
+                .accessibilityLabel("Next 24 hours hourly forecast")
+                .accessibilityHint("Scroll horizontally to view more hourly forecasts")
             }
         }
         .padding()
         .background(Color(.secondarySystemGroupedBackground))
         .cornerRadius(16)
+        .accessibilityElement(children: .contain)
+        .accessibilityLabel("Hourly forecast for next 24 hours")
     }
 
     private func hourlyCell(_ hourly: AggregatedHourlyForecast) -> some View {
@@ -368,21 +439,29 @@ public struct ForecastDetailView: View {
             Text(hourly.timestamp, style: .time)
                 .font(.caption)
                 .foregroundStyle(.secondary)
+                .accessibilityHidden(true)
 
             Image(systemName: weatherIcon(hourly.metrics.weatherCode))
                 .font(.title2)
                 .symbolRenderingMode(.multicolor)
+                .accessibilityLabel("\(weatherDescription(hourly.metrics.weatherCode)) weather")
 
             Text("\(Int(hourly.metrics.temperature.rawValue.rounded()))°")
                 .font(.subheadline)
                 .fontWeight(.semibold)
+                .accessibilityHidden(true)
 
             // Confidence indicator
             Circle()
                 .fill(confidenceColor(hourly.confidence.level))
                 .frame(width: 6, height: 6)
+                .accessibilityLabel("Confidence: \(hourly.confidence.level.rawValue)")
+                .accessibilityValue(colorDescription(hourly.confidence.level))
         }
         .frame(width: 60)
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel("Hour at \(hourly.timestamp.formatted(date: .omitted, time: .shortened))")
+        .accessibilityValue("Temperature \(Int(hourly.metrics.temperature.rawValue.rounded())) degrees, \(weatherDescription(hourly.metrics.weatherCode)), \(hourly.confidence.level.rawValue) confidence")
     }
 
     // MARK: - Daily Module
@@ -392,16 +471,21 @@ public struct ForecastDetailView: View {
             Label("7-Day Forecast", systemImage: "calendar")
                 .font(.headline)
                 .foregroundStyle(.primary)
+                .accessibilityAddTraits(.isHeader)
 
             VStack(spacing: 12) {
                 ForEach(daily) { day in
                     dailyRow(day)
                 }
             }
+            .accessibilityElement(children: .contain)
+            .accessibilityLabel("7-day daily forecast")
         }
         .padding()
         .background(Color(.secondarySystemGroupedBackground))
         .cornerRadius(16)
+        .accessibilityElement(children: .contain)
+        .accessibilityLabel("7-Day forecast")
     }
 
     private func dailyRow(_ daily: AggregatedDailyForecast) -> some View {
@@ -411,12 +495,14 @@ public struct ForecastDetailView: View {
                 .font(.subheadline)
                 .fontWeight(.medium)
                 .frame(width: 50, alignment: .leading)
+                .accessibilityHidden(true)
 
             // Weather icon
             Image(systemName: weatherIcon(daily.forecast.weatherCode))
                 .font(.title3)
                 .symbolRenderingMode(.multicolor)
                 .frame(width: 40)
+                .accessibilityLabel("\(weatherDescription(daily.forecast.weatherCode)) weather")
 
             // Precipitation
             if daily.forecast.precipitation.total.rawValue > 0 {
@@ -424,9 +510,12 @@ public struct ForecastDetailView: View {
                     .font(.caption)
                     .foregroundStyle(.blue)
                     .frame(width: 35)
+                    .accessibilityLabel("Precipitation chance")
+                    .accessibilityValue("\(Int(daily.forecast.precipitation.probability * 100))%")
             } else {
                 Spacer()
                     .frame(width: 35)
+                    .accessibilityHidden(true)
             }
 
             Spacer()
@@ -437,6 +526,7 @@ public struct ForecastDetailView: View {
                     .font(.subheadline)
                     .foregroundStyle(.secondary)
                     .frame(width: 35, alignment: .trailing)
+                    .accessibilityHidden(true)
 
                 temperatureBar(
                     min: daily.forecast.temperature.min.rawValue,
@@ -445,16 +535,26 @@ public struct ForecastDetailView: View {
                     globalMax: daily.range.temperatureMax.max
                 )
                 .frame(width: 80)
+                .accessibilityLabel("Temperature range")
+                .accessibilityValue("Low \(Int(daily.forecast.temperature.min.rawValue.rounded())) degrees, high \(Int(daily.forecast.temperature.max.rawValue.rounded())) degrees")
 
                 Text("\(Int(daily.forecast.temperature.max.rawValue.rounded()))°")
                     .font(.subheadline)
                     .fontWeight(.medium)
                     .frame(width: 35, alignment: .leading)
+                    .accessibilityHidden(true)
             }
 
             // Confidence badge
-            confidenceBadge(daily.confidence.level)
+            Image(systemName: "circle.fill")
+                .font(.system(size: 8))
+                .foregroundStyle(confidenceColor(daily.confidence.level))
+                .accessibilityLabel("Confidence level")
+                .accessibilityValue(daily.confidence.level.rawValue)
         }
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel("\(daily.date.formatted(date: .abbreviated, time: .omitted))")
+        .accessibilityValue("Weather: \(weatherDescription(daily.forecast.weatherCode)), Low \(Int(daily.forecast.temperature.min.rawValue.rounded())) degrees, High \(Int(daily.forecast.temperature.max.rawValue.rounded())) degrees\(daily.forecast.precipitation.total.rawValue > 0 ? ", \(Int(daily.forecast.precipitation.probability * 100))% chance of precipitation" : ""), Confidence: \(daily.confidence.level.rawValue)")
     }
 
     private func temperatureBar(min: Double, max: Double, globalMin: Double, globalMax: Double) -> some View {
@@ -489,15 +589,20 @@ public struct ForecastDetailView: View {
             Label("Model Comparison", systemImage: "square.grid.3x3")
                 .font(.headline)
                 .foregroundStyle(.primary)
+                .accessibilityAddTraits(.isHeader)
 
             ModelCompareView(
                 forecast: forecast,
                 viewModel: viewModel
             )
+            .accessibilityLabel("Model comparison and differences")
+            .accessibilityHint("Compares predictions from different weather models")
         }
         .padding()
         .background(Color(.secondarySystemGroupedBackground))
         .cornerRadius(16)
+        .accessibilityElement(children: .contain)
+        .accessibilityLabel("Model comparison")
     }
 
     // MARK: - Helper Views
@@ -510,9 +615,19 @@ public struct ForecastDetailView: View {
                 Circle()
                     .strokeBorder(confidenceColor(level).opacity(0.3), lineWidth: 3)
             )
+            .accessibilityLabel("Confidence level")
+            .accessibilityValue(level.rawValue)
     }
 
     // MARK: - Helpers
+
+    private func colorDescription(_ level: ConfidenceLevelName) -> String {
+        switch level {
+        case .high: return "Green, indicating high confidence"
+        case .medium: return "Yellow, indicating medium confidence"
+        case .low: return "Red, indicating low confidence"
+        }
+    }
 
     private func weatherDescription(_ code: WeatherCode) -> String {
         switch code {

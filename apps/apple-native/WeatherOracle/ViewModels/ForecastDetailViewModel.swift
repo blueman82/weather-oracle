@@ -2,6 +2,7 @@ import Foundation
 import SharedKit
 import SwiftUI
 import Combine
+import NotificationEngine
 
 // MARK: - Forecast Detail View Model
 
@@ -13,6 +14,9 @@ public final class ForecastDetailViewModel {
 
     private let client: OpenMeteoClient
     private let models: [ModelName]
+    private let notificationEngine: NotificationEngine?
+    private let cloudSyncStore: CloudSyncStore?
+    private var cancellables = Set<AnyCancellable>()
 
     public let location: LocationEntity
     public private(set) var forecast: AggregatedForecast?
@@ -27,11 +31,17 @@ public final class ForecastDetailViewModel {
     public init(
         location: LocationEntity,
         client: OpenMeteoClient = OpenMeteoClient(),
-        models: [ModelName] = [.ecmwf, .gfs, .icon, .meteofrance, .ukmo]
+        models: [ModelName] = [.ecmwf, .gfs, .icon, .meteofrance, .ukmo],
+        notificationEngine: NotificationEngine? = nil,
+        cloudSyncStore: CloudSyncStore? = nil
     ) {
         self.location = location
         self.client = client
         self.models = models
+        self.notificationEngine = notificationEngine
+        self.cloudSyncStore = cloudSyncStore
+
+        setupCloudSyncObserver()
     }
 
     // MARK: - Data Fetching
@@ -91,6 +101,36 @@ public final class ForecastDetailViewModel {
     /// Refresh forecast data with pull-to-refresh
     public func refresh() async {
         await fetchForecast()
+
+        // Reschedule background alerts after successful refresh
+        if let engine = notificationEngine, let currentForecast = forecast {
+            await rescheduleNotifications(engine: engine, forecast: currentForecast)
+        }
+    }
+
+    /// Reschedule notification alerts after forecast refresh
+    private func rescheduleNotifications(engine: NotificationEngine, forecast: AggregatedForecast) async {
+        // Evaluate alert rules for this location
+        let results = engine.evaluateRules(location: location, forecast: forecast)
+
+        // Schedule notifications for triggered alerts
+        for result in results {
+            do {
+                try await engine.scheduleNotification(for: result)
+            } catch {
+                // Silently fail notification scheduling - don't block forecast refresh
+                print("Failed to schedule notification: \(error)")
+            }
+        }
+
+        // Check for model divergence
+        if let divergenceAlert = engine.detectModelDivergence(forecast: forecast) {
+            do {
+                try await engine.scheduleModelDivergenceNotification(for: divergenceAlert)
+            } catch {
+                print("Failed to schedule divergence notification: \(error)")
+            }
+        }
     }
 
     // MARK: - Computed Properties
@@ -158,5 +198,32 @@ public final class ForecastDetailViewModel {
     /// Get model forecast for specific model
     public func modelForecast(for model: ModelName) -> ModelForecast? {
         forecast?.modelForecasts.first { $0.model == model }
+    }
+
+    // MARK: - CloudSyncStore Integration
+
+    /// Setup observer for CloudSyncStore preference changes
+    private func setupCloudSyncObserver() {
+        guard let store = cloudSyncStore else { return }
+
+        // Subscribe to preference changes from CloudSyncStore
+        store.changePublisher
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] change in
+                guard let self = self else { return }
+
+                // Refresh forecast when locations or preferences change
+                switch change.key {
+                case .locations, .temperatureUnit, .windSpeedUnit, .precipitationUnit, .pressureUnit:
+                    // Automatically refresh forecast when relevant preferences change
+                    Task {
+                        await self.fetchForecast()
+                    }
+                default:
+                    // Ignore other preference changes (widget layout, notification rules, etc.)
+                    break
+                }
+            }
+            .store(in: &cancellables)
     }
 }
