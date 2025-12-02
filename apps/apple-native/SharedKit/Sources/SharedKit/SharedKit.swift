@@ -1,36 +1,86 @@
 import Foundation
 
+// MARK: - SharedKit
+
 /// SharedKit provides shared business logic and models for the Weather Oracle app ecosystem.
 public enum SharedKit {
     public static let version = "1.0.0"
 }
 
-// MARK: - Weather Models
+// MARK: - WeatherCondition
 
-/// Represents a weather condition
-public enum WeatherCondition: String, Codable, Sendable {
-    case sunny = "sunny"
-    case cloudy = "cloudy"
-    case rainy = "rainy"
-    case snowy = "snowy"
-    case stormy = "stormy"
-    case foggy = "foggy"
-    case windy = "windy"
+/// Represents a weather condition for narrative generation
+public enum WeatherCondition: String, Codable, Sendable, CaseIterable {
+    case sunny
     case partlyCloudy = "partly_cloudy"
+    case cloudy
+    case overcast
+    case fog
+    case drizzle
+    case rain
+    case heavyRain = "heavy_rain"
+    case thunderstorm
+    case snow
+    case sleet
+    case unknown
 
     public var systemImageName: String {
         switch self {
         case .sunny: return "sun.max.fill"
-        case .cloudy: return "cloud.fill"
-        case .rainy: return "cloud.rain.fill"
-        case .snowy: return "cloud.snow.fill"
-        case .stormy: return "cloud.bolt.rain.fill"
-        case .foggy: return "cloud.fog.fill"
-        case .windy: return "wind"
         case .partlyCloudy: return "cloud.sun.fill"
+        case .cloudy: return "cloud.fill"
+        case .overcast: return "smoke.fill"
+        case .fog: return "cloud.fog.fill"
+        case .drizzle: return "cloud.drizzle.fill"
+        case .rain: return "cloud.rain.fill"
+        case .heavyRain: return "cloud.heavyrain.fill"
+        case .thunderstorm: return "cloud.bolt.rain.fill"
+        case .snow: return "cloud.snow.fill"
+        case .sleet: return "cloud.sleet.fill"
+        case .unknown: return "questionmark.circle"
+        }
+    }
+
+    /// Whether this condition involves precipitation
+    public var isPrecipitation: Bool {
+        switch self {
+        case .drizzle, .rain, .heavyRain, .thunderstorm, .snow, .sleet:
+            return true
+        default:
+            return false
+        }
+    }
+
+    /// Whether this is a dry condition
+    public var isDry: Bool {
+        switch self {
+        case .sunny, .partlyCloudy, .cloudy, .overcast, .fog:
+            return true
+        default:
+            return false
+        }
+    }
+
+    /// Human-readable description
+    public var conditionDescription: String {
+        switch self {
+        case .sunny: return "sunny"
+        case .partlyCloudy: return "partly cloudy"
+        case .cloudy: return "cloudy"
+        case .overcast: return "overcast"
+        case .fog: return "foggy"
+        case .drizzle: return "light rain"
+        case .rain: return "rain"
+        case .heavyRain: return "heavy rain"
+        case .thunderstorm: return "thunderstorms"
+        case .snow: return "snow"
+        case .sleet: return "sleet"
+        case .unknown: return "mixed conditions"
         }
     }
 }
+
+// MARK: - Temperature
 
 /// Represents a temperature value with unit conversion
 public struct Temperature: Codable, Sendable {
@@ -41,7 +91,7 @@ public struct Temperature: Codable, Sendable {
     }
 
     public init(fahrenheit: Double) {
-        self.celsius = (fahrenheit - 32) * 5 / 9
+        celsius = (fahrenheit - 32) * 5 / 9
     }
 
     public var fahrenheit: Double {
@@ -51,18 +101,24 @@ public struct Temperature: Codable, Sendable {
     public func formatted(unit: TemperatureUnit = .fahrenheit) -> String {
         switch unit {
         case .celsius:
-            return String(format: "%.0f°C", celsius)
+            String(format: "%.0f°C", celsius)
         case .fahrenheit:
-            return String(format: "%.0f°F", fahrenheit)
+            String(format: "%.0f°F", fahrenheit)
         }
     }
 }
 
+// MARK: - TemperatureUnit
+
 /// Temperature unit preference
-public enum TemperatureUnit: String, Codable, Sendable {
+public enum TemperatureUnit: String, Codable, Sendable, CaseIterable {
     case celsius
     case fahrenheit
+
+    public static let `default`: TemperatureUnit = .celsius
 }
+
+// MARK: - WeatherForecast
 
 /// A weather forecast entry
 public struct WeatherForecast: Codable, Sendable, Identifiable {
@@ -110,7 +166,7 @@ public struct Location: Codable, Sendable, Identifiable, Hashable {
     }
 }
 
-// MARK: - App Group Constants
+// MARK: - AppGroup
 
 public enum AppGroup {
     public static let identifier = "group.com.weatheroracle.app"
