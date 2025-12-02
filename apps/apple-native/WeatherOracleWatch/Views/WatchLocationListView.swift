@@ -23,6 +23,7 @@ public struct WatchLocationListView: View {
             }
             .navigationTitle("Locations")
             .navigationBarTitleDisplayMode(.inline)
+            .accessibilityLabel("Weather Locations")
         }
     }
 
@@ -37,6 +38,12 @@ public struct WatchLocationListView: View {
                 .listRowBackground(
                     selectedIndex == index ? Color.blue.opacity(0.2) : Color.clear
                 )
+                .accessibilityElement(children: .combine)
+                .accessibilityLabel("Location: \(location.name)")
+                .accessibilityValue(
+                    location.id == viewModel.selectedLocation?.id ? "Selected" : "Not selected"
+                )
+                .accessibilityHint("Double tap to view detailed forecast")
             }
         }
         .focusable()
@@ -60,12 +67,15 @@ public struct WatchLocationListView: View {
         .navigationDestination(for: LocationEntity.self) { location in
             WatchForecastDetailView(viewModel: viewModel, location: location)
         }
+        .accessibilityHint("Use Digital Crown to navigate locations. Double tap to view details.")
     }
 
     private func locationRow(_ location: LocationEntity) -> some View {
         VStack(alignment: .leading, spacing: 4) {
             Text(location.name)
                 .font(.headline)
+                .accessibilityLabel("Location name")
+                .accessibilityValue(location.name)
 
             if location.id == viewModel.selectedLocation?.id {
                 HStack(spacing: 4) {
@@ -73,18 +83,25 @@ public struct WatchLocationListView: View {
                         Text("\(Int(temp.rawValue.rounded()))°")
                             .font(.title3)
                             .fontWeight(.semibold)
+                            .accessibilityLabel("Current temperature")
+                            .accessibilityValue("\(Int(temp.rawValue.rounded())) degrees")
                     }
 
                     if let condition = viewModel.todayCondition as String? {
                         Text(condition)
                             .font(.caption)
                             .foregroundStyle(.secondary)
+                            .accessibilityLabel("Weather condition")
+                            .accessibilityValue(condition)
                     }
                 }
+                .accessibilityElement(children: .combine)
             } else {
                 Text("Tap to load")
                     .font(.caption)
                     .foregroundStyle(.secondary)
+                    .accessibilityLabel("Status")
+                    .accessibilityValue("Tap to load forecast")
             }
         }
         .padding(.vertical, 4)
@@ -97,15 +114,22 @@ public struct WatchLocationListView: View {
             Image(systemName: "location.slash")
                 .font(.largeTitle)
                 .foregroundStyle(.secondary)
+                .accessibilityLabel("No location icon")
+                .accessibilityHidden(true)
 
             Text("No Locations")
                 .font(.headline)
+                .accessibilityLabel("No locations available")
 
             Text("Add locations on your iPhone")
                 .font(.caption2)
                 .foregroundStyle(.secondary)
                 .multilineTextAlignment(.center)
+                .accessibilityLabel("Instructions")
+                .accessibilityValue("Add locations using your iPhone app")
         }
         .padding()
+        .accessibilityElement(children: .combine)
+        .accessibilityHint("Locations you add on your iPhone will appear here")
     }
 }

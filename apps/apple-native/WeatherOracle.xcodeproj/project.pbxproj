@@ -29,6 +29,8 @@
 		A10000012300000100000044 /* WeatherOracleIntentsExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = A10000012300000100000045 /* WeatherOracleIntentsExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		A10000012300000100000046 /* SharedKit in Frameworks */ = {isa = PBXBuildFile; productRef = A10000012300000100000047 /* SharedKit */; };
 		A10000012300000100000048 /* SharedKit in Frameworks */ = {isa = PBXBuildFile; productRef = A10000012300000100000049 /* SharedKit */; };
+		A1000001230000010000004A /* WatchLocationViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1000001230000010000004B /* WatchLocationViewModelTests.swift */; };
+		A1000001230000010000004C /* SharedKit in Frameworks */ = {isa = PBXBuildFile; productRef = A1000001230000010000004D /* SharedKit */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -52,6 +54,13 @@
 			proxyType = 1;
 			remoteGlobalIDString = A10000012300000100000008;
 			remoteInfo = WeatherOracle;
+		};
+		A1000001230000010000004E /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = A10000012300000100000001 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = A1000001230000010000002C;
+			remoteInfo = WeatherOracleWatch;
 		};
 /* End PBXContainerItemProxy section */
 
@@ -96,6 +105,8 @@
 		A10000012300000100000045 /* WeatherOracleIntentsExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = WeatherOracleIntentsExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		A10000012300000100000080 /* SharedKit */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = SharedKit; path = SharedKit; sourceTree = "<group>"; };
 		A100000123000001000000D1 /* WeatherOracleTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = WeatherOracleTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		A1000001230000010000004B /* WatchLocationViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchLocationViewModelTests.swift; sourceTree = "<group>"; };
+		A1000001230000010000004F /* WeatherOracleWatchTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = WeatherOracleWatchTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -141,6 +152,14 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		A1000001230000010000004F1 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A1000001230000010000004C /* SharedKit in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -150,6 +169,7 @@
 				A10000012300000100000006 /* WeatherOracle */,
 				A100000123000001000000D3 /* WeatherOracleTests */,
 				A1000001230000010000002B /* WeatherOracleWatch */,
+				A1000001230000010000004F2 /* WeatherOracleWatchTests */,
 				A10000012300000100000062 /* WeatherOracleWidgets */,
 				A10000012300000100000072 /* WeatherOracleIntents */,
 				A10000012300000100000080 /* SharedKit */,
@@ -213,6 +233,7 @@
 				A10000012300000100000039 /* WeatherOracleWidgetsExtension.appex */,
 				A10000012300000100000045 /* WeatherOracleIntentsExtension.appex */,
 				A100000123000001000000D1 /* WeatherOracleTests.xctest */,
+				A1000001230000010000004F /* WeatherOracleWatchTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -226,6 +247,14 @@
 				A10000012300000100000029 /* WatchInfo.plist */,
 			);
 			path = WeatherOracle/WeatherOracleWatch;
+			sourceTree = "<group>";
+		};
+		A1000001230000010000004F2 /* WeatherOracleWatchTests */ = {
+			isa = PBXGroup;
+			children = (
+				A1000001230000010000004B /* WatchLocationViewModelTests.swift */,
+			);
+			path = WeatherOracleWatchTests;
 			sourceTree = "<group>";
 		};
 		A10000012300000100000062 /* WeatherOracleWidgets */ = {

@@ -21,12 +21,15 @@ public struct WatchModelCompareView: View {
                 } else {
                     Text("No data")
                         .foregroundStyle(.secondary)
+                        .accessibilityLabel("No comparison data available")
                 }
             }
             .padding()
         }
         .navigationTitle("Model Compare")
         .navigationBarTitleDisplayMode(.inline)
+        .accessibilityLabel("Model comparison view")
+        .accessibilityHint("Use Digital Crown to scroll through model comparisons")
     }
 
     // MARK: - Compare Content
@@ -38,6 +41,8 @@ public struct WatchModelCompareView: View {
                 .font(.caption)
                 .foregroundStyle(.secondary)
                 .textCase(.uppercase)
+                .accessibilityLabel("Number of models")
+                .accessibilityValue("\(forecast.models.count) models")
 
             // Current temperature comparison
             if let current = forecast.consensus.hourly.first {
@@ -45,6 +50,7 @@ public struct WatchModelCompareView: View {
             }
 
             Divider()
+                .accessibilityHidden(true)
 
             // Today's precipitation comparison
             if let today = forecast.consensus.daily.first {
@@ -52,6 +58,7 @@ public struct WatchModelCompareView: View {
             }
 
             Divider()
+                .accessibilityHidden(true)
 
             // Model list with confidence
             modelListSection(forecast)
@@ -66,40 +73,55 @@ public struct WatchModelCompareView: View {
                 .font(.caption)
                 .foregroundStyle(.secondary)
                 .textCase(.uppercase)
+                .accessibilityLabel("Current temperature comparison")
 
             // Consensus
             HStack {
                 Text("Consensus")
                     .font(.caption)
+                    .accessibilityHidden(true)
                 Spacer()
+                    .accessibilityHidden(true)
                 Text("\(Int(hourly.metrics.temperature.rawValue.rounded()))°")
                     .font(.title3)
                     .fontWeight(.bold)
+                    .accessibilityLabel("Consensus temperature")
+                    .accessibilityValue("\(Int(hourly.metrics.temperature.rawValue.rounded())) degrees")
             }
+            .accessibilityElement(children: .combine)
 
             // Range
             HStack {
                 Text("Range")
                     .font(.caption2)
                     .foregroundStyle(.secondary)
+                    .accessibilityHidden(true)
                 Spacer()
+                    .accessibilityHidden(true)
                 Text("\(Int(hourly.range.temperature.min.rounded()))° - \(Int(hourly.range.temperature.max.rounded()))°")
                     .font(.caption)
                     .foregroundStyle(.secondary)
+                    .accessibilityLabel("Temperature range")
+                    .accessibilityValue("Low: \(Int(hourly.range.temperature.min.rounded())) degrees, High: \(Int(hourly.range.temperature.max.rounded())) degrees")
             }
+            .accessibilityElement(children: .combine)
 
             // Confidence indicator
             HStack {
                 Text("Confidence")
                     .font(.caption2)
                     .foregroundStyle(.secondary)
+                    .accessibilityHidden(true)
                 Spacer()
+                    .accessibilityHidden(true)
                 confidenceBadge(hourly.confidence)
             }
+            .accessibilityElement(children: .combine)
         }
         .padding()
         .background(Color(.systemGray6))
         .cornerRadius(8)
+        .accessibilityElement(children: .combine)
     }
 
     // MARK: - Precipitation Comparison
@@ -110,42 +132,59 @@ public struct WatchModelCompareView: View {
                 .font(.caption)
                 .foregroundStyle(.secondary)
                 .textCase(.uppercase)
+                .accessibilityLabel("Today's precipitation comparison")
 
             // Consensus
             HStack {
                 Text("Consensus")
                     .font(.caption)
+                    .accessibilityHidden(true)
                 Spacer()
+                    .accessibilityHidden(true)
                 Text("\(String(format: "%.1f", daily.forecast.precipitation.total.rawValue))mm")
                     .font(.title3)
                     .fontWeight(.bold)
+                    .accessibilityLabel("Consensus precipitation")
+                    .accessibilityValue("\(String(format: "%.1f", daily.forecast.precipitation.total.rawValue)) millimeters")
             }
+            .accessibilityElement(children: .combine)
 
             // Probability
             HStack {
                 Text("Probability")
                     .font(.caption2)
                     .foregroundStyle(.secondary)
+                    .accessibilityHidden(true)
                 Spacer()
+                    .accessibilityHidden(true)
                 Text("\(Int((daily.forecast.precipitation.probability * 100).rounded()))%")
                     .font(.caption)
                     .foregroundStyle(.secondary)
+                    .accessibilityLabel("Precipitation probability")
+                    .accessibilityValue("\(Int((daily.forecast.precipitation.probability * 100).rounded())) percent")
             }
+            .accessibilityElement(children: .combine)
 
             // Range
             HStack {
                 Text("Range")
                     .font(.caption2)
                     .foregroundStyle(.secondary)
+                    .accessibilityHidden(true)
                 Spacer()
+                    .accessibilityHidden(true)
                 Text("\(String(format: "%.1f", daily.range.precipitation.min))mm - \(String(format: "%.1f", daily.range.precipitation.max))mm")
                     .font(.caption)
                     .foregroundStyle(.secondary)
+                    .accessibilityLabel("Precipitation range")
+                    .accessibilityValue("Low: \(String(format: "%.1f", daily.range.precipitation.min)) millimeters, High: \(String(format: "%.1f", daily.range.precipitation.max)) millimeters")
             }
+            .accessibilityElement(children: .combine)
         }
         .padding()
         .background(Color(.systemGray6))
         .cornerRadius(8)
+        .accessibilityElement(children: .combine)
     }
 
     // MARK: - Model List
@@ -156,12 +195,14 @@ public struct WatchModelCompareView: View {
                 .font(.caption)
                 .foregroundStyle(.secondary)
                 .textCase(.uppercase)
+                .accessibilityLabel("Weather model list")
 
             VStack(spacing: 8) {
                 ForEach(forecast.models, id: \.self) { model in
                     modelRow(model, forecast: forecast)
                 }
             }
+            .accessibilityElement(children: .combine)
         }
     }
 
@@ -170,8 +211,11 @@ public struct WatchModelCompareView: View {
             // Model name
             Text(formatModelName(model))
                 .font(.caption)
+                .accessibilityLabel("Weather model")
+                .accessibilityValue(formatModelName(model))
 
             Spacer()
+                .accessibilityHidden(true)
 
             // Temperature from this model
             if let modelForecast = forecast.modelForecasts.first(where: { $0.model == model }),
@@ -179,6 +223,8 @@ public struct WatchModelCompareView: View {
                 Text("\(Int(temp.rawValue.rounded()))°")
                     .font(.caption)
                     .fontWeight(.medium)
+                    .accessibilityLabel("Temperature")
+                    .accessibilityValue("\(Int(temp.rawValue.rounded())) degrees")
             }
 
             // Agreement indicator
@@ -187,14 +233,19 @@ public struct WatchModelCompareView: View {
                     Image(systemName: "checkmark.circle.fill")
                         .font(.caption)
                         .foregroundStyle(.green)
+                        .accessibilityLabel("Agreement status")
+                        .accessibilityValue("Agrees with consensus")
                 } else {
                     Image(systemName: "exclamationmark.circle.fill")
                         .font(.caption)
                         .foregroundStyle(.orange)
+                        .accessibilityLabel("Agreement status")
+                        .accessibilityValue("Disagrees with consensus")
                 }
             }
         }
         .padding(.vertical, 4)
+        .accessibilityElement(children: .combine)
     }
 
     // MARK: - Helpers
@@ -208,6 +259,8 @@ public struct WatchModelCompareView: View {
             .padding(.vertical, 4)
             .background(confidenceColor(confidence.level))
             .cornerRadius(4)
+            .accessibilityLabel("Confidence level")
+            .accessibilityValue(confidence.level.rawValue.capitalized)
     }
 
     private func confidenceColor(_ level: ConfidenceLevelName) -> Color {

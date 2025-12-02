@@ -1,6 +1,7 @@
 import Foundation
 import SharedKit
 import Combine
+import NotificationEngine
 
 // MARK: - Watch Location View Model
 
@@ -13,6 +14,7 @@ public final class WatchLocationViewModel {
     private let client: OpenMeteoClient
     private let store: CloudSyncStore
     private let models: [ModelName]
+    private let notificationEngine: NotificationEngine
 
     public private(set) var locations: [LocationEntity] = []
     public private(set) var selectedLocation: LocationEntity?
@@ -28,17 +30,20 @@ public final class WatchLocationViewModel {
     public init(
         client: OpenMeteoClient = OpenMeteoClient(),
         store: CloudSyncStore,
-        models: [ModelName] = [.ecmwf, .gfs, .icon]
+        models: [ModelName] = [.ecmwf, .gfs, .icon],
+        notificationEngine: NotificationEngine = .shared
     ) {
         self.client = client
         self.store = store
         self.models = models
+        self.notificationEngine = notificationEngine
 
         // Load locations from store
         loadLocations()
 
         // Observe location changes from iPhone
         store.changePublisher
+            .receive(on: DispatchQueue.main)
             .sink { [weak self] change in
                 if change.key == .locations {
                     self?.loadLocations()
@@ -105,6 +110,9 @@ public final class WatchLocationViewModel {
 
             forecast = aggregated
             lastUpdated = Date()
+
+            // Reschedule background alerts for the location
+            await notificationEngine.rescheduleBackgroundAlerts(for: location)
         } catch {
             self.error = error
         }
