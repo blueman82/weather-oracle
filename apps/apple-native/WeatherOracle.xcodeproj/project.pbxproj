@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 56;
+	objectVersion = 60;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -11,18 +11,13 @@
 		A1000001230000010000000C /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1000001230000010000000D /* ContentView.swift */; };
 		A1000001230000010000000E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A1000001230000010000000F /* Assets.xcassets */; };
 		A10000012300000100000010 /* SharedKit in Frameworks */ = {isa = PBXBuildFile; productRef = A10000012300000100000011 /* SharedKit */; };
-		A100000123000001000000B1 /* LocationListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A100000123000001000000B2 /* LocationListViewModel.swift */; };
-		A100000123000001000000B3 /* LocationListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A100000123000001000000B4 /* LocationListView.swift */; };
-		A100000123000001000000B5 /* AddLocationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A100000123000001000000B6 /* AddLocationView.swift */; };
-		A100000123000001000000B7 /* LocationListViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A100000123000001000000B8 /* LocationListViewModelTests.swift */; };
 		A10000012300000100000020 /* WeatherOracleWatchApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000012300000100000021 /* WeatherOracleWatchApp.swift */; };
-		A10000012300000100000022 /* WatchContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000012300000100000023 /* WatchContentView.swift */; };
-		A10000012300000100000024 /* WatchAssets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A10000012300000100000025 /* WatchAssets.xcassets */; };
+		A10000012300000100000024 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A10000012300000100000025 /* Assets.xcassets */; };
 		A10000012300000100000026 /* SharedKit in Frameworks */ = {isa = PBXBuildFile; productRef = A10000012300000100000027 /* SharedKit */; };
 		A10000012300000100000030 /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A10000012300000100000031 /* WidgetKit.framework */; };
 		A10000012300000100000032 /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A10000012300000100000033 /* SwiftUI.framework */; };
 		A10000012300000100000034 /* WeatherOracleWidgets.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000012300000100000035 /* WeatherOracleWidgets.swift */; };
-		A10000012300000100000036 /* WidgetAssets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A10000012300000100000037 /* WidgetAssets.xcassets */; };
+		A10000012300000100000036 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A10000012300000100000037 /* Assets.xcassets */; };
 		A10000012300000100000038 /* WeatherOracleWidgetsExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = A10000012300000100000039 /* WeatherOracleWidgetsExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		A10000012300000100000040 /* AppIntents.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A10000012300000100000041 /* AppIntents.framework */; };
 		A10000012300000100000042 /* WeatherOracleIntents.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000012300000100000043 /* WeatherOracleIntents.swift */; };
@@ -30,7 +25,19 @@
 		A10000012300000100000046 /* SharedKit in Frameworks */ = {isa = PBXBuildFile; productRef = A10000012300000100000047 /* SharedKit */; };
 		A10000012300000100000048 /* SharedKit in Frameworks */ = {isa = PBXBuildFile; productRef = A10000012300000100000049 /* SharedKit */; };
 		A1000001230000010000004A /* WatchLocationViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1000001230000010000004B /* WatchLocationViewModelTests.swift */; };
-		A1000001230000010000004C /* SharedKit in Frameworks */ = {isa = PBXBuildFile; productRef = A1000001230000010000004D /* SharedKit */; };
+		A1000001230000010000004C /* (null) in Frameworks */ = {isa = PBXBuildFile; };
+		A1000001230000010000005N /* ViewModels/WatchLocationViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1000001230000010000005O /* ViewModels/WatchLocationViewModel.swift */; };
+		A1000001230000010000005P /* Views/WatchForecastDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1000001230000010000005Q /* Views/WatchForecastDetailView.swift */; };
+		A1000001230000010000005R /* Views/WatchLocationListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1000001230000010000005S /* Views/WatchLocationListView.swift */; };
+		A1000001230000010000005T /* Views/WatchModelCompareView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1000001230000010000005U /* Views/WatchModelCompareView.swift */; };
+		A100000123000001000000B1 /* LocationListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A100000123000001000000B2 /* LocationListViewModel.swift */; };
+		A100000123000001000000B3 /* LocationListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A100000123000001000000B4 /* LocationListView.swift */; };
+		A100000123000001000000B5 /* AddLocationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A100000123000001000000B6 /* AddLocationView.swift */; };
+		A100000123000001000000B7 /* LocationListViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A100000123000001000000B8 /* LocationListViewModelTests.swift */; };
+		A10000012300000100000BA /* TimelineProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000012300000100000BB /* TimelineProvider.swift */; };
+		A10000012300000100000BC /* HomeWidgetViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000012300000100000BD /* HomeWidgetViews.swift */; };
+		A10000012300000100000BE /* LockScreenWidgetViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000012300000100000BF /* LockScreenWidgetViews.swift */; };
+		A10000012300000100000C0 /* StandByWidgetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000012300000100000C1 /* StandByWidgetView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -48,6 +55,13 @@
 			remoteGlobalIDString = A10000012300000100000070;
 			remoteInfo = WeatherOracleIntentsExtension;
 		};
+		A1000001230000010000005M /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = A10000012300000100000001 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = A1000001230000010000002C;
+			remoteInfo = WeatherOracleWatch;
+		};
 		A100000123000001000000D0 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = A10000012300000100000001 /* Project object */;
@@ -55,20 +69,6 @@
 			remoteGlobalIDString = A10000012300000100000008;
 			remoteInfo = WeatherOracle;
 		};
-		A1000001230000010000004E /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = A10000012300000100000001 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = A1000001230000010000002C;
-			remoteInfo = WeatherOracleWatch;
-		};
-	A1000001230000010000005M /* PBXContainerItemProxy */ = {
-		isa = PBXContainerItemProxy;
-		containerPortal = A10000012300000100000001 /* Project object */;
-		proxyType = 1;
-		remoteGlobalIDString = A1000001230000010000002C;
-		remoteInfo = WeatherOracleWatch;
-	};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -87,33 +87,45 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		84F8E4522EDFB771009CDB20 /* WeatherOracleWidgetsExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = WeatherOracleWidgetsExtension.entitlements; sourceTree = "<group>"; };
+		84F8E4532EDFB799009CDB20 /* WeatherOracleIntentsExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = WeatherOracleIntentsExtension.entitlements; sourceTree = "<group>"; };
+		84F8E4542EDFBBEE009CDB20 /* WeatherOracleWidgetsExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = WeatherOracleWidgetsExtension.entitlements; sourceTree = "<group>"; };
+		84F8E4552EDFBC24009CDB20 /* WeatherOracleIntentsExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = WeatherOracleIntentsExtension.entitlements; sourceTree = "<group>"; };
+		A10000012300000100000002 /* WeatherOracle.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = WeatherOracle.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		A10000012300000100000003 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		A10000012300000100000004 /* WeatherOracle.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = WeatherOracle.entitlements; sourceTree = "<group>"; };
 		A1000001230000010000000B /* WeatherOracleApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeatherOracleApp.swift; sourceTree = "<group>"; };
 		A1000001230000010000000D /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		A1000001230000010000000F /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
-		A10000012300000100000002 /* WeatherOracle.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = WeatherOracle.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		A100000123000001000000B2 /* LocationListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationListViewModel.swift; sourceTree = "<group>"; };
-		A100000123000001000000B4 /* LocationListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationListView.swift; sourceTree = "<group>"; };
-		A100000123000001000000B6 /* AddLocationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddLocationView.swift; sourceTree = "<group>"; };
-		A100000123000001000000B8 /* LocationListViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationListViewModelTests.swift; sourceTree = "<group>"; };
-		A10000012300000100000003 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		A10000012300000100000004 /* WeatherOracle.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = WeatherOracle.entitlements; sourceTree = "<group>"; };
+		A1000001230000010000001Z /* WeatherOracleWatch.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = WeatherOracleWatch.entitlements; sourceTree = "<group>"; };
 		A10000012300000100000021 /* WeatherOracleWatchApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeatherOracleWatchApp.swift; sourceTree = "<group>"; };
-		A10000012300000100000023 /* WatchContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchContentView.swift; sourceTree = "<group>"; };
-		A10000012300000100000025 /* WatchAssets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		A10000012300000100000025 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		A10000012300000100000028 /* WeatherOracleWatch.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = WeatherOracleWatch.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		A10000012300000100000029 /* WatchInfo.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		A10000012300000100000029 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		A10000012300000100000031 /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
 		A10000012300000100000033 /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
 		A10000012300000100000035 /* WeatherOracleWidgets.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeatherOracleWidgets.swift; sourceTree = "<group>"; };
-		A10000012300000100000037 /* WidgetAssets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		A10000012300000100000037 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		A10000012300000100000039 /* WeatherOracleWidgetsExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = WeatherOracleWidgetsExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		A10000012300000100000041 /* AppIntents.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppIntents.framework; path = System/Library/Frameworks/AppIntents.framework; sourceTree = SDKROOT; };
 		A10000012300000100000043 /* WeatherOracleIntents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeatherOracleIntents.swift; sourceTree = "<group>"; };
 		A10000012300000100000045 /* WeatherOracleIntentsExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = WeatherOracleIntentsExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
-		A10000012300000100000080 /* SharedKit */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = SharedKit; path = SharedKit; sourceTree = "<group>"; };
-		A100000123000001000000D1 /* WeatherOracleTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = WeatherOracleTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		A1000001230000010000004B /* WatchLocationViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchLocationViewModelTests.swift; sourceTree = "<group>"; };
 		A1000001230000010000004F /* WeatherOracleWatchTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = WeatherOracleWatchTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		A1000001230000010000005O /* ViewModels/WatchLocationViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewModels/WatchLocationViewModel.swift; sourceTree = "<group>"; };
+		A1000001230000010000005Q /* Views/WatchForecastDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Views/WatchForecastDetailView.swift; sourceTree = "<group>"; };
+		A1000001230000010000005S /* Views/WatchLocationListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Views/WatchLocationListView.swift; sourceTree = "<group>"; };
+		A1000001230000010000005U /* Views/WatchModelCompareView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Views/WatchModelCompareView.swift; sourceTree = "<group>"; };
+		A10000012300000100000080 /* SharedKit */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = SharedKit; sourceTree = "<group>"; };
+		A100000123000001000000B2 /* LocationListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationListViewModel.swift; sourceTree = "<group>"; };
+		A100000123000001000000B4 /* LocationListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationListView.swift; sourceTree = "<group>"; };
+		A100000123000001000000B6 /* AddLocationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddLocationView.swift; sourceTree = "<group>"; };
+		A100000123000001000000B8 /* LocationListViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationListViewModelTests.swift; sourceTree = "<group>"; };
+		A100000123000001000000D1 /* WeatherOracleTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = WeatherOracleTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		A10000012300000100000BB /* TimelineProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimelineProvider.swift; sourceTree = "<group>"; };
+		A10000012300000100000BD /* HomeWidgetViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeWidgetViews.swift; sourceTree = "<group>"; };
+		A10000012300000100000BF /* LockScreenWidgetViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LockScreenWidgetViews.swift; sourceTree = "<group>"; };
+		A10000012300000100000C1 /* StandByWidgetView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StandByWidgetView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -130,6 +142,14 @@
 			buildActionMask = 2147483647;
 			files = (
 				A10000012300000100000026 /* SharedKit in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A1000001230000010000004F1 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A1000001230000010000004C /* (null) in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -159,41 +179,27 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		A1000001230000010000004F1 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				A1000001230000010000004C /* SharedKit in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
 		A10000012300000100000000 = {
 			isa = PBXGroup;
 			children = (
-				A10000012300000100000006 /* WeatherOracle */,
-				A100000123000001000000D3 /* WeatherOracleTests */,
+				84F8E4532EDFB799009CDB20 /* WeatherOracleIntentsExtension.entitlements */,
+				84F8E4522EDFB771009CDB20 /* WeatherOracleWidgetsExtension.entitlements */,
+				A10000012300000100000006 /* WeatherOracle/WeatherOracle */,
+				A100000123000001000000D3 /* WeatherOracle/WeatherOracleTests */,
 				A1000001230000010000002B /* WeatherOracleWatch */,
 				A1000001230000010000004F2 /* WeatherOracleWatchTests */,
-				A10000012300000100000062 /* WeatherOracleWidgets */,
-				A10000012300000100000072 /* WeatherOracleIntents */,
+				A10000012300000100000062 /* WeatherOracle/WeatherOracleWidgets */,
+				A10000012300000100000072 /* WeatherOracle/WeatherOracleIntents */,
 				A10000012300000100000080 /* SharedKit */,
 				A10000012300000100000081 /* Frameworks */,
 				A10000012300000100000007 /* Products */,
 			);
 			sourceTree = "<group>";
 		};
-		A100000123000001000000D3 /* WeatherOracleTests */ = {
-			isa = PBXGroup;
-			children = (
-				A100000123000001000000B8 /* LocationListViewModelTests.swift */,
-			);
-			path = WeatherOracle/WeatherOracleTests;
-			sourceTree = "<group>";
-		};
-		A10000012300000100000006 /* WeatherOracle */ = {
+		A10000012300000100000006 /* WeatherOracle/WeatherOracle */ = {
 			isa = PBXGroup;
 			children = (
 				A1000001230000010000000B /* WeatherOracleApp.swift */,
@@ -205,6 +211,83 @@
 				A10000012300000100000004 /* WeatherOracle.entitlements */,
 			);
 			path = WeatherOracle/WeatherOracle;
+			sourceTree = "<group>";
+		};
+		A10000012300000100000007 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				A10000012300000100000002 /* WeatherOracle.app */,
+				A10000012300000100000028 /* WeatherOracleWatch.app */,
+				A10000012300000100000039 /* WeatherOracleWidgetsExtension.appex */,
+				A10000012300000100000045 /* WeatherOracleIntentsExtension.appex */,
+				A100000123000001000000D1 /* WeatherOracleTests.xctest */,
+				A1000001230000010000004F /* WeatherOracleWatchTests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		A1000001230000010000002B /* WeatherOracleWatch */ = {
+			isa = PBXGroup;
+			children = (
+				A10000012300000100000021 /* WeatherOracleWatchApp.swift */,
+				A1000001230000010000005O /* ViewModels/WatchLocationViewModel.swift */,
+				A1000001230000010000005Q /* Views/WatchForecastDetailView.swift */,
+				A1000001230000010000005S /* Views/WatchLocationListView.swift */,
+				A1000001230000010000005U /* Views/WatchModelCompareView.swift */,
+				A10000012300000100000025 /* Assets.xcassets */,
+				A10000012300000100000029 /* Info.plist */,
+				A1000001230000010000001Z /* WeatherOracleWatch.entitlements */,
+			);
+			path = WeatherOracleWatch;
+			sourceTree = "<group>";
+		};
+		A1000001230000010000004F2 /* WeatherOracleWatchTests */ = {
+			isa = PBXGroup;
+			children = (
+				A1000001230000010000004B /* WatchLocationViewModelTests.swift */,
+			);
+			path = WeatherOracleWatchTests;
+			sourceTree = "<group>";
+		};
+		A10000012300000100000062 /* WeatherOracle/WeatherOracleWidgets */ = {
+			isa = PBXGroup;
+			children = (
+				A10000012300000100000035 /* WeatherOracleWidgets.swift */,
+				A10000012300000100000BB /* TimelineProvider.swift */,
+				A10000012300000100000C2 /* Views */,
+				A10000012300000100000037 /* Assets.xcassets */,
+				84F8E4542EDFBBEE009CDB20 /* WeatherOracleWidgetsExtension.entitlements */,
+			);
+			path = WeatherOracle/WeatherOracleWidgets;
+			sourceTree = "<group>";
+		};
+		A10000012300000100000C2 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				A10000012300000100000BD /* HomeWidgetViews.swift */,
+				A10000012300000100000BF /* LockScreenWidgetViews.swift */,
+				A10000012300000100000C1 /* StandByWidgetView.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		A10000012300000100000072 /* WeatherOracle/WeatherOracleIntents */ = {
+			isa = PBXGroup;
+			children = (
+				A10000012300000100000043 /* WeatherOracleIntents.swift */,
+				84F8E4552EDFBC24009CDB20 /* WeatherOracleIntentsExtension.entitlements */,
+			);
+			path = WeatherOracle/WeatherOracleIntents;
+			sourceTree = "<group>";
+		};
+		A10000012300000100000081 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				A10000012300000100000041 /* AppIntents.framework */,
+				A10000012300000100000033 /* SwiftUI.framework */,
+				A10000012300000100000031 /* WidgetKit.framework */,
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 		A100000123000001000000C1 /* ViewModels */ = {
@@ -232,63 +315,12 @@
 			path = Search;
 			sourceTree = "<group>";
 		};
-		A10000012300000100000007 /* Products */ = {
+		A100000123000001000000D3 /* WeatherOracle/WeatherOracleTests */ = {
 			isa = PBXGroup;
 			children = (
-				A10000012300000100000002 /* WeatherOracle.app */,
-				A10000012300000100000028 /* WeatherOracleWatch.app */,
-				A10000012300000100000039 /* WeatherOracleWidgetsExtension.appex */,
-				A10000012300000100000045 /* WeatherOracleIntentsExtension.appex */,
-				A100000123000001000000D1 /* WeatherOracleTests.xctest */,
-				A1000001230000010000004F /* WeatherOracleWatchTests.xctest */,
+				A100000123000001000000B8 /* LocationListViewModelTests.swift */,
 			);
-			name = Products;
-			sourceTree = "<group>";
-		};
-		A1000001230000010000002B /* WeatherOracleWatch */ = {
-			isa = PBXGroup;
-			children = (
-				A10000012300000100000021 /* WeatherOracleWatchApp.swift */,
-				A10000012300000100000023 /* WatchContentView.swift */,
-				A10000012300000100000025 /* WatchAssets.xcassets */,
-				A10000012300000100000029 /* WatchInfo.plist */,
-			);
-			path = WeatherOracle/WeatherOracleWatch;
-			sourceTree = "<group>";
-		};
-		A1000001230000010000004F2 /* WeatherOracleWatchTests */ = {
-			isa = PBXGroup;
-			children = (
-				A1000001230000010000004B /* WatchLocationViewModelTests.swift */,
-			);
-			path = WeatherOracleWatchTests;
-			sourceTree = "<group>";
-		};
-		A10000012300000100000062 /* WeatherOracleWidgets */ = {
-			isa = PBXGroup;
-			children = (
-				A10000012300000100000035 /* WeatherOracleWidgets.swift */,
-				A10000012300000100000037 /* WidgetAssets.xcassets */,
-			);
-			path = WeatherOracle/WeatherOracleWidgets;
-			sourceTree = "<group>";
-		};
-		A10000012300000100000072 /* WeatherOracleIntents */ = {
-			isa = PBXGroup;
-			children = (
-				A10000012300000100000043 /* WeatherOracleIntents.swift */,
-			);
-			path = WeatherOracle/WeatherOracleIntents;
-			sourceTree = "<group>";
-		};
-		A10000012300000100000081 /* Frameworks */ = {
-			isa = PBXGroup;
-			children = (
-				A10000012300000100000041 /* AppIntents.framework */,
-				A10000012300000100000033 /* SwiftUI.framework */,
-				A10000012300000100000031 /* WidgetKit.framework */,
-			);
-			name = Frameworks;
+			path = WeatherOracle/WeatherOracleTests;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -337,6 +369,23 @@
 			productName = WeatherOracleWatch;
 			productReference = A10000012300000100000028 /* WeatherOracleWatch.app */;
 			productType = "com.apple.product-type.application";
+		};
+		A1000001230000010000005G /* WeatherOracleWatchTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = A1000001230000010000005H /* Build configuration list for PBXNativeTarget "WeatherOracleWatchTests" */;
+			buildPhases = (
+				A1000001230000010000005I /* Sources */,
+				A1000001230000010000004F1 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				A1000001230000010000005J /* PBXTargetDependency */,
+			);
+			name = WeatherOracleWatchTests;
+			productName = WeatherOracleWatchTests;
+			productReference = A1000001230000010000004F /* WeatherOracleWatchTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
 		};
 		A10000012300000100000060 /* WeatherOracleWidgetsExtension */ = {
 			isa = PBXNativeTarget;
@@ -394,23 +443,6 @@
 			productReference = A100000123000001000000D1 /* WeatherOracleTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
-	A1000001230000010000005G /* WeatherOracleWatchTests */ = {
-		isa = PBXNativeTarget;
-		buildConfigurationList = A1000001230000010000005H /* Build configuration list for PBXNativeTarget "WeatherOracleWatchTests" */;
-		buildPhases = (
-			A1000001230000010000005I /* Sources */,
-			A1000001230000010000004F1 /* Frameworks */,
-		);
-		buildRules = (
-		);
-		dependencies = (
-			A1000001230000010000005J /* PBXTargetDependency */,
-		);
-		name = WeatherOracleWatchTests;
-		productName = WeatherOracleWatchTests;
-		productReference = A1000001230000010000004F /* WeatherOracleWatchTests.xctest */;
-		productType = "com.apple.product-type.bundle.unit-test";
-	};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -427,6 +459,10 @@
 					A1000001230000010000002C = {
 						CreatedOnToolsVersion = 15.0;
 					};
+					A1000001230000010000005G = {
+						CreatedOnToolsVersion = 15.0;
+						TestTargetID = A1000001230000010000002C;
+					};
 					A10000012300000100000060 = {
 						CreatedOnToolsVersion = 15.0;
 					};
@@ -436,10 +472,6 @@
 					A100000123000001000000D4 = {
 						CreatedOnToolsVersion = 15.0;
 						TestTargetID = A10000012300000100000008;
-					};
-					A1000001230000010000005G = {
-						CreatedOnToolsVersion = 15.0;
-						TestTargetID = A1000001230000010000002C;
 					};
 				};
 			};
@@ -453,7 +485,7 @@
 			);
 			mainGroup = A10000012300000100000000;
 			packageReferences = (
-				A10000012300000100000082 /* XCLocalSwiftPackageReference "../SharedKit" */,
+				A10000012300000100000082 /* XCLocalSwiftPackageReference "SharedKit" */,
 			);
 			productRefGroup = A10000012300000100000007 /* Products */;
 			projectDirPath = "";
@@ -482,7 +514,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				A10000012300000100000024 /* WatchAssets.xcassets in Resources */,
+				A10000012300000100000024 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -490,7 +522,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				A10000012300000100000036 /* WidgetAssets.xcassets in Resources */,
+				A10000012300000100000036 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -536,7 +568,18 @@
 			buildActionMask = 2147483647;
 			files = (
 				A10000012300000100000020 /* WeatherOracleWatchApp.swift in Sources */,
-				A10000012300000100000022 /* WatchContentView.swift in Sources */,
+				A1000001230000010000005N /* ViewModels/WatchLocationViewModel.swift in Sources */,
+				A1000001230000010000005P /* Views/WatchForecastDetailView.swift in Sources */,
+				A1000001230000010000005R /* Views/WatchLocationListView.swift in Sources */,
+				A1000001230000010000005T /* Views/WatchModelCompareView.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A1000001230000010000005I /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A1000001230000010000004A /* WatchLocationViewModelTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -545,6 +588,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				A10000012300000100000034 /* WeatherOracleWidgets.swift in Sources */,
+				A10000012300000100000BA /* TimelineProvider.swift in Sources */,
+				A10000012300000100000BC /* HomeWidgetViews.swift in Sources */,
+				A10000012300000100000BE /* LockScreenWidgetViews.swift in Sources */,
+				A10000012300000100000C0 /* StandByWidgetView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -564,14 +611,6 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-	A1000001230000010000005I /* Sources */ = {
-		isa = PBXSourcesBuildPhase;
-		buildActionMask = 2147483647;
-		files = (
-			A1000001230000010000004A /* WatchLocationViewModelTests.swift in Sources */,
-		);
-		runOnlyForDeploymentPostprocessing = 0;
-	};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -585,19 +624,68 @@
 			target = A10000012300000100000070 /* WeatherOracleIntentsExtension */;
 			targetProxy = A10000012300000100000051 /* PBXContainerItemProxy */;
 		};
+		A1000001230000010000005J /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = A1000001230000010000002C /* WeatherOracleWatch */;
+			targetProxy = A1000001230000010000005M /* PBXContainerItemProxy */;
+		};
 		A100000123000001000000D7 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = A10000012300000100000008 /* WeatherOracle */;
 			targetProxy = A100000123000001000000D0 /* PBXContainerItemProxy */;
 		};
-	A1000001230000010000005J /* PBXTargetDependency */ = {
-		isa = PBXTargetDependency;
-		target = A1000001230000010000002C /* WeatherOracleWatch */;
-		targetProxy = A1000001230000010000005M /* PBXContainerItemProxy */;
-	};
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
+		A1000001230000010000005K /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.weatheroracle.app.watchtests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = watchos;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 4;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/WeatherOracleWatch.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/WeatherOracleWatch";
+				WATCHOS_DEPLOYMENT_TARGET = 10.0;
+			};
+			name = Debug;
+		};
+		A1000001230000010000005L /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.weatheroracle.app.watchtests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = watchos;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 4;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/WeatherOracleWatch.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/WeatherOracleWatch";
+				VALIDATE_PRODUCT = YES;
+				WATCHOS_DEPLOYMENT_TARGET = 10.0;
+			};
+			name = Release;
+		};
 		A10000012300000100000091 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -721,10 +809,12 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "";
+				DEVELOPMENT_TEAM = PC3VNB3C4F;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = WeatherOracle/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "Weather Oracle";
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.weather";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -756,10 +846,12 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "";
+				DEVELOPMENT_TEAM = PC3VNB3C4F;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = WeatherOracle/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "Weather Oracle";
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.weather";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -788,10 +880,13 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = WeatherOracleWatch/WeatherOracleWatch.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "";
+				DEVELOPMENT_TEAM = PC3VNB3C4F;
 				ENABLE_PREVIEWS = YES;
+				ENABLE_TESTABILITY = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = WeatherOracle/WeatherOracleWatch/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "Weather Oracle";
@@ -818,9 +913,11 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = WeatherOracleWatch/WeatherOracleWatch.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "";
+				DEVELOPMENT_TEAM = PC3VNB3C4F;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = WeatherOracle/WeatherOracleWatch/Info.plist;
@@ -849,8 +946,10 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CODE_SIGN_ENTITLEMENTS = "/Users/harrison/Github/weather-oracle/apps/apple-native/WeatherOracle/WeatherOracleWidgets/WeatherOracleWidgetsExtension.entitlements";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = PC3VNB3C4F;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = WeatherOracle/WeatherOracleWidgets/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "Weather Oracle Widgets";
@@ -877,8 +976,10 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CODE_SIGN_ENTITLEMENTS = "/Users/harrison/Github/weather-oracle/apps/apple-native/WeatherOracle/WeatherOracleWidgets/WeatherOracleWidgetsExtension.entitlements";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = PC3VNB3C4F;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = WeatherOracle/WeatherOracleWidgets/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "Weather Oracle Widgets";
@@ -904,8 +1005,10 @@
 		A10000012300000100000099 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = WeatherOracle/WeatherOracleIntents/WeatherOracleIntentsExtension.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = PC3VNB3C4F;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = WeatherOracle/WeatherOracleIntents/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "Weather Oracle Intents";
@@ -930,8 +1033,10 @@
 		A1000001230000010000009A /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = WeatherOracle/WeatherOracleIntents/WeatherOracleIntentsExtension.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = PC3VNB3C4F;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = WeatherOracle/WeatherOracleIntents/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "Weather Oracle Intents";
@@ -1003,51 +1108,6 @@
 			};
 			name = Release;
 		};
-	A1000001230000010000005K /* Debug */ = {
-		isa = XCBuildConfiguration;
-		buildSettings = {
-			CODE_SIGN_STYLE = Automatic;
-			CURRENT_PROJECT_VERSION = 1;
-			GENERATE_INFOPLIST_FILE = YES;
-			LD_RUNPATH_SEARCH_PATHS = (
-				"$(inherited)",
-				"@executable_path/Frameworks",
-				"@loader_path/Frameworks",
-			);
-			MARKETING_VERSION = 1.0;
-			PRODUCT_BUNDLE_IDENTIFIER = com.weatheroracle.app.watchtests;
-			PRODUCT_NAME = "$(TARGET_NAME)";
-			SDKROOT = watchos;
-			SWIFT_EMIT_LOC_STRINGS = NO;
-			SWIFT_VERSION = 5.0;
-			TARGETED_DEVICE_FAMILY = 4;
-			WATCHOS_DEPLOYMENT_TARGET = 10.0;
-		};
-		name = Debug;
-	};
-	A1000001230000010000005L /* Release */ = {
-		isa = XCBuildConfiguration;
-		buildSettings = {
-			CODE_SIGN_STYLE = Automatic;
-			CURRENT_PROJECT_VERSION = 1;
-			GENERATE_INFOPLIST_FILE = YES;
-			LD_RUNPATH_SEARCH_PATHS = (
-				"$(inherited)",
-				"@executable_path/Frameworks",
-				"@loader_path/Frameworks",
-			);
-			MARKETING_VERSION = 1.0;
-			PRODUCT_BUNDLE_IDENTIFIER = com.weatheroracle.app.watchtests;
-			PRODUCT_NAME = "$(TARGET_NAME)";
-			SDKROOT = watchos;
-			SWIFT_EMIT_LOC_STRINGS = NO;
-			SWIFT_VERSION = 5.0;
-			TARGETED_DEVICE_FAMILY = 4;
-			VALIDATE_PRODUCT = YES;
-			WATCHOS_DEPLOYMENT_TARGET = 10.0;
-		};
-		name = Release;
-	};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -1065,6 +1125,15 @@
 			buildConfigurations = (
 				A10000012300000100000095 /* Debug */,
 				A10000012300000100000096 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		A1000001230000010000005H /* Build configuration list for PBXNativeTarget "WeatherOracleWatchTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A1000001230000010000005K /* Debug */,
+				A1000001230000010000005L /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
@@ -1105,15 +1174,6 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-	A1000001230000010000005H /* Build configuration list for PBXNativeTarget "WeatherOracleWatchTests" */ = {
-		isa = XCConfigurationList;
-		buildConfigurations = (
-			A1000001230000010000005K /* Debug */,
-			A1000001230000010000005L /* Release */,
-		);
-		defaultConfigurationIsVisible = 0;
-		defaultConfigurationName = Release;
-	};
 /* End XCConfigurationList section */
 
 /* Begin XCLocalSwiftPackageReference section */

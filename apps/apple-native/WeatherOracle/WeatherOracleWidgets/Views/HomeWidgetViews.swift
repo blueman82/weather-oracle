@@ -508,15 +508,15 @@ public struct LargeHomeWidgetView: View {
         case .partlyCloudy: return "Partly Cloudy"
         case .overcast: return "Overcast"
         case .fog, .depositingRimeFog: return "Foggy"
-        case .drizzleLight, .drizzleModerate, .drizzleDense: return "Drizzle"
-        case .freezingDrizzleLight, .freezingDrizzleDense: return "Freezing Drizzle"
-        case .rainSlight, .rainModerate, .rainHeavy: return "Rain"
-        case .freezingRainLight, .freezingRainHeavy: return "Freezing Rain"
-        case .snowFallSlight, .snowFallModerate, .snowFallHeavy: return "Snow"
+        case .lightDrizzle, .moderateDrizzle, .denseDrizzle: return "Drizzle"
+        case .lightFreezingDrizzle, .denseFreezingDrizzle: return "Freezing Drizzle"
+        case .slightRain, .moderateRain, .heavyRain: return "Rain"
+        case .lightFreezingRain, .heavyFreezingRain: return "Freezing Rain"
+        case .slightSnow, .moderateSnow, .heavySnow: return "Snow"
         case .snowGrains: return "Snow Grains"
-        case .rainShowersSlight, .rainShowersModerate, .rainShowersViolent: return "Rain Showers"
-        case .snowShowersSlight, .snowShowersHeavy: return "Snow Showers"
-        case .thunderstorm, .thunderstormSlightHail, .thunderstormHeavyHail: return "Thunderstorm"
+        case .slightRainShowers, .moderateRainShowers, .violentRainShowers: return "Rain Showers"
+        case .slightSnowShowers, .heavySnowShowers: return "Snow Showers"
+        case .thunderstorm, .thunderstormWithSlightHail, .thunderstormWithHeavyHail: return "Thunderstorm"
         }
     }
 }

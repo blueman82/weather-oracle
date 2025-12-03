@@ -214,7 +214,7 @@ private func sampleEntry() -> WeatherWidgetEntry {
             windSpeed: MetricRange(min: 4, max: 6)
         )
 
-        let confidence = ConfidenceLevel(level: .high, score: 0.85)
+        let confidence = ConfidenceLevel.from(score: 0.85)!
 
         return AggregatedHourlyForecast(
             timestamp: timestamp,
@@ -227,7 +227,7 @@ private func sampleEntry() -> WeatherWidgetEntry {
 
     // Create sample daily forecasts
     let dailyForecasts = (0..<7).map { day -> AggregatedDailyForecast in
-        let date = Calendar.current.date(byAdding: .day, value: day, to: now)!
+        let date = Calendar.current.date(byAdding: .day, value: Int(day), to: now)!
 
         let forecast = DailyForecast(
             date: date,
@@ -282,7 +282,7 @@ private func sampleEntry() -> WeatherWidgetEntry {
             precipitation: MetricRange(min: 0, max: 6)
         )
 
-        let confidence = ConfidenceLevel(level: .high, score: 0.8)
+        let confidence = ConfidenceLevel.from(score: 0.8)!
 
         return AggregatedDailyForecast(
             date: date,
@@ -304,7 +304,7 @@ private func sampleEntry() -> WeatherWidgetEntry {
         modelForecasts: [],
         consensus: consensus,
         modelWeights: [],
-        overallConfidence: ConfidenceLevel(level: .high, score: 0.85)
+        overallConfidence: ConfidenceLevel.from(score: 0.85)!
     )
 
     return WeatherWidgetEntry(

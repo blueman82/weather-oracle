@@ -29,14 +29,14 @@ public struct WeatherWidgetEntry: TimelineEntry {
     public let forecast: AggregatedForecast?
     public let location: LocationEntity?
     public let lastUpdate: Date?
-    public let configuration: WidgetConfiguration
+    public let configuration: WeatherWidgetConfiguration
 
     public init(
         date: Date,
         forecast: AggregatedForecast? = nil,
         location: LocationEntity? = nil,
         lastUpdate: Date? = nil,
-        configuration: WidgetConfiguration = .default
+        configuration: WeatherWidgetConfiguration = .default
     ) {
         self.date = date
         self.forecast = forecast
@@ -59,7 +59,7 @@ public struct WeatherWidgetEntry: TimelineEntry {
 // MARK: - Widget Configuration
 
 /// Configuration options for widgets
-public struct WidgetConfiguration: Codable, Sendable {
+public struct WeatherWidgetConfiguration: Codable, Sendable {
     public let showModelAgreement: Bool
     public let showConfidenceBadge: Bool
     public let temperatureUnit: TemperatureUnit
@@ -77,7 +77,7 @@ public struct WidgetConfiguration: Codable, Sendable {
         self.hourlyHoursToShow = hourlyHoursToShow
     }
 
-    public static let `default` = WidgetConfiguration()
+    public static let `default` = WeatherWidgetConfiguration()
 }
 
 // MARK: - Weather Widget Timeline Provider
@@ -217,7 +217,7 @@ public struct WidgetDataProvider {
     }
 
     /// Load widget configuration
-    public func loadConfiguration() -> WidgetConfiguration {
+    public func loadConfiguration() -> WeatherWidgetConfiguration {
         // Could be extended to load user preferences from CloudSyncStore
         return .default
     }
