@@ -39,6 +39,7 @@
 		A10000012300000100000BE /* LockScreenWidgetViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000012300000100000BF /* LockScreenWidgetViews.swift */; };
 		A10000012300000100000C0 /* StandByWidgetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000012300000100000C1 /* StandByWidgetView.swift */; };
 		A10000012300000100000C3 /* WeatherIconProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000012300000100000C4 /* WeatherIconProvider.swift */; };
+		A10000012300000100000C6 /* CanvasTestView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000012300000100000C5 /* CanvasTestView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -128,6 +129,7 @@
 		A10000012300000100000BF /* LockScreenWidgetViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LockScreenWidgetViews.swift; sourceTree = "<group>"; };
 		A10000012300000100000C1 /* StandByWidgetView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StandByWidgetView.swift; sourceTree = "<group>"; };
 		A10000012300000100000C4 /* WeatherIconProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeatherIconProvider.swift; sourceTree = "<group>"; };
+		A10000012300000100000C5 /* CanvasTestView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CanvasTestView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -264,16 +266,6 @@
 			path = WeatherOracle/WeatherOracleWidgets;
 			sourceTree = "<group>";
 		};
-		A10000012300000100000C2 /* Views */ = {
-			isa = PBXGroup;
-			children = (
-				A10000012300000100000BD /* HomeWidgetViews.swift */,
-				A10000012300000100000BF /* LockScreenWidgetViews.swift */,
-				A10000012300000100000C1 /* StandByWidgetView.swift */,
-			);
-			path = Views;
-			sourceTree = "<group>";
-		};
 		A10000012300000100000072 /* WeatherOracle/WeatherOracleIntents */ = {
 			isa = PBXGroup;
 			children = (
@@ -306,6 +298,7 @@
 			children = (
 				A100000123000001000000B4 /* LocationListView.swift */,
 				A100000123000001000000C3 /* Search */,
+				A100000123000001000000C4 /* Backgrounds */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -318,12 +311,30 @@
 			path = Search;
 			sourceTree = "<group>";
 		};
+		A100000123000001000000C4 /* Backgrounds */ = {
+			isa = PBXGroup;
+			children = (
+				A10000012300000100000C5 /* CanvasTestView.swift */,
+			);
+			path = Backgrounds;
+			sourceTree = "<group>";
+		};
 		A100000123000001000000D3 /* WeatherOracle/WeatherOracleTests */ = {
 			isa = PBXGroup;
 			children = (
 				A100000123000001000000B8 /* LocationListViewModelTests.swift */,
 			);
 			path = WeatherOracle/WeatherOracleTests;
+			sourceTree = "<group>";
+		};
+		A10000012300000100000C2 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				A10000012300000100000BD /* HomeWidgetViews.swift */,
+				A10000012300000100000BF /* LockScreenWidgetViews.swift */,
+				A10000012300000100000C1 /* StandByWidgetView.swift */,
+			);
+			path = Views;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -454,7 +465,7 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
 				LastSwiftUpdateCheck = 1500;
-				LastUpgradeCheck = 1500;
+				LastUpgradeCheck = 2610;
 				TargetAttributes = {
 					A10000012300000100000008 = {
 						CreatedOnToolsVersion = 15.0;
@@ -563,6 +574,7 @@
 				A100000123000001000000B1 /* LocationListViewModel.swift in Sources */,
 				A100000123000001000000B3 /* LocationListView.swift in Sources */,
 				A100000123000001000000B5 /* AddLocationView.swift in Sources */,
+				A10000012300000100000C6 /* CanvasTestView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -724,6 +736,7 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
+				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
@@ -746,6 +759,7 @@
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
@@ -785,6 +799,7 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
+				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
@@ -800,6 +815,7 @@
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_COMPILATION_MODE = wholemodule;
 			};
 			name = Release;

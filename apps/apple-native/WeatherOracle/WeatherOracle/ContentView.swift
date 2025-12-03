@@ -8,6 +8,11 @@ struct ContentView: View {
     var body: some View {
         NavigationStack {
             VStack(spacing: 20) {
+                // Canvas API Test
+                CanvasTestView()
+
+                Divider()
+
                 Image(systemName: "cloud.sun.fill")
                     .font(.system(size: 80))
                     .foregroundStyle(.blue, .yellow)
@@ -31,7 +36,7 @@ struct ContentView: View {
                 }
             }
             .padding()
-            .navigationTitle("Weather Oracle")
+            .navigationTitle("Canvas API Test")
             .onChange(of: deepLinkLocationId) { _, newLocationId in
                 guard let locationId = newLocationId else {
                     return
