@@ -720,5 +720,645 @@
     "permission_mode": "bypassPermissions",
     "hook_event_name": "Stop",
     "stop_hook_active": false
+  },
+  {
+    "session_id": "05f27e0e-b949-41ab-b431-e98de9401986",
+    "transcript_path": "/Users/harrison/.claude/projects/-Users-harrison-Github-weather-oracle/05f27e0e-b949-41ab-b431-e98de9401986.jsonl",
+    "cwd": "/Users/harrison/Github/weather-oracle",
+    "permission_mode": "bypassPermissions",
+    "hook_event_name": "Stop",
+    "stop_hook_active": false
+  },
+  {
+    "session_id": "05f27e0e-b949-41ab-b431-e98de9401986",
+    "transcript_path": "/Users/harrison/.claude/projects/-Users-harrison-Github-weather-oracle/05f27e0e-b949-41ab-b431-e98de9401986.jsonl",
+    "cwd": "/Users/harrison/Github/weather-oracle",
+    "permission_mode": "bypassPermissions",
+    "hook_event_name": "Stop",
+    "stop_hook_active": false
+  },
+  {
+    "session_id": "d2f14440-1966-43d2-80e6-eac426ca8b0b",
+    "transcript_path": "/Users/harrison/.claude/projects/-Users-harrison-Github-weather-oracle/d2f14440-1966-43d2-80e6-eac426ca8b0b.jsonl",
+    "cwd": "/Users/harrison/Github/weather-oracle",
+    "permission_mode": "bypassPermissions",
+    "hook_event_name": "Stop",
+    "stop_hook_active": false
+  },
+  {
+    "session_id": "d2f14440-1966-43d2-80e6-eac426ca8b0b",
+    "transcript_path": "/Users/harrison/.claude/projects/-Users-harrison-Github-weather-oracle/d2f14440-1966-43d2-80e6-eac426ca8b0b.jsonl",
+    "cwd": "/Users/harrison/Github/weather-oracle",
+    "permission_mode": "bypassPermissions",
+    "hook_event_name": "Stop",
+    "stop_hook_active": false
+  },
+  {
+    "session_id": "d2f14440-1966-43d2-80e6-eac426ca8b0b",
+    "transcript_path": "/Users/harrison/.claude/projects/-Users-harrison-Github-weather-oracle/d2f14440-1966-43d2-80e6-eac426ca8b0b.jsonl",
+    "cwd": "/Users/harrison/Github/weather-oracle",
+    "permission_mode": "bypassPermissions",
+    "hook_event_name": "Stop",
+    "stop_hook_active": false
+  },
+  {
+    "session_id": "d2f14440-1966-43d2-80e6-eac426ca8b0b",
+    "transcript_path": "/Users/harrison/.claude/projects/-Users-harrison-Github-weather-oracle/d2f14440-1966-43d2-80e6-eac426ca8b0b.jsonl",
+    "cwd": "/Users/harrison/Github/weather-oracle",
+    "permission_mode": "default",
+    "hook_event_name": "Stop",
+    "stop_hook_active": false
+  },
+  {
+    "session_id": "d2f14440-1966-43d2-80e6-eac426ca8b0b",
+    "transcript_path": "/Users/harrison/.claude/projects/-Users-harrison-Github-weather-oracle/d2f14440-1966-43d2-80e6-eac426ca8b0b.jsonl",
+    "cwd": "/Users/harrison/Github/weather-oracle",
+    "permission_mode": "default",
+    "hook_event_name": "Stop",
+    "stop_hook_active": false
+  },
+  {
+    "session_id": "d2f14440-1966-43d2-80e6-eac426ca8b0b",
+    "transcript_path": "/Users/harrison/.claude/projects/-Users-harrison-Github-weather-oracle/d2f14440-1966-43d2-80e6-eac426ca8b0b.jsonl",
+    "cwd": "/Users/harrison/Github/weather-oracle",
+    "permission_mode": "default",
+    "hook_event_name": "Stop",
+    "stop_hook_active": false
+  },
+  {
+    "session_id": "d2f14440-1966-43d2-80e6-eac426ca8b0b",
+    "transcript_path": "/Users/harrison/.claude/projects/-Users-harrison-Github-weather-oracle/d2f14440-1966-43d2-80e6-eac426ca8b0b.jsonl",
+    "cwd": "/Users/harrison/Github/weather-oracle",
+    "permission_mode": "default",
+    "hook_event_name": "Stop",
+    "stop_hook_active": false
+  },
+  {
+    "session_id": "d2f14440-1966-43d2-80e6-eac426ca8b0b",
+    "transcript_path": "/Users/harrison/.claude/projects/-Users-harrison-Github-weather-oracle/d2f14440-1966-43d2-80e6-eac426ca8b0b.jsonl",
+    "cwd": "/Users/harrison/Github/weather-oracle",
+    "permission_mode": "default",
+    "hook_event_name": "Stop",
+    "stop_hook_active": false
+  },
+  {
+    "session_id": "05f27e0e-b949-41ab-b431-e98de9401986",
+    "transcript_path": "/Users/harrison/.claude/projects/-Users-harrison-Github-weather-oracle/05f27e0e-b949-41ab-b431-e98de9401986.jsonl",
+    "cwd": "/Users/harrison/Github/weather-oracle",
+    "permission_mode": "bypassPermissions",
+    "hook_event_name": "Stop",
+    "stop_hook_active": false
+  },
+  {
+    "session_id": "05f27e0e-b949-41ab-b431-e98de9401986",
+    "transcript_path": "/Users/harrison/.claude/projects/-Users-harrison-Github-weather-oracle/05f27e0e-b949-41ab-b431-e98de9401986.jsonl",
+    "cwd": "/Users/harrison/Github/weather-oracle",
+    "permission_mode": "default",
+    "hook_event_name": "Stop",
+    "stop_hook_active": false
+  },
+  {
+    "session_id": "05f27e0e-b949-41ab-b431-e98de9401986",
+    "transcript_path": "/Users/harrison/.claude/projects/-Users-harrison-Github-weather-oracle/05f27e0e-b949-41ab-b431-e98de9401986.jsonl",
+    "cwd": "/Users/harrison/Github/weather-oracle",
+    "permission_mode": "bypassPermissions",
+    "hook_event_name": "Stop",
+    "stop_hook_active": false
+  },
+  {
+    "session_id": "05f27e0e-b949-41ab-b431-e98de9401986",
+    "transcript_path": "/Users/harrison/.claude/projects/-Users-harrison-Github-weather-oracle/05f27e0e-b949-41ab-b431-e98de9401986.jsonl",
+    "cwd": "/Users/harrison/Github/weather-oracle",
+    "permission_mode": "bypassPermissions",
+    "hook_event_name": "Stop",
+    "stop_hook_active": false
+  },
+  {
+    "session_id": "05f27e0e-b949-41ab-b431-e98de9401986",
+    "transcript_path": "/Users/harrison/.claude/projects/-Users-harrison-Github-weather-oracle/05f27e0e-b949-41ab-b431-e98de9401986.jsonl",
+    "cwd": "/Users/harrison/Github/weather-oracle",
+    "permission_mode": "bypassPermissions",
+    "hook_event_name": "Stop",
+    "stop_hook_active": false
+  },
+  {
+    "session_id": "05f27e0e-b949-41ab-b431-e98de9401986",
+    "transcript_path": "/Users/harrison/.claude/projects/-Users-harrison-Github-weather-oracle/05f27e0e-b949-41ab-b431-e98de9401986.jsonl",
+    "cwd": "/Users/harrison/Github/weather-oracle",
+    "permission_mode": "bypassPermissions",
+    "hook_event_name": "Stop",
+    "stop_hook_active": false
+  },
+  {
+    "session_id": "05f27e0e-b949-41ab-b431-e98de9401986",
+    "transcript_path": "/Users/harrison/.claude/projects/-Users-harrison-Github-weather-oracle/05f27e0e-b949-41ab-b431-e98de9401986.jsonl",
+    "cwd": "/Users/harrison/Github/weather-oracle",
+    "permission_mode": "bypassPermissions",
+    "hook_event_name": "Stop",
+    "stop_hook_active": false
+  },
+  {
+    "session_id": "05f27e0e-b949-41ab-b431-e98de9401986",
+    "transcript_path": "/Users/harrison/.claude/projects/-Users-harrison-Github-weather-oracle/05f27e0e-b949-41ab-b431-e98de9401986.jsonl",
+    "cwd": "/Users/harrison/Github/weather-oracle",
+    "permission_mode": "bypassPermissions",
+    "hook_event_name": "Stop",
+    "stop_hook_active": false
+  },
+  {
+    "session_id": "05f27e0e-b949-41ab-b431-e98de9401986",
+    "transcript_path": "/Users/harrison/.claude/projects/-Users-harrison-Github-weather-oracle/05f27e0e-b949-41ab-b431-e98de9401986.jsonl",
+    "cwd": "/Users/harrison/Github/weather-oracle",
+    "permission_mode": "bypassPermissions",
+    "hook_event_name": "Stop",
+    "stop_hook_active": false
+  },
+  {
+    "session_id": "05f27e0e-b949-41ab-b431-e98de9401986",
+    "transcript_path": "/Users/harrison/.claude/projects/-Users-harrison-Github-weather-oracle/05f27e0e-b949-41ab-b431-e98de9401986.jsonl",
+    "cwd": "/Users/harrison/Github/weather-oracle",
+    "permission_mode": "bypassPermissions",
+    "hook_event_name": "Stop",
+    "stop_hook_active": false
+  },
+  {
+    "session_id": "05f27e0e-b949-41ab-b431-e98de9401986",
+    "transcript_path": "/Users/harrison/.claude/projects/-Users-harrison-Github-weather-oracle/05f27e0e-b949-41ab-b431-e98de9401986.jsonl",
+    "cwd": "/Users/harrison/Github/weather-oracle",
+    "permission_mode": "bypassPermissions",
+    "hook_event_name": "Stop",
+    "stop_hook_active": false
+  },
+  {
+    "session_id": "05f27e0e-b949-41ab-b431-e98de9401986",
+    "transcript_path": "/Users/harrison/.claude/projects/-Users-harrison-Github-weather-oracle/05f27e0e-b949-41ab-b431-e98de9401986.jsonl",
+    "cwd": "/Users/harrison/Github/weather-oracle",
+    "permission_mode": "bypassPermissions",
+    "hook_event_name": "Stop",
+    "stop_hook_active": false
+  },
+  {
+    "session_id": "05f27e0e-b949-41ab-b431-e98de9401986",
+    "transcript_path": "/Users/harrison/.claude/projects/-Users-harrison-Github-weather-oracle/05f27e0e-b949-41ab-b431-e98de9401986.jsonl",
+    "cwd": "/Users/harrison/Github/weather-oracle",
+    "permission_mode": "bypassPermissions",
+    "hook_event_name": "Stop",
+    "stop_hook_active": false
+  },
+  {
+    "session_id": "05f27e0e-b949-41ab-b431-e98de9401986",
+    "transcript_path": "/Users/harrison/.claude/projects/-Users-harrison-Github-weather-oracle/05f27e0e-b949-41ab-b431-e98de9401986.jsonl",
+    "cwd": "/Users/harrison/Github/weather-oracle",
+    "permission_mode": "bypassPermissions",
+    "hook_event_name": "Stop",
+    "stop_hook_active": false
+  },
+  {
+    "session_id": "05f27e0e-b949-41ab-b431-e98de9401986",
+    "transcript_path": "/Users/harrison/.claude/projects/-Users-harrison-Github-weather-oracle/05f27e0e-b949-41ab-b431-e98de9401986.jsonl",
+    "cwd": "/Users/harrison/Github/weather-oracle",
+    "permission_mode": "bypassPermissions",
+    "hook_event_name": "Stop",
+    "stop_hook_active": false
+  },
+  {
+    "session_id": "a44c378e-d380-493f-9164-ef44bf5b2008",
+    "transcript_path": "/Users/harrison/.claude/projects/-Users-harrison-Github-weather-oracle/a44c378e-d380-493f-9164-ef44bf5b2008.jsonl",
+    "cwd": "/Users/harrison/Github/weather-oracle",
+    "permission_mode": "bypassPermissions",
+    "hook_event_name": "Stop",
+    "stop_hook_active": false
+  },
+  {
+    "session_id": "a44c378e-d380-493f-9164-ef44bf5b2008",
+    "transcript_path": "/Users/harrison/.claude/projects/-Users-harrison-Github-weather-oracle/a44c378e-d380-493f-9164-ef44bf5b2008.jsonl",
+    "cwd": "/Users/harrison/Github/weather-oracle",
+    "permission_mode": "bypassPermissions",
+    "hook_event_name": "Stop",
+    "stop_hook_active": false
+  },
+  {
+    "session_id": "a44c378e-d380-493f-9164-ef44bf5b2008",
+    "transcript_path": "/Users/harrison/.claude/projects/-Users-harrison-Github-weather-oracle/a44c378e-d380-493f-9164-ef44bf5b2008.jsonl",
+    "cwd": "/Users/harrison/Github/weather-oracle",
+    "permission_mode": "bypassPermissions",
+    "hook_event_name": "Stop",
+    "stop_hook_active": false
+  },
+  {
+    "session_id": "a44c378e-d380-493f-9164-ef44bf5b2008",
+    "transcript_path": "/Users/harrison/.claude/projects/-Users-harrison-Github-weather-oracle/a44c378e-d380-493f-9164-ef44bf5b2008.jsonl",
+    "cwd": "/Users/harrison/Github/weather-oracle",
+    "permission_mode": "bypassPermissions",
+    "hook_event_name": "Stop",
+    "stop_hook_active": false
+  },
+  {
+    "session_id": "a44c378e-d380-493f-9164-ef44bf5b2008",
+    "transcript_path": "/Users/harrison/.claude/projects/-Users-harrison-Github-weather-oracle/a44c378e-d380-493f-9164-ef44bf5b2008.jsonl",
+    "cwd": "/Users/harrison/Github/weather-oracle",
+    "permission_mode": "bypassPermissions",
+    "hook_event_name": "Stop",
+    "stop_hook_active": false
+  },
+  {
+    "session_id": "a44c378e-d380-493f-9164-ef44bf5b2008",
+    "transcript_path": "/Users/harrison/.claude/projects/-Users-harrison-Github-weather-oracle/a44c378e-d380-493f-9164-ef44bf5b2008.jsonl",
+    "cwd": "/Users/harrison/Github/weather-oracle",
+    "permission_mode": "bypassPermissions",
+    "hook_event_name": "Stop",
+    "stop_hook_active": false
+  },
+  {
+    "session_id": "a44c378e-d380-493f-9164-ef44bf5b2008",
+    "transcript_path": "/Users/harrison/.claude/projects/-Users-harrison-Github-weather-oracle/a44c378e-d380-493f-9164-ef44bf5b2008.jsonl",
+    "cwd": "/Users/harrison/Github/weather-oracle",
+    "permission_mode": "bypassPermissions",
+    "hook_event_name": "Stop",
+    "stop_hook_active": false
+  },
+  {
+    "session_id": "a44c378e-d380-493f-9164-ef44bf5b2008",
+    "transcript_path": "/Users/harrison/.claude/projects/-Users-harrison-Github-weather-oracle/a44c378e-d380-493f-9164-ef44bf5b2008.jsonl",
+    "cwd": "/Users/harrison/Github/weather-oracle",
+    "permission_mode": "bypassPermissions",
+    "hook_event_name": "Stop",
+    "stop_hook_active": false
+  },
+  {
+    "session_id": "a44c378e-d380-493f-9164-ef44bf5b2008",
+    "transcript_path": "/Users/harrison/.claude/projects/-Users-harrison-Github-weather-oracle/a44c378e-d380-493f-9164-ef44bf5b2008.jsonl",
+    "cwd": "/Users/harrison/Github/weather-oracle",
+    "permission_mode": "bypassPermissions",
+    "hook_event_name": "Stop",
+    "stop_hook_active": false
+  },
+  {
+    "session_id": "a44c378e-d380-493f-9164-ef44bf5b2008",
+    "transcript_path": "/Users/harrison/.claude/projects/-Users-harrison-Github-weather-oracle/a44c378e-d380-493f-9164-ef44bf5b2008.jsonl",
+    "cwd": "/Users/harrison/Github/weather-oracle",
+    "permission_mode": "bypassPermissions",
+    "hook_event_name": "Stop",
+    "stop_hook_active": false
+  },
+  {
+    "session_id": "a44c378e-d380-493f-9164-ef44bf5b2008",
+    "transcript_path": "/Users/harrison/.claude/projects/-Users-harrison-Github-weather-oracle/a44c378e-d380-493f-9164-ef44bf5b2008.jsonl",
+    "cwd": "/Users/harrison/Github/weather-oracle",
+    "permission_mode": "bypassPermissions",
+    "hook_event_name": "Stop",
+    "stop_hook_active": false
+  },
+  {
+    "session_id": "a44c378e-d380-493f-9164-ef44bf5b2008",
+    "transcript_path": "/Users/harrison/.claude/projects/-Users-harrison-Github-weather-oracle/a44c378e-d380-493f-9164-ef44bf5b2008.jsonl",
+    "cwd": "/Users/harrison/Github/weather-oracle",
+    "permission_mode": "bypassPermissions",
+    "hook_event_name": "Stop",
+    "stop_hook_active": false
+  },
+  {
+    "session_id": "a44c378e-d380-493f-9164-ef44bf5b2008",
+    "transcript_path": "/Users/harrison/.claude/projects/-Users-harrison-Github-weather-oracle/a44c378e-d380-493f-9164-ef44bf5b2008.jsonl",
+    "cwd": "/Users/harrison/Github/weather-oracle",
+    "permission_mode": "bypassPermissions",
+    "hook_event_name": "Stop",
+    "stop_hook_active": false
+  },
+  {
+    "session_id": "a44c378e-d380-493f-9164-ef44bf5b2008",
+    "transcript_path": "/Users/harrison/.claude/projects/-Users-harrison-Github-weather-oracle/a44c378e-d380-493f-9164-ef44bf5b2008.jsonl",
+    "cwd": "/Users/harrison/Github/weather-oracle",
+    "permission_mode": "bypassPermissions",
+    "hook_event_name": "Stop",
+    "stop_hook_active": false
+  },
+  {
+    "session_id": "a44c378e-d380-493f-9164-ef44bf5b2008",
+    "transcript_path": "/Users/harrison/.claude/projects/-Users-harrison-Github-weather-oracle/a44c378e-d380-493f-9164-ef44bf5b2008.jsonl",
+    "cwd": "/Users/harrison/Github/weather-oracle",
+    "permission_mode": "bypassPermissions",
+    "hook_event_name": "Stop",
+    "stop_hook_active": false
+  },
+  {
+    "session_id": "a44c378e-d380-493f-9164-ef44bf5b2008",
+    "transcript_path": "/Users/harrison/.claude/projects/-Users-harrison-Github-weather-oracle/a44c378e-d380-493f-9164-ef44bf5b2008.jsonl",
+    "cwd": "/Users/harrison/Github/weather-oracle",
+    "permission_mode": "bypassPermissions",
+    "hook_event_name": "Stop",
+    "stop_hook_active": false
+  },
+  {
+    "session_id": "a44c378e-d380-493f-9164-ef44bf5b2008",
+    "transcript_path": "/Users/harrison/.claude/projects/-Users-harrison-Github-weather-oracle/a44c378e-d380-493f-9164-ef44bf5b2008.jsonl",
+    "cwd": "/Users/harrison/Github/weather-oracle",
+    "permission_mode": "bypassPermissions",
+    "hook_event_name": "Stop",
+    "stop_hook_active": false
+  },
+  {
+    "session_id": "a44c378e-d380-493f-9164-ef44bf5b2008",
+    "transcript_path": "/Users/harrison/.claude/projects/-Users-harrison-Github-weather-oracle/a44c378e-d380-493f-9164-ef44bf5b2008.jsonl",
+    "cwd": "/Users/harrison/Github/weather-oracle",
+    "permission_mode": "bypassPermissions",
+    "hook_event_name": "Stop",
+    "stop_hook_active": false
+  },
+  {
+    "session_id": "a44c378e-d380-493f-9164-ef44bf5b2008",
+    "transcript_path": "/Users/harrison/.claude/projects/-Users-harrison-Github-weather-oracle/a44c378e-d380-493f-9164-ef44bf5b2008.jsonl",
+    "cwd": "/Users/harrison/Github/weather-oracle",
+    "permission_mode": "bypassPermissions",
+    "hook_event_name": "Stop",
+    "stop_hook_active": false
+  },
+  {
+    "session_id": "a44c378e-d380-493f-9164-ef44bf5b2008",
+    "transcript_path": "/Users/harrison/.claude/projects/-Users-harrison-Github-weather-oracle/a44c378e-d380-493f-9164-ef44bf5b2008.jsonl",
+    "cwd": "/Users/harrison/Github/weather-oracle",
+    "permission_mode": "bypassPermissions",
+    "hook_event_name": "Stop",
+    "stop_hook_active": false
+  },
+  {
+    "session_id": "a44c378e-d380-493f-9164-ef44bf5b2008",
+    "transcript_path": "/Users/harrison/.claude/projects/-Users-harrison-Github-weather-oracle/a44c378e-d380-493f-9164-ef44bf5b2008.jsonl",
+    "cwd": "/Users/harrison/Github/weather-oracle",
+    "permission_mode": "bypassPermissions",
+    "hook_event_name": "Stop",
+    "stop_hook_active": false
+  },
+  {
+    "session_id": "a44c378e-d380-493f-9164-ef44bf5b2008",
+    "transcript_path": "/Users/harrison/.claude/projects/-Users-harrison-Github-weather-oracle/a44c378e-d380-493f-9164-ef44bf5b2008.jsonl",
+    "cwd": "/Users/harrison/Github/weather-oracle",
+    "permission_mode": "bypassPermissions",
+    "hook_event_name": "Stop",
+    "stop_hook_active": false
+  },
+  {
+    "session_id": "a44c378e-d380-493f-9164-ef44bf5b2008",
+    "transcript_path": "/Users/harrison/.claude/projects/-Users-harrison-Github-weather-oracle/a44c378e-d380-493f-9164-ef44bf5b2008.jsonl",
+    "cwd": "/Users/harrison/Github/weather-oracle",
+    "permission_mode": "bypassPermissions",
+    "hook_event_name": "Stop",
+    "stop_hook_active": false
+  },
+  {
+    "session_id": "a44c378e-d380-493f-9164-ef44bf5b2008",
+    "transcript_path": "/Users/harrison/.claude/projects/-Users-harrison-Github-weather-oracle/a44c378e-d380-493f-9164-ef44bf5b2008.jsonl",
+    "cwd": "/Users/harrison/Github/weather-oracle",
+    "permission_mode": "bypassPermissions",
+    "hook_event_name": "Stop",
+    "stop_hook_active": false
+  },
+  {
+    "session_id": "a44c378e-d380-493f-9164-ef44bf5b2008",
+    "transcript_path": "/Users/harrison/.claude/projects/-Users-harrison-Github-weather-oracle/a44c378e-d380-493f-9164-ef44bf5b2008.jsonl",
+    "cwd": "/Users/harrison/Github/weather-oracle",
+    "permission_mode": "bypassPermissions",
+    "hook_event_name": "Stop",
+    "stop_hook_active": false
+  },
+  {
+    "session_id": "a44c378e-d380-493f-9164-ef44bf5b2008",
+    "transcript_path": "/Users/harrison/.claude/projects/-Users-harrison-Github-weather-oracle/a44c378e-d380-493f-9164-ef44bf5b2008.jsonl",
+    "cwd": "/Users/harrison/Github/weather-oracle",
+    "permission_mode": "bypassPermissions",
+    "hook_event_name": "Stop",
+    "stop_hook_active": false
+  },
+  {
+    "session_id": "a44c378e-d380-493f-9164-ef44bf5b2008",
+    "transcript_path": "/Users/harrison/.claude/projects/-Users-harrison-Github-weather-oracle/a44c378e-d380-493f-9164-ef44bf5b2008.jsonl",
+    "cwd": "/Users/harrison/Github/weather-oracle",
+    "permission_mode": "bypassPermissions",
+    "hook_event_name": "Stop",
+    "stop_hook_active": false
+  },
+  {
+    "session_id": "a44c378e-d380-493f-9164-ef44bf5b2008",
+    "transcript_path": "/Users/harrison/.claude/projects/-Users-harrison-Github-weather-oracle/a44c378e-d380-493f-9164-ef44bf5b2008.jsonl",
+    "cwd": "/Users/harrison/Github/weather-oracle",
+    "permission_mode": "bypassPermissions",
+    "hook_event_name": "Stop",
+    "stop_hook_active": false
+  },
+  {
+    "session_id": "a44c378e-d380-493f-9164-ef44bf5b2008",
+    "transcript_path": "/Users/harrison/.claude/projects/-Users-harrison-Github-weather-oracle/a44c378e-d380-493f-9164-ef44bf5b2008.jsonl",
+    "cwd": "/Users/harrison/Github/weather-oracle",
+    "permission_mode": "bypassPermissions",
+    "hook_event_name": "Stop",
+    "stop_hook_active": false
+  },
+  {
+    "session_id": "a44c378e-d380-493f-9164-ef44bf5b2008",
+    "transcript_path": "/Users/harrison/.claude/projects/-Users-harrison-Github-weather-oracle/a44c378e-d380-493f-9164-ef44bf5b2008.jsonl",
+    "cwd": "/Users/harrison/Github/weather-oracle",
+    "permission_mode": "bypassPermissions",
+    "hook_event_name": "Stop",
+    "stop_hook_active": false
+  },
+  {
+    "session_id": "a44c378e-d380-493f-9164-ef44bf5b2008",
+    "transcript_path": "/Users/harrison/.claude/projects/-Users-harrison-Github-weather-oracle/a44c378e-d380-493f-9164-ef44bf5b2008.jsonl",
+    "cwd": "/Users/harrison/Github/weather-oracle",
+    "permission_mode": "bypassPermissions",
+    "hook_event_name": "Stop",
+    "stop_hook_active": false
+  },
+  {
+    "session_id": "a44c378e-d380-493f-9164-ef44bf5b2008",
+    "transcript_path": "/Users/harrison/.claude/projects/-Users-harrison-Github-weather-oracle/a44c378e-d380-493f-9164-ef44bf5b2008.jsonl",
+    "cwd": "/Users/harrison/Github/weather-oracle",
+    "permission_mode": "bypassPermissions",
+    "hook_event_name": "Stop",
+    "stop_hook_active": false
+  },
+  {
+    "session_id": "a44c378e-d380-493f-9164-ef44bf5b2008",
+    "transcript_path": "/Users/harrison/.claude/projects/-Users-harrison-Github-weather-oracle/a44c378e-d380-493f-9164-ef44bf5b2008.jsonl",
+    "cwd": "/Users/harrison/Github/weather-oracle",
+    "permission_mode": "bypassPermissions",
+    "hook_event_name": "Stop",
+    "stop_hook_active": false
+  },
+  {
+    "session_id": "a44c378e-d380-493f-9164-ef44bf5b2008",
+    "transcript_path": "/Users/harrison/.claude/projects/-Users-harrison-Github-weather-oracle/a44c378e-d380-493f-9164-ef44bf5b2008.jsonl",
+    "cwd": "/Users/harrison/Github/weather-oracle",
+    "permission_mode": "bypassPermissions",
+    "hook_event_name": "Stop",
+    "stop_hook_active": false
+  },
+  {
+    "session_id": "a44c378e-d380-493f-9164-ef44bf5b2008",
+    "transcript_path": "/Users/harrison/.claude/projects/-Users-harrison-Github-weather-oracle/a44c378e-d380-493f-9164-ef44bf5b2008.jsonl",
+    "cwd": "/Users/harrison/Github/weather-oracle",
+    "permission_mode": "bypassPermissions",
+    "hook_event_name": "Stop",
+    "stop_hook_active": false
+  },
+  {
+    "session_id": "a44c378e-d380-493f-9164-ef44bf5b2008",
+    "transcript_path": "/Users/harrison/.claude/projects/-Users-harrison-Github-weather-oracle/a44c378e-d380-493f-9164-ef44bf5b2008.jsonl",
+    "cwd": "/Users/harrison/Github/weather-oracle",
+    "permission_mode": "bypassPermissions",
+    "hook_event_name": "Stop",
+    "stop_hook_active": false
+  },
+  {
+    "session_id": "a44c378e-d380-493f-9164-ef44bf5b2008",
+    "transcript_path": "/Users/harrison/.claude/projects/-Users-harrison-Github-weather-oracle/a44c378e-d380-493f-9164-ef44bf5b2008.jsonl",
+    "cwd": "/Users/harrison/Github/weather-oracle",
+    "permission_mode": "bypassPermissions",
+    "hook_event_name": "Stop",
+    "stop_hook_active": false
+  },
+  {
+    "session_id": "a44c378e-d380-493f-9164-ef44bf5b2008",
+    "transcript_path": "/Users/harrison/.claude/projects/-Users-harrison-Github-weather-oracle/a44c378e-d380-493f-9164-ef44bf5b2008.jsonl",
+    "cwd": "/Users/harrison/Github/weather-oracle",
+    "permission_mode": "bypassPermissions",
+    "hook_event_name": "Stop",
+    "stop_hook_active": false
+  },
+  {
+    "session_id": "a44c378e-d380-493f-9164-ef44bf5b2008",
+    "transcript_path": "/Users/harrison/.claude/projects/-Users-harrison-Github-weather-oracle/a44c378e-d380-493f-9164-ef44bf5b2008.jsonl",
+    "cwd": "/Users/harrison/Github/weather-oracle",
+    "permission_mode": "bypassPermissions",
+    "hook_event_name": "Stop",
+    "stop_hook_active": false
+  },
+  {
+    "session_id": "a44c378e-d380-493f-9164-ef44bf5b2008",
+    "transcript_path": "/Users/harrison/.claude/projects/-Users-harrison-Github-weather-oracle/a44c378e-d380-493f-9164-ef44bf5b2008.jsonl",
+    "cwd": "/Users/harrison/Github/weather-oracle",
+    "permission_mode": "bypassPermissions",
+    "hook_event_name": "Stop",
+    "stop_hook_active": false
+  },
+  {
+    "session_id": "a44c378e-d380-493f-9164-ef44bf5b2008",
+    "transcript_path": "/Users/harrison/.claude/projects/-Users-harrison-Github-weather-oracle/a44c378e-d380-493f-9164-ef44bf5b2008.jsonl",
+    "cwd": "/Users/harrison/Github/weather-oracle",
+    "permission_mode": "bypassPermissions",
+    "hook_event_name": "Stop",
+    "stop_hook_active": false
+  },
+  {
+    "session_id": "a44c378e-d380-493f-9164-ef44bf5b2008",
+    "transcript_path": "/Users/harrison/.claude/projects/-Users-harrison-Github-weather-oracle/a44c378e-d380-493f-9164-ef44bf5b2008.jsonl",
+    "cwd": "/Users/harrison/Github/weather-oracle",
+    "permission_mode": "bypassPermissions",
+    "hook_event_name": "Stop",
+    "stop_hook_active": false
+  },
+  {
+    "session_id": "a44c378e-d380-493f-9164-ef44bf5b2008",
+    "transcript_path": "/Users/harrison/.claude/projects/-Users-harrison-Github-weather-oracle/a44c378e-d380-493f-9164-ef44bf5b2008.jsonl",
+    "cwd": "/Users/harrison/Github/weather-oracle",
+    "permission_mode": "bypassPermissions",
+    "hook_event_name": "Stop",
+    "stop_hook_active": false
+  },
+  {
+    "session_id": "a44c378e-d380-493f-9164-ef44bf5b2008",
+    "transcript_path": "/Users/harrison/.claude/projects/-Users-harrison-Github-weather-oracle/a44c378e-d380-493f-9164-ef44bf5b2008.jsonl",
+    "cwd": "/Users/harrison/Github/weather-oracle",
+    "permission_mode": "bypassPermissions",
+    "hook_event_name": "Stop",
+    "stop_hook_active": false
+  },
+  {
+    "session_id": "a44c378e-d380-493f-9164-ef44bf5b2008",
+    "transcript_path": "/Users/harrison/.claude/projects/-Users-harrison-Github-weather-oracle/a44c378e-d380-493f-9164-ef44bf5b2008.jsonl",
+    "cwd": "/Users/harrison/Github/weather-oracle",
+    "permission_mode": "bypassPermissions",
+    "hook_event_name": "Stop",
+    "stop_hook_active": false
+  },
+  {
+    "session_id": "a44c378e-d380-493f-9164-ef44bf5b2008",
+    "transcript_path": "/Users/harrison/.claude/projects/-Users-harrison-Github-weather-oracle/a44c378e-d380-493f-9164-ef44bf5b2008.jsonl",
+    "cwd": "/Users/harrison/Github/weather-oracle",
+    "permission_mode": "bypassPermissions",
+    "hook_event_name": "Stop",
+    "stop_hook_active": false
+  },
+  {
+    "session_id": "a44c378e-d380-493f-9164-ef44bf5b2008",
+    "transcript_path": "/Users/harrison/.claude/projects/-Users-harrison-Github-weather-oracle/a44c378e-d380-493f-9164-ef44bf5b2008.jsonl",
+    "cwd": "/Users/harrison/Github/weather-oracle",
+    "permission_mode": "bypassPermissions",
+    "hook_event_name": "Stop",
+    "stop_hook_active": false
+  },
+  {
+    "session_id": "a44c378e-d380-493f-9164-ef44bf5b2008",
+    "transcript_path": "/Users/harrison/.claude/projects/-Users-harrison-Github-weather-oracle/a44c378e-d380-493f-9164-ef44bf5b2008.jsonl",
+    "cwd": "/Users/harrison/Github/weather-oracle",
+    "permission_mode": "bypassPermissions",
+    "hook_event_name": "Stop",
+    "stop_hook_active": false
+  },
+  {
+    "session_id": "a44c378e-d380-493f-9164-ef44bf5b2008",
+    "transcript_path": "/Users/harrison/.claude/projects/-Users-harrison-Github-weather-oracle/a44c378e-d380-493f-9164-ef44bf5b2008.jsonl",
+    "cwd": "/Users/harrison/Github/weather-oracle",
+    "permission_mode": "bypassPermissions",
+    "hook_event_name": "Stop",
+    "stop_hook_active": false
+  },
+  {
+    "session_id": "a44c378e-d380-493f-9164-ef44bf5b2008",
+    "transcript_path": "/Users/harrison/.claude/projects/-Users-harrison-Github-weather-oracle/a44c378e-d380-493f-9164-ef44bf5b2008.jsonl",
+    "cwd": "/Users/harrison/Github/weather-oracle",
+    "permission_mode": "bypassPermissions",
+    "hook_event_name": "Stop",
+    "stop_hook_active": false
+  },
+  {
+    "session_id": "a44c378e-d380-493f-9164-ef44bf5b2008",
+    "transcript_path": "/Users/harrison/.claude/projects/-Users-harrison-Github-weather-oracle/a44c378e-d380-493f-9164-ef44bf5b2008.jsonl",
+    "cwd": "/Users/harrison/Github/weather-oracle",
+    "permission_mode": "bypassPermissions",
+    "hook_event_name": "Stop",
+    "stop_hook_active": false
+  },
+  {
+    "session_id": "a44c378e-d380-493f-9164-ef44bf5b2008",
+    "transcript_path": "/Users/harrison/.claude/projects/-Users-harrison-Github-weather-oracle/a44c378e-d380-493f-9164-ef44bf5b2008.jsonl",
+    "cwd": "/Users/harrison/Github/weather-oracle",
+    "permission_mode": "bypassPermissions",
+    "hook_event_name": "Stop",
+    "stop_hook_active": false
+  },
+  {
+    "session_id": "a44c378e-d380-493f-9164-ef44bf5b2008",
+    "transcript_path": "/Users/harrison/.claude/projects/-Users-harrison-Github-weather-oracle/a44c378e-d380-493f-9164-ef44bf5b2008.jsonl",
+    "cwd": "/Users/harrison/Github/weather-oracle",
+    "permission_mode": "bypassPermissions",
+    "hook_event_name": "Stop",
+    "stop_hook_active": false
+  },
+  {
+    "session_id": "a44c378e-d380-493f-9164-ef44bf5b2008",
+    "transcript_path": "/Users/harrison/.claude/projects/-Users-harrison-Github-weather-oracle/a44c378e-d380-493f-9164-ef44bf5b2008.jsonl",
+    "cwd": "/Users/harrison/Github/weather-oracle",
+    "permission_mode": "bypassPermissions",
+    "hook_event_name": "Stop",
+    "stop_hook_active": false
+  },
+  {
+    "session_id": "a44c378e-d380-493f-9164-ef44bf5b2008",
+    "transcript_path": "/Users/harrison/.claude/projects/-Users-harrison-Github-weather-oracle/a44c378e-d380-493f-9164-ef44bf5b2008.jsonl",
+    "cwd": "/Users/harrison/Github/weather-oracle",
+    "permission_mode": "bypassPermissions",
+    "hook_event_name": "Stop",
+    "stop_hook_active": false
   }
 ]

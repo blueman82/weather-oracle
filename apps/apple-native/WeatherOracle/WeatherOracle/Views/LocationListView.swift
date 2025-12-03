@@ -1,18 +1,20 @@
 import SharedKit
 import SwiftUI
 
-// MARK: - Location List View
+// MARK: - LocationListView
 
 /// Apple Weather-style location stack view
 /// Uses NavigationStack on iPhone, sidebar split on iPad
 public struct LocationListView: View {
     @Bindable var viewModel: LocationListViewModel
+    @Binding var deepLinkLocationId: UUID?
     @State private var showAddLocation = false
     @State private var editMode: EditMode = .inactive
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
 
-    public init(viewModel: LocationListViewModel) {
+    public init(viewModel: LocationListViewModel, deepLinkLocationId: Binding<UUID?> = .constant(nil)) {
         self.viewModel = viewModel
+        _deepLinkLocationId = deepLinkLocationId
     }
 
     public var body: some View {
@@ -25,6 +27,19 @@ public struct LocationListView: View {
         }
         .sheet(isPresented: $showAddLocation) {
             AddLocationView(viewModel: viewModel, isPresented: $showAddLocation)
+        }
+        .onChange(of: deepLinkLocationId) { _, newLocationId in
+            guard let locationId = newLocationId else {
+                return
+            }
+
+            // Find and set the current location from the deep link
+            if let matchingState = viewModel.locationStates.first(where: { $0.location.id == locationId }) {
+                viewModel.setCurrentLocation(matchingState.location)
+            }
+
+            // Clear the deep link after handling
+            deepLinkLocationId = nil
         }
     }
 
@@ -66,7 +81,7 @@ public struct LocationListView: View {
                 .environment(\.editMode, $editMode)
         } detail: {
             if let firstState = viewModel.currentLocationState ?? viewModel.locationStates.first {
-                LocationDetailView(state: firstState)
+                LocationDetailView(viewModel: viewModel, stateId: firstState.id)
             } else {
                 ContentUnavailableView(
                     "No Location Selected",
@@ -109,7 +124,7 @@ public struct LocationListView: View {
             }
 
             // Empty State
-            if viewModel.locationStates.isEmpty && viewModel.currentLocationState == nil {
+            if viewModel.locationStates.isEmpty, viewModel.currentLocationState == nil {
                 ContentUnavailableView(
                     "No Locations",
                     systemImage: "cloud.sun",
@@ -119,7 +134,7 @@ public struct LocationListView: View {
         }
         .listStyle(.insetGrouped)
         .navigationDestination(for: LocationWeatherState.self) { state in
-            LocationDetailView(state: state)
+            LocationDetailView(viewModel: viewModel, stateId: state.id)
         }
         .overlay {
             if viewModel.isRefreshing {
@@ -156,7 +171,7 @@ public struct LocationListView: View {
     }
 }
 
-// MARK: - Location Row View
+// MARK: - LocationRowView
 
 struct LocationRowView: View {
     let state: LocationWeatherState
@@ -207,7 +222,9 @@ struct LocationRowView: View {
         HStack(spacing: 16) {
             // Weather Icon
             if let code = state.currentWeatherCode {
-                Image(systemName: code.systemImageName)
+                // Get sunrise/sunset from today's daily forecast for time-aware icons
+                let todaySun = state.forecast?.consensus.daily.first?.forecast.sun
+                Image(systemName: code.systemImageName(at: Date(), sunrise: todaySun?.sunrise, sunset: todaySun?.sunset))
                     .font(.title2)
                     .symbolRenderingMode(.multicolor)
             }
@@ -234,45 +251,94 @@ struct LocationRowView: View {
     }
 }
 
-// MARK: - Location Detail View
+// MARK: - LocationDetailView
 
 struct LocationDetailView: View {
-    let state: LocationWeatherState
+    @Bindable var viewModel: LocationListViewModel
+    let stateId: UUID
+
+    private var state: LocationWeatherState? {
+        viewModel.locationStates.first(where: { $0.id == stateId })
+            ?? viewModel.currentLocationState
+    }
 
     var body: some View {
         ScrollView {
             VStack(spacing: 24) {
-                // Header
-                headerSection
+                if let state, state.isLoading {
+                    // Loading state
+                    VStack(spacing: 16) {
+                        ProgressView()
+                            .scaleEffect(1.5)
+                        Text("Loading forecast...")
+                            .foregroundStyle(.secondary)
+                    }
+                    .frame(maxWidth: .infinity)
+                    .padding(.vertical, 100)
+                } else if let state, let error = state.error {
+                    // Error state
+                    VStack(spacing: 16) {
+                        Image(systemName: "exclamationmark.triangle")
+                            .font(.system(size: 48))
+                            .foregroundStyle(.orange)
+                        Text("Failed to load forecast")
+                            .font(.headline)
+                        Text(error.localizedDescription)
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                            .multilineTextAlignment(.center)
+                    }
+                    .frame(maxWidth: .infinity)
+                    .padding(.vertical, 100)
+                } else if let currentState = state, currentState.forecast != nil {
+                    // Header
+                    headerSection(state: currentState)
 
-                // Hourly Forecast
-                if let hourly = state.forecast?.consensus.hourly, !hourly.isEmpty {
-                    hourlySection(hourly: hourly)
-                }
+                    // Hourly Forecast
+                    if let hourly = currentState.forecast?.consensus.hourly, !hourly.isEmpty {
+                        hourlySection(hourly: hourly)
+                    }
 
-                // Daily Forecast
-                if let daily = state.forecast?.consensus.daily, !daily.isEmpty {
-                    dailySection(daily: daily)
-                }
+                    // Daily Forecast
+                    if let daily = currentState.forecast?.consensus.daily, !daily.isEmpty {
+                        dailySection(daily: daily)
+                    }
 
-                // Confidence Indicator
-                if let confidence = state.forecast?.overallConfidence {
-                    confidenceSection(confidence: confidence)
+                    // Confidence Indicator
+                    if let confidence = currentState.forecast?.overallConfidence {
+                        confidenceSection(confidence: confidence)
+                    }
+                } else {
+                    // No data yet - show placeholder
+                    VStack(spacing: 16) {
+                        Image(systemName: "cloud.sun")
+                            .font(.system(size: 48))
+                            .foregroundStyle(.secondary)
+                        Text("No forecast data")
+                            .font(.headline)
+                        Text("Pull to refresh")
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                    }
+                    .frame(maxWidth: .infinity)
+                    .padding(.vertical, 100)
                 }
             }
             .padding()
         }
-        .navigationTitle(state.location.name)
+        .navigationTitle(state?.location.name ?? "Location")
         .navigationBarTitleDisplayMode(.large)
         .background(Color(.systemGroupedBackground))
     }
 
     // MARK: - Sections
 
-    private var headerSection: some View {
+    private func headerSection(state: LocationWeatherState) -> some View {
         VStack(spacing: 8) {
             if let code = state.currentWeatherCode {
-                Image(systemName: code.systemImageName)
+                // Get sunrise/sunset from today's daily forecast for time-aware icons
+                let todaySun = state.forecast?.consensus.daily.first?.forecast.sun
+                Image(systemName: code.systemImageName(at: Date(), sunrise: todaySun?.sunrise, sunset: todaySun?.sunset))
                     .font(.system(size: 64))
                     .symbolRenderingMode(.multicolor)
             }
@@ -310,8 +376,17 @@ struct LocationDetailView: View {
                                 .font(.caption)
                                 .foregroundStyle(.secondary)
 
-                            Image(systemName: hour.metrics.weatherCode.systemImageName)
-                                .symbolRenderingMode(.multicolor)
+                            // Find the daily forecast for this hour's date to get sunrise/sunset
+                            if let state, let daily = state.forecast?.consensus.daily {
+                                let hourDate = Calendar.current.startOfDay(for: hour.timestamp)
+                                let matchingDay = daily.first { Calendar.current.startOfDay(for: $0.date) == hourDate }
+                                let sunTimes = matchingDay?.forecast.sun
+                                Image(systemName: hour.metrics.weatherCode.systemImageName(at: hour.timestamp, sunrise: sunTimes?.sunrise, sunset: sunTimes?.sunset))
+                                    .symbolRenderingMode(.multicolor)
+                            } else {
+                                Image(systemName: hour.metrics.weatherCode.systemImageName)
+                                    .symbolRenderingMode(.multicolor)
+                            }
 
                             Text("\(Int(hour.metrics.temperature.rawValue.rounded()))\u{00B0}")
                                 .font(.callout)
@@ -337,7 +412,9 @@ struct LocationDetailView: View {
                         Text(formatDay(day.date))
                             .frame(width: 80, alignment: .leading)
 
-                        Image(systemName: day.forecast.weatherCode.systemImageName)
+                        // Use midday for daily forecast icon with day's sunrise/sunset
+                        let middayDate = Calendar.current.date(bySettingHour: 12, minute: 0, second: 0, of: day.date) ?? day.date
+                        Image(systemName: day.forecast.weatherCode.systemImageName(at: middayDate, sunrise: day.forecast.sun.sunrise, sunset: day.forecast.sun.sunset))
                             .symbolRenderingMode(.multicolor)
                             .frame(width: 30)
 
@@ -430,9 +507,9 @@ struct LocationDetailView: View {
 
     private func confidenceColor(for level: ConfidenceLevelName) -> Color {
         switch level {
-        case .high: return .green
-        case .medium: return .yellow
-        case .low: return .orange
+        case .high: .green
+        case .medium: .yellow
+        case .low: .orange
         }
     }
 }
@@ -440,16 +517,15 @@ struct LocationDetailView: View {
 // MARK: - Previews
 
 #if DEBUG
-#Preview("iPhone") {
-    let store = CloudSyncStore(store: InMemoryKeyValueStore())
-    let viewModel = LocationListViewModel.preview(store: store)
-    return LocationListView(viewModel: viewModel)
-}
+    #Preview("iPhone") {
+        let store = CloudSyncStore(store: InMemoryKeyValueStore())
+        let viewModel = LocationListViewModel.preview(store: store)
+        return LocationListView(viewModel: viewModel)
+    }
 
-#Preview("iPad") {
-    let store = CloudSyncStore(store: InMemoryKeyValueStore())
-    let viewModel = LocationListViewModel.preview(store: store)
-    return LocationListView(viewModel: viewModel)
-        .previewDevice(PreviewDevice(rawValue: "iPad Pro (11-inch)"))
-}
+    #Preview("iPad") {
+        let store = CloudSyncStore(store: InMemoryKeyValueStore())
+        let viewModel = LocationListViewModel.preview(store: store)
+        return LocationListView(viewModel: viewModel)
+    }
 #endif

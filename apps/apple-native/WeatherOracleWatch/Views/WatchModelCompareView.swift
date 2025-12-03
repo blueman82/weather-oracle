@@ -119,7 +119,7 @@ public struct WatchModelCompareView: View {
             .accessibilityElement(children: .combine)
         }
         .padding()
-        .background(Color(.systemGray6))
+        .background(Color.gray.opacity(0.2))
         .cornerRadius(8)
         .accessibilityElement(children: .combine)
     }
@@ -182,7 +182,7 @@ public struct WatchModelCompareView: View {
             .accessibilityElement(children: .combine)
         }
         .padding()
-        .background(Color(.systemGray6))
+        .background(Color.gray.opacity(0.2))
         .cornerRadius(8)
         .accessibilityElement(children: .combine)
     }

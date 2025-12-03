@@ -13,8 +13,10 @@ struct WeatherOracleWatchApp: App {
     // MARK: - Initialization
 
     init() {
-        // Initialize cloud sync store with NSUbiquitousKeyValueStore for iCloud sync
-        let cloudStore = CloudSyncStore()
+        // Use iCloud Key-Value Store for production sync between iOS/watchOS
+        let cloudStore = CloudSyncStore(store: NSUbiquitousKeyValueStore.default)
+        print("⌚ Watch App - Using iCloud Key-Value Store")
+        print("⌚ Watch App - Initial locations in store: \(cloudStore.locations.count)")
         _store = State(initialValue: cloudStore)
 
         // Initialize view model with store

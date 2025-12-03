@@ -6,7 +6,7 @@ import SharedKit
 /// Simplified location list for watchOS with Digital Crown navigation
 public struct WatchLocationListView: View {
     @Bindable var viewModel: WatchLocationViewModel
-    @State private var selectedIndex: Int = 0
+    @State private var selectedIndex: Double = 0.0
 
     public init(viewModel: WatchLocationViewModel) {
         self.viewModel = viewModel
@@ -36,7 +36,7 @@ public struct WatchLocationListView: View {
                     locationRow(location)
                 }
                 .listRowBackground(
-                    selectedIndex == index ? Color.blue.opacity(0.2) : Color.clear
+                    Int(selectedIndex) == index ? Color.blue.opacity(0.2) : Color.clear
                 )
                 .accessibilityElement(children: .combine)
                 .accessibilityLabel("Location: \(location.name)")
@@ -49,16 +49,17 @@ public struct WatchLocationListView: View {
         .focusable()
         .digitalCrownRotation(
             $selectedIndex,
-            from: 0,
-            through: max(0, viewModel.locations.count - 1),
-            by: 1,
+            from: 0.0,
+            through: Double(max(0, viewModel.locations.count - 1)),
+            by: 1.0,
             sensitivity: .medium,
             isContinuous: false,
             isHapticFeedbackEnabled: true
         )
         .onChange(of: selectedIndex) { oldValue, newValue in
-            if newValue >= 0 && newValue < viewModel.locations.count {
-                let location = viewModel.locations[newValue]
+            let index = Int(newValue)
+            if index >= 0 && index < viewModel.locations.count {
+                let location = viewModel.locations[index]
                 viewModel.selectLocation(location)
                 // Haptic feedback on selection change
                 WKInterfaceDevice.current().play(.click)

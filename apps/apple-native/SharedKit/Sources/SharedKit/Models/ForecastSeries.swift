@@ -245,6 +245,7 @@ public enum WeatherCode: Int, Codable, Sendable, CaseIterable {
     }
 
     /// SF Symbol name for this weather code.
+    /// - Note: This property always returns daytime icons. For time-aware icons, use `systemImageName(at:sunrise:sunset:)`.
     public var systemImageName: String {
         switch self {
         case .clearSky: return "sun.max.fill"
@@ -262,6 +263,33 @@ public enum WeatherCode: Int, Codable, Sendable, CaseIterable {
         case .slightSnowShowers, .heavySnowShowers: return "cloud.snow.fill"
         case .thunderstorm: return "cloud.bolt.rain.fill"
         case .thunderstormWithSlightHail, .thunderstormWithHeavyHail: return "cloud.bolt.rain.fill"
+        }
+    }
+
+    /// SF Symbol name for this weather code with day/night awareness.
+    /// - Parameters:
+    ///   - timestamp: The time for which to get the icon
+    ///   - sunrise: The sunrise time, or nil to use hour-based fallback
+    ///   - sunset: The sunset time, or nil to use hour-based fallback
+    /// - Returns: SF Symbol name appropriate for the time of day
+    public func systemImageName(at timestamp: Date, sunrise: Date?, sunset: Date?) -> String {
+        let isDaytime: Bool
+        if let sunrise = sunrise, let sunset = sunset {
+            isDaytime = timestamp >= sunrise && timestamp < sunset
+        } else {
+            let hour = Calendar.current.component(.hour, from: timestamp)
+            isDaytime = hour >= 6 && hour < 20
+        }
+
+        switch self {
+        case .clearSky:
+            return isDaytime ? "sun.max.fill" : "moon.stars.fill"
+        case .mainlyClear:
+            return isDaytime ? "sun.max.fill" : "moon.stars"
+        case .partlyCloudy:
+            return isDaytime ? "cloud.sun.fill" : "cloud.moon.fill"
+        default:
+            return systemImageName  // All other weather codes use same icon day/night
         }
     }
 }

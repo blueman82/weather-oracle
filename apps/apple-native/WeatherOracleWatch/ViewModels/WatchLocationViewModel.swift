@@ -1,7 +1,9 @@
 import Foundation
 import SharedKit
 import Combine
+#if os(iOS)
 import NotificationEngine
+#endif
 
 // MARK: - Watch Location View Model
 
@@ -14,7 +16,9 @@ public final class WatchLocationViewModel {
     private let client: OpenMeteoClient
     private let store: CloudSyncStore
     private let models: [ModelName]
+    #if os(iOS)
     private let notificationEngine: NotificationEngine
+    #endif
 
     public private(set) var locations: [LocationEntity] = []
     public private(set) var selectedLocation: LocationEntity?
@@ -27,6 +31,7 @@ public final class WatchLocationViewModel {
 
     // MARK: - Initialization
 
+    #if os(iOS)
     public init(
         client: OpenMeteoClient = OpenMeteoClient(),
         store: CloudSyncStore,
@@ -38,6 +43,25 @@ public final class WatchLocationViewModel {
         self.models = models
         self.notificationEngine = notificationEngine
 
+        setupInitialization()
+    }
+    #else
+    public init(
+        client: OpenMeteoClient = OpenMeteoClient(),
+        store: CloudSyncStore,
+        models: [ModelName] = [.ecmwf, .gfs, .icon]
+    ) {
+        self.client = client
+        self.store = store
+        self.models = models
+
+        setupInitialization()
+    }
+    #endif
+
+    // MARK: - Shared Initialization
+
+    private func setupInitialization() {
         // Load locations from store
         loadLocations()
 
@@ -111,8 +135,10 @@ public final class WatchLocationViewModel {
             forecast = aggregated
             lastUpdated = Date()
 
-            // Reschedule background alerts for the location
+            // Reschedule background alerts for the location (iOS only)
+            #if os(iOS)
             await notificationEngine.rescheduleBackgroundAlerts(for: location)
+            #endif
         } catch {
             self.error = error
         }
@@ -157,15 +183,15 @@ public final class WatchLocationViewModel {
         case .partlyCloudy: return "Partly Cloudy"
         case .overcast: return "Overcast"
         case .fog, .depositingRimeFog: return "Foggy"
-        case .drizzleLight, .drizzleModerate, .drizzleDense: return "Drizzle"
-        case .freezingDrizzleLight, .freezingDrizzleDense: return "Freezing Drizzle"
-        case .rainSlight, .rainModerate, .rainHeavy: return "Rain"
-        case .freezingRainLight, .freezingRainHeavy: return "Freezing Rain"
-        case .snowFallSlight, .snowFallModerate, .snowFallHeavy: return "Snow"
+        case .lightDrizzle, .moderateDrizzle, .denseDrizzle: return "Drizzle"
+        case .lightFreezingDrizzle, .denseFreezingDrizzle: return "Freezing Drizzle"
+        case .slightRain, .moderateRain, .heavyRain: return "Rain"
+        case .lightFreezingRain, .heavyFreezingRain: return "Freezing Rain"
+        case .slightSnow, .moderateSnow, .heavySnow: return "Snow"
         case .snowGrains: return "Snow Grains"
-        case .rainShowersSlight, .rainShowersModerate, .rainShowersViolent: return "Rain Showers"
-        case .snowShowersSlight, .snowShowersHeavy: return "Snow Showers"
-        case .thunderstorm, .thunderstormSlightHail, .thunderstormHeavyHail: return "Thunderstorm"
+        case .slightRainShowers, .moderateRainShowers, .violentRainShowers: return "Rain Showers"
+        case .slightSnowShowers, .heavySnowShowers: return "Snow Showers"
+        case .thunderstorm, .thunderstormWithSlightHail, .thunderstormWithHeavyHail: return "Thunderstorm"
         }
     }
 }

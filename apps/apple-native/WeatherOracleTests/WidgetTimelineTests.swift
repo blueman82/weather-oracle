@@ -267,7 +267,7 @@ final class WidgetTimelineTests: XCTestCase {
     // MARK: - Widget Configuration Tests
 
     func testWidgetConfigurationDefaults() {
-        let config = WidgetConfiguration.default
+        let config = WidgetPreferences.default
 
         XCTAssertTrue(config.showModelAgreement)
         XCTAssertTrue(config.showConfidenceBadge)
@@ -276,7 +276,7 @@ final class WidgetTimelineTests: XCTestCase {
     }
 
     func testWidgetConfigurationCodable() throws {
-        let config = WidgetConfiguration(
+        let config = WidgetPreferences(
             showModelAgreement: false,
             showConfidenceBadge: false,
             temperatureUnit: .fahrenheit,
@@ -287,7 +287,7 @@ final class WidgetTimelineTests: XCTestCase {
         let data = try encoder.encode(config)
 
         let decoder = JSONDecoder()
-        let decoded = try decoder.decode(WidgetConfiguration.self, from: data)
+        let decoded = try decoder.decode(WidgetPreferences.self, from: data)
 
         XCTAssertFalse(decoded.showModelAgreement)
         XCTAssertFalse(decoded.showConfidenceBadge)

@@ -39,12 +39,16 @@ public struct WeatherIconProvider {
     public static func isDaytime(_ timestamp: Date, sunrise: Date?, sunset: Date?) -> Bool {
         if let sunrise = sunrise, let sunset = sunset {
             // Use actual sunrise/sunset times for accurate determination
-            return timestamp >= sunrise && timestamp < sunset
+            let result = timestamp >= sunrise && timestamp < sunset
+            print("🌅 DEBUG: Using sunrise/sunset - timestamp: \(timestamp), sunrise: \(sunrise), sunset: \(sunset), isDaytime: \(result)")
+            return result
         }
 
         // Fallback: use hour-based heuristic (6 AM - 8 PM local time)
         let hour = Calendar.current.component(.hour, from: timestamp)
-        return hour >= 6 && hour < 20
+        let result = hour >= 6 && hour < 20
+        print("⏰ DEBUG: Using hour fallback - hour: \(hour), isDaytime: \(result)")
+        return result
     }
 
     /// Returns the appropriate SF Symbol name for the given weather code and time of day.
@@ -89,6 +93,7 @@ public struct WeatherIconProvider {
         sunset: Date?
     ) -> String {
         let daytime = isDaytime(timestamp, sunrise: sunrise, sunset: sunset)
+        print("☀️🌙 DEBUG: icon() called - code: \(code), daytime: \(daytime)")
 
         switch code {
         // Clear/Mainly Clear - Day/Night variants

@@ -1,7 +1,7 @@
 import SharedKit
 import SwiftUI
 
-// MARK: - Add Location View
+// MARK: - AddLocationView
 
 /// Search interface for adding new locations with geocoding
 public struct AddLocationView: View {
@@ -11,7 +11,7 @@ public struct AddLocationView: View {
 
     public init(viewModel: LocationListViewModel, isPresented: Binding<Bool>) {
         self.viewModel = viewModel
-        self._isPresented = isPresented
+        _isPresented = isPresented
     }
 
     public var body: some View {
@@ -165,7 +165,7 @@ public struct AddLocationView: View {
     }
 }
 
-// MARK: - Search Result Row
+// MARK: - SearchResultRow
 
 struct SearchResultRow: View {
     let result: GeocodingResult
@@ -213,7 +213,7 @@ struct SearchResultRow: View {
     }
 
     private func flagEmoji(for countryCode: String) -> String {
-        let base: UInt32 = 127397
+        let base: UInt32 = 127_397
         var emoji = ""
         for scalar in countryCode.uppercased().unicodeScalars {
             if let scalarValue = Unicode.Scalar(base + scalar.value) {
@@ -227,22 +227,22 @@ struct SearchResultRow: View {
 // MARK: - Previews
 
 #if DEBUG
-#Preview("Add Location") {
-    @Previewable @State var isPresented = true
-    let store = CloudSyncStore(store: InMemoryKeyValueStore())
-    let viewModel = LocationListViewModel(store: store)
+    #Preview("Add Location") {
+        @Previewable @State var isPresented = true
+        let store = CloudSyncStore(store: InMemoryKeyValueStore())
+        let viewModel = LocationListViewModel(store: store)
 
-    return AddLocationView(viewModel: viewModel, isPresented: $isPresented)
-}
+        return AddLocationView(viewModel: viewModel, isPresented: $isPresented)
+    }
 
-#Preview("With Results") {
-    @Previewable @State var isPresented = true
-    let store = CloudSyncStore(store: InMemoryKeyValueStore())
-    let viewModel = LocationListViewModel(store: store)
+    #Preview("With Results") {
+        @Previewable @State var isPresented = true
+        let store = CloudSyncStore(store: InMemoryKeyValueStore())
+        let viewModel = LocationListViewModel(store: store)
 
-    return AddLocationView(viewModel: viewModel, isPresented: $isPresented)
-        .onAppear {
-            viewModel.searchQuery = "San Francisco"
-        }
-}
+        return AddLocationView(viewModel: viewModel, isPresented: $isPresented)
+            .onAppear {
+                viewModel.searchQuery = "San Francisco"
+            }
+    }
 #endif

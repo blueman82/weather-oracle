@@ -1,8 +1,9 @@
 import Combine
 import Foundation
 import SharedKit
+import WidgetKit
 
-// MARK: - Location Weather State
+// MARK: - LocationWeatherState
 
 /// Weather data state for a single location
 public struct LocationWeatherState: Identifiable, Sendable, Hashable {
@@ -13,6 +14,7 @@ public struct LocationWeatherState: Identifiable, Sendable, Hashable {
     public func hash(into hasher: inout Hasher) {
         hasher.combine(id)
     }
+
     public let id: UUID
     public let location: LocationEntity
     public var forecast: AggregatedForecast?
@@ -57,7 +59,7 @@ public struct LocationWeatherState: Identifiable, Sendable, Hashable {
     }
 }
 
-// MARK: - Search State
+// MARK: - SearchState
 
 /// Search state for geocoding
 public enum SearchState: Sendable {
@@ -67,7 +69,7 @@ public enum SearchState: Sendable {
     case error(String)
 }
 
-// MARK: - Location List View Model
+// MARK: - LocationListViewModel
 
 /// View model for the location list, manages fetching and caching weather data
 @MainActor
@@ -156,18 +158,23 @@ public final class LocationListViewModel {
 
     /// Fetch weather for a specific location
     public func fetchWeather(for location: LocationEntity) async {
+        print("📍 fetchWeather called for: \(location.name)")
         updateLoadingState(for: location.id, isLoading: true)
 
         do {
+            print("🌐 Calling API for models: \(models)")
             let forecasts = try await client.fetchForecasts(
                 models: models,
                 coordinates: location.coordinates
             )
 
+            print("✅ Got \(forecasts.count) forecasts, aggregating...")
             let aggregated = try await AggregateService.aggregate(forecasts)
 
+            print("✨ Aggregated! Updating forecast for: \(location.name)")
             updateForecast(for: location.id, forecast: aggregated)
         } catch {
+            print("❌ Error fetching weather: \(error)")
             updateError(for: location.id, error: error)
         }
     }
@@ -179,10 +186,14 @@ public final class LocationListViewModel {
             resolved: result
         )
 
+        print("🌍 Adding location: \(entity.name)")
         store.addLocation(entity)
+        print("💾 Location added to store, total locations: \(store.locations.count)")
         loadLocations()
+        print("📋 locationStates after load: \(locationStates.count)")
 
         // Immediately fetch weather for the new location
+        print("🌤️ Starting weather fetch for: \(entity.name)")
         Task {
             await fetchWeather(for: entity)
         }
@@ -245,7 +256,9 @@ public final class LocationListViewModel {
             .debounce(for: .milliseconds(300), scheduler: DispatchQueue.main)
             .removeDuplicates()
             .sink { [weak self] query in
-                guard let self else { return }
+                guard let self else {
+                    return
+                }
                 Task {
                     await self.search(query: query)
                 }
@@ -301,7 +314,11 @@ public final class LocationListViewModel {
     }
 
     private func updateForecast(for locationId: UUID, forecast: AggregatedForecast) {
+        print("🔄 updateForecast called for locationId: \(locationId)")
+        print("📊 locationStates count: \(locationStates.count)")
+
         if let index = locationStates.firstIndex(where: { $0.location.id == locationId }) {
+            print("✏️ Updating state at index \(index)")
             locationStates[index] = LocationWeatherState(
                 id: locationStates[index].id,
                 location: locationStates[index].location,
@@ -310,7 +327,12 @@ public final class LocationListViewModel {
                 error: nil,
                 lastUpdated: Date()
             )
+            print("💾 State updated! Has forecast: \(locationStates[index].forecast != nil)")
+
+            // Always cache widget data for any location with forecast
+            cacheWidgetData(location: locationStates[index].location, forecast: forecast)
         } else if currentLocationState?.location.id == locationId {
+            print("✏️ Updating currentLocationState")
             currentLocationState = LocationWeatherState(
                 id: currentLocationState!.id,
                 location: currentLocationState!.location,
@@ -319,7 +341,45 @@ public final class LocationListViewModel {
                 error: nil,
                 lastUpdated: Date()
             )
+            print("💾 currentLocationState updated!")
+
+            // Update widget data for current location
+            cacheWidgetData(location: currentLocationState!.location, forecast: forecast)
+        } else {
+            print("⚠️ Location not found in states!")
         }
+    }
+
+    /// Cache forecast data for widgets
+    private func cacheWidgetData(location: LocationEntity, forecast: AggregatedForecast) {
+        guard let userDefaults = UserDefaults(suiteName: "group.com.weatheroracle.app") else {
+            print("⚠️ Failed to access App Group for widget data")
+            return
+        }
+
+        let encoder = JSONEncoder()
+
+        // Cache forecast
+        if let forecastData = try? encoder.encode(forecast) {
+            userDefaults.set(forecastData, forKey: "widget_aggregated_forecast")
+            print("📱 Widget data: Cached forecast")
+        }
+
+        // Cache location (using the key the widget expects)
+        if let locationData = try? encoder.encode(location) {
+            userDefaults.set(locationData, forKey: "widget_selected_location_id")
+            print("📱 Widget data: Cached location")
+        }
+
+        // Cache last update time
+        userDefaults.set(Date(), forKey: "widget_last_update")
+
+        // Force synchronize
+        userDefaults.synchronize()
+
+        // Reload all widgets
+        WidgetCenter.shared.reloadAllTimelines()
+        print("🔄 Reloaded widget timelines")
     }
 
     private func updateError(for locationId: UUID, error: Error) {
@@ -348,45 +408,45 @@ public final class LocationListViewModel {
 // MARK: - Sample Data Provider
 
 #if DEBUG
-public extension LocationListViewModel {
-    /// Creates a view model with sample data for previews
-    static func preview(store: CloudSyncStore) -> LocationListViewModel {
-        let viewModel = LocationListViewModel(store: store)
+    public extension LocationListViewModel {
+        /// Creates a view model with sample data for previews
+        static func preview(store: CloudSyncStore) -> LocationListViewModel {
+            let viewModel = LocationListViewModel(store: store)
 
-        // Add sample location states
-        let sampleLocations = [
-            sampleLocationEntity(name: "San Francisco", lat: 37.7749, lon: -122.4194),
-            sampleLocationEntity(name: "New York", lat: 40.7128, lon: -74.0060),
-            sampleLocationEntity(name: "London", lat: 51.5074, lon: -0.1278),
-        ]
+            // Add sample location states
+            let sampleLocations = [
+                sampleLocationEntity(name: "San Francisco", lat: 37.7749, lon: -122.4194),
+                sampleLocationEntity(name: "New York", lat: 40.7128, lon: -74.0060),
+                sampleLocationEntity(name: "London", lat: 51.5074, lon: -0.1278),
+            ]
 
-        viewModel.locationStates = sampleLocations.map { location in
-            LocationWeatherState(
-                location: location,
-                forecast: nil,
-                isLoading: false,
-                error: nil,
-                lastUpdated: Date()
-            )
+            viewModel.locationStates = sampleLocations.map { location in
+                LocationWeatherState(
+                    location: location,
+                    forecast: nil,
+                    isLoading: false,
+                    error: nil,
+                    lastUpdated: Date()
+                )
+            }
+
+            return viewModel
         }
 
-        return viewModel
-    }
-
-    private static func sampleLocationEntity(name: String, lat: Double, lon: Double) -> LocationEntity {
-        LocationEntity(
-            query: name,
-            resolved: GeocodingResult(
-                name: name,
-                coordinates: Coordinates(
-                    latitude: Latitude(rawValue: lat)!,
-                    longitude: Longitude(rawValue: lon)!
-                ),
-                country: "Sample Country",
-                countryCode: "SC",
-                timezone: TimezoneId(rawValue: "UTC")
+        private static func sampleLocationEntity(name: String, lat: Double, lon: Double) -> LocationEntity {
+            LocationEntity(
+                query: name,
+                resolved: GeocodingResult(
+                    name: name,
+                    coordinates: Coordinates(
+                        latitude: Latitude(rawValue: lat)!,
+                        longitude: Longitude(rawValue: lon)!
+                    ),
+                    country: "Sample Country",
+                    countryCode: "SC",
+                    timezone: TimezoneId(rawValue: "UTC")
+                )
             )
-        )
+        }
     }
-}
 #endif

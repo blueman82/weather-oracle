@@ -230,7 +230,7 @@ public struct WatchForecastDetailView: View {
                 .font(.caption2)
                 .foregroundStyle(.secondary)
                 .accessibilityLabel("Time")
-                .accessibilityValue(hourly.timestamp, style: .time)
+                .accessibilityValue(hourly.timestamp.formatted(date: .omitted, time: .shortened))
 
             Image(systemName: weatherIcon(hourly.metrics.weatherCode))
                 .font(.body)
@@ -274,7 +274,7 @@ public struct WatchForecastDetailView: View {
                 .font(.caption)
                 .frame(width: 30, alignment: .leading)
                 .accessibilityLabel("Day of week")
-                .accessibilityValue(daily.date, format: .dateTime.weekday(.wide))
+                .accessibilityValue(daily.date.formatted(Date.FormatStyle().weekday(.wide)))
 
             // Icon
             Image(systemName: weatherIcon(daily.forecast.weatherCode))
@@ -325,15 +325,15 @@ public struct WatchForecastDetailView: View {
         case .partlyCloudy: return "Partly Cloudy"
         case .overcast: return "Overcast"
         case .fog, .depositingRimeFog: return "Foggy"
-        case .drizzleLight, .drizzleModerate, .drizzleDense: return "Drizzle"
-        case .freezingDrizzleLight, .freezingDrizzleDense: return "Freezing Drizzle"
-        case .rainSlight, .rainModerate, .rainHeavy: return "Rain"
-        case .freezingRainLight, .freezingRainHeavy: return "Freezing Rain"
-        case .snowFallSlight, .snowFallModerate, .snowFallHeavy: return "Snow"
+        case .lightDrizzle, .moderateDrizzle, .denseDrizzle: return "Drizzle"
+        case .lightFreezingDrizzle, .denseFreezingDrizzle: return "Freezing Drizzle"
+        case .slightRain, .moderateRain, .heavyRain: return "Rain"
+        case .lightFreezingRain, .heavyFreezingRain: return "Freezing Rain"
+        case .slightSnow, .moderateSnow, .heavySnow: return "Snow"
         case .snowGrains: return "Snow Grains"
-        case .rainShowersSlight, .rainShowersModerate, .rainShowersViolent: return "Rain Showers"
-        case .snowShowersSlight, .snowShowersHeavy: return "Snow Showers"
-        case .thunderstorm, .thunderstormSlightHail, .thunderstormHeavyHail: return "Thunderstorm"
+        case .slightRainShowers, .moderateRainShowers, .violentRainShowers: return "Rain Showers"
+        case .slightSnowShowers, .heavySnowShowers: return "Snow Showers"
+        case .thunderstorm, .thunderstormWithSlightHail, .thunderstormWithHeavyHail: return "Thunderstorm"
         }
     }
 
@@ -344,16 +344,16 @@ public struct WatchForecastDetailView: View {
         case .partlyCloudy: return "cloud.sun.fill"
         case .overcast: return "cloud.fill"
         case .fog, .depositingRimeFog: return "cloud.fog.fill"
-        case .drizzleLight, .drizzleModerate, .drizzleDense: return "cloud.drizzle.fill"
-        case .freezingDrizzleLight, .freezingDrizzleDense: return "cloud.sleet.fill"
-        case .rainSlight, .rainModerate: return "cloud.rain.fill"
-        case .rainHeavy: return "cloud.heavyrain.fill"
-        case .freezingRainLight, .freezingRainHeavy: return "cloud.sleet.fill"
-        case .snowFallSlight, .snowFallModerate, .snowFallHeavy: return "cloud.snow.fill"
+        case .lightDrizzle, .moderateDrizzle, .denseDrizzle: return "cloud.drizzle.fill"
+        case .lightFreezingDrizzle, .denseFreezingDrizzle: return "cloud.sleet.fill"
+        case .slightRain, .moderateRain: return "cloud.rain.fill"
+        case .heavyRain: return "cloud.heavyrain.fill"
+        case .lightFreezingRain, .heavyFreezingRain: return "cloud.sleet.fill"
+        case .slightSnow, .moderateSnow, .heavySnow: return "cloud.snow.fill"
         case .snowGrains: return "cloud.snow"
-        case .rainShowersSlight, .rainShowersModerate, .rainShowersViolent: return "cloud.rain.fill"
-        case .snowShowersSlight, .snowShowersHeavy: return "cloud.snow.fill"
-        case .thunderstorm, .thunderstormSlightHail, .thunderstormHeavyHail: return "cloud.bolt.rain.fill"
+        case .slightRainShowers, .moderateRainShowers, .violentRainShowers: return "cloud.rain.fill"
+        case .slightSnowShowers, .heavySnowShowers: return "cloud.snow.fill"
+        case .thunderstorm, .thunderstormWithSlightHail, .thunderstormWithHeavyHail: return "cloud.bolt.rain.fill"
         }
     }
 }
