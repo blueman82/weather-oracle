@@ -31,12 +31,12 @@ struct FogBackground: View {
         TimelineView(.animation(minimumInterval: 0.016, paused: false)) { timeline in
             Canvas { context, size in
                 // Draw gradient background
-                drawGradientBackground(context: context, size: size)
+                drawGradientBackground(context: &context, size: size)
 
                 // Draw animated fog layers
                 for layer in fogLayers {
                     drawFogLayer(
-                        context: context,
+                        context: &context,
                         size: size,
                         layer: layer,
                         timelineDate: timeline.date

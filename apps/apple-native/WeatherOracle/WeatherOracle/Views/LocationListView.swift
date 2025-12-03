@@ -263,68 +263,83 @@ struct LocationDetailView: View {
     }
 
     var body: some View {
-        ScrollView {
-            VStack(spacing: 24) {
-                if let state, state.isLoading {
-                    // Loading state
-                    VStack(spacing: 16) {
-                        ProgressView()
-                            .scaleEffect(1.5)
-                        Text("Loading forecast...")
-                            .foregroundStyle(.secondary)
-                    }
-                    .frame(maxWidth: .infinity)
-                    .padding(.vertical, 100)
-                } else if let state, let error = state.error {
-                    // Error state
-                    VStack(spacing: 16) {
-                        Image(systemName: "exclamationmark.triangle")
-                            .font(.system(size: 48))
-                            .foregroundStyle(.orange)
-                        Text("Failed to load forecast")
-                            .font(.headline)
-                        Text(error.localizedDescription)
-                            .font(.caption)
-                            .foregroundStyle(.secondary)
-                            .multilineTextAlignment(.center)
-                    }
-                    .frame(maxWidth: .infinity)
-                    .padding(.vertical, 100)
-                } else if let currentState = state, currentState.forecast != nil {
-                    // Header
-                    headerSection(state: currentState)
-
-                    // Hourly Forecast
-                    if let hourly = currentState.forecast?.consensus.hourly, !hourly.isEmpty {
-                        hourlySection(hourly: hourly)
-                    }
-
-                    // Daily Forecast
-                    if let daily = currentState.forecast?.consensus.daily, !daily.isEmpty {
-                        dailySection(daily: daily)
-                    }
-
-                    // Confidence Indicator
-                    if let confidence = currentState.forecast?.overallConfidence {
-                        confidenceSection(confidence: confidence)
-                    }
-                } else {
-                    // No data yet - show placeholder
-                    VStack(spacing: 16) {
-                        Image(systemName: "cloud.sun")
-                            .font(.system(size: 48))
-                            .foregroundStyle(.secondary)
-                        Text("No forecast data")
-                            .font(.headline)
-                        Text("Pull to refresh")
-                            .font(.caption)
-                            .foregroundStyle(.secondary)
-                    }
-                    .frame(maxWidth: .infinity)
-                    .padding(.vertical, 100)
-                }
+        ZStack {
+            // Background layer - animated weather background
+            if let currentState = state, let weatherCode = currentState.currentWeatherCode {
+                let todaySun = currentState.forecast?.consensus.daily.first?.forecast.sun
+                WeatherBackgroundView(
+                    weatherCode: weatherCode,
+                    timestamp: Date(),
+                    sunrise: todaySun?.sunrise,
+                    sunset: todaySun?.sunset
+                )
+                .ignoresSafeArea()
             }
-            .padding()
+
+            // Foreground layer - existing ScrollView with forecast data
+            ScrollView {
+                VStack(spacing: 24) {
+                    if let state, state.isLoading {
+                        // Loading state
+                        VStack(spacing: 16) {
+                            ProgressView()
+                                .scaleEffect(1.5)
+                            Text("Loading forecast...")
+                                .foregroundStyle(.secondary)
+                        }
+                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, 100)
+                    } else if let state, let error = state.error {
+                        // Error state
+                        VStack(spacing: 16) {
+                            Image(systemName: "exclamationmark.triangle")
+                                .font(.system(size: 48))
+                                .foregroundStyle(.orange)
+                            Text("Failed to load forecast")
+                                .font(.headline)
+                            Text(error.localizedDescription)
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                                .multilineTextAlignment(.center)
+                        }
+                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, 100)
+                    } else if let currentState = state, currentState.forecast != nil {
+                        // Header
+                        headerSection(state: currentState)
+
+                        // Hourly Forecast
+                        if let hourly = currentState.forecast?.consensus.hourly, !hourly.isEmpty {
+                            hourlySection(hourly: hourly)
+                        }
+
+                        // Daily Forecast
+                        if let daily = currentState.forecast?.consensus.daily, !daily.isEmpty {
+                            dailySection(daily: daily)
+                        }
+
+                        // Confidence Indicator
+                        if let confidence = currentState.forecast?.overallConfidence {
+                            confidenceSection(confidence: confidence)
+                        }
+                    } else {
+                        // No data yet - show placeholder
+                        VStack(spacing: 16) {
+                            Image(systemName: "cloud.sun")
+                                .font(.system(size: 48))
+                                .foregroundStyle(.secondary)
+                            Text("No forecast data")
+                                .font(.headline)
+                            Text("Pull to refresh")
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                        }
+                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, 100)
+                    }
+                }
+                .padding()
+            }
         }
         .navigationTitle(state?.location.name ?? "Location")
         .navigationBarTitleDisplayMode(.large)

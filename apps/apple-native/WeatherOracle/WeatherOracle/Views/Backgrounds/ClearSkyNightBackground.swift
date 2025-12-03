@@ -57,22 +57,21 @@ struct ClearSkyNightBackground: View {
     @State private var lastShootingStarTime: TimeInterval = 0
 
     var body: some View {
-        TimelineView(.animation) { context in
-            Canvas { context in
-                let bounds = context.environment.self
-                let size = CGSize(width: 400, height: 800) // Default size, will be set by frame
-
+        TimelineView(.animation) { timeline in
+            Canvas { context, size in
                 // Draw gradient background
-                drawGradientBackground(in: context, size: size)
+                var mutableContext = context
+                drawGradientBackground(in: &mutableContext, size: size)
+                context = mutableContext
 
                 // Draw moon
                 drawMoon(in: context, size: size)
 
                 // Draw stars with twinkling animation
-                drawStars(in: context, at: context.date.timeIntervalSinceReferenceDate)
+                drawStars(in: context, at: timeline.date.timeIntervalSinceReferenceDate)
 
                 // Draw shooting stars
-                drawShootingStars(in: context, at: context.date.timeIntervalSinceReferenceDate)
+                drawShootingStars(in: context, at: timeline.date.timeIntervalSinceReferenceDate)
             }
             .background(Color.clear)
             .onAppear {
@@ -80,7 +79,7 @@ struct ClearSkyNightBackground: View {
                     initializeStars()
                 }
             }
-            .onChange(of: context.date.timeIntervalSinceReferenceDate) { time in
+            .onChange(of: timeline.date.timeIntervalSinceReferenceDate) { time in
                 updateShootingStars(at: time)
             }
         }
@@ -112,7 +111,7 @@ struct ClearSkyNightBackground: View {
     // MARK: - Drawing Methods
 
     /// Draw the gradient sky background
-    private func drawGradientBackground(in context: GraphicsContext, size: CGSize) {
+    private func drawGradientBackground(in context: inout GraphicsContext, size: CGSize) {
         let gradient = Gradient(colors: [
             Color(red: 0.05, green: 0.08, blue: 0.25), // Dark navy top
             Color(red: 0.12, green: 0.08, blue: 0.30), // Deep purple middle

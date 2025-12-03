@@ -76,28 +76,24 @@ struct RainBackground: View {
 
     var body: some View {
         TimelineView(.animation) { timeline in
-            Canvas { context in
+            Canvas { context, size in
                 // Draw cloudy gradient background
-                let gradient = LinearGradient(
-                    gradient: Gradient(colors: [
-                        Color(red: 0.4, green: 0.45, blue: 0.5),
-                        Color(red: 0.35, green: 0.4, blue: 0.45),
-                        Color(red: 0.3, green: 0.35, blue: 0.4)
-                    ]),
-                    startPoint: .topLeading,
-                    endPoint: .bottomTrailing
-                )
+                let gradient = Gradient(colors: [
+                    Color(red: 0.4, green: 0.45, blue: 0.5),
+                    Color(red: 0.35, green: 0.4, blue: 0.45),
+                    Color(red: 0.3, green: 0.35, blue: 0.4)
+                ])
 
                 context.fill(
-                    Path(roundedRect: CGRect(x: 0, y: 0, width: 1, height: 1), cornerRadius: 0),
-                    with: .linearGradient(gradient, startPoint: .topLeading, endPoint: .bottomTrailing)
+                    Path(roundedRect: CGRect(origin: .zero, size: size), cornerRadius: 0),
+                    with: .linearGradient(gradient, startPoint: CGPoint(x: 0, y: 0), endPoint: CGPoint(x: size.width, y: size.height))
                 )
 
                 // Draw animated raindrops
-                drawRaindrops(context: context, timeline: timeline)
+                drawRaindrops(context: &context, timeline: timeline, size: size)
 
                 // Draw subtle vignette effect
-                drawVignetteEffect(context: context)
+                drawVignetteEffect(context: &context, size: size)
             }
             .onAppear {
                 initializeRaindrops()
@@ -116,7 +112,8 @@ struct RainBackground: View {
     /// - Parameters:
     ///   - context: Canvas drawing context
     ///   - timeline: Timeline providing animation time
-    private func drawRaindrops(context: inout GraphicsContext, timeline: TimelineViewDefaultContext) {
+    ///   - size: Canvas size
+    private func drawRaindrops(context: inout GraphicsContext, timeline: TimelineViewDefaultContext, size: CGSize) {
         let totalTime = timeline.date.timeIntervalSince1970
         let speed = 0.3 * intensity.speedMultiplier
 
@@ -181,21 +178,19 @@ struct RainBackground: View {
     }
 
     /// Draws a subtle vignette effect for visual depth
-    /// - Parameter context: Canvas drawing context
-    private func drawVignetteEffect(context: inout GraphicsContext) {
-        let vignetteGradient = RadialGradient(
-            gradient: Gradient(colors: [
-                Color.black.opacity(0),
-                Color.black.opacity(0.15)
-            ]),
-            center: .center,
-            startRadius: 0.3,
-            endRadius: 1.0
-        )
+    /// - Parameters:
+    ///   - context: Canvas drawing context
+    ///   - size: Canvas size
+    private func drawVignetteEffect(context: inout GraphicsContext, size: CGSize) {
+        let vignetteGradient = Gradient(colors: [
+            Color.black.opacity(0),
+            Color.black.opacity(0.15)
+        ])
 
+        let centerPoint = CGPoint(x: size.width / 2, y: size.height / 2)
         context.fill(
-            Path(ellipseIn: CGRect(x: 0, y: 0, width: 1, height: 1)),
-            with: .radialGradient(vignetteGradient, center: .center)
+            Path(ellipseIn: CGRect(origin: .zero, size: size)),
+            with: .radialGradient(vignetteGradient, center: centerPoint, startRadius: 0, endRadius: max(size.width, size.height) / 2)
         )
     }
 }

@@ -73,20 +73,16 @@ struct SnowBackground: View {
         TimelineView(.animation) { timeline in
             Canvas { context, size in
                 // Draw gradient background
-                var gradient = LinearGradient(
-                    gradient: Gradient(colors: [
-                        Color(red: 0.95, green: 0.95, blue: 0.98),
-                        Color(red: 0.88, green: 0.90, blue: 0.95)
-                    ]),
-                    startPoint: .topLeading,
-                    endPoint: .bottomTrailing
-                )
+                let gradient = Gradient(colors: [
+                    Color(red: 0.95, green: 0.95, blue: 0.98),
+                    Color(red: 0.88, green: 0.90, blue: 0.95)
+                ])
 
                 let backgroundPath = Path(
                     roundedRect: CGRect(origin: .zero, size: size),
                     cornerRadius: 0
                 )
-                context.fill(backgroundPath, with: .linearGradient(gradient, startPoint: .topLeading, endPoint: .bottomTrailing))
+                context.fill(backgroundPath, with: .linearGradient(gradient, startPoint: CGPoint(x: 0, y: 0), endPoint: CGPoint(x: size.width, y: size.height)))
 
                 // Get current time for animation
                 let time = timeline.date.timeIntervalSinceReferenceDate

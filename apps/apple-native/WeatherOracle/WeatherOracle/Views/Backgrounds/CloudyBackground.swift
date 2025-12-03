@@ -20,14 +20,14 @@ struct CloudyBackground: View {
                 let time = timeline.date.timeIntervalSinceReferenceDate
 
                 // Draw background gradient
-                drawBackgroundGradient(context: context, size: size)
+                drawBackgroundGradient(context: &context, size: size)
 
                 // Draw clouds based on density
                 switch density {
                 case .partly:
-                    drawPartlyCloudyScene(context: context, size: size, time: time)
+                    drawPartlyCloudyScene(context: &context, size: size, time: time)
                 case .overcast:
-                    drawOvercastScene(context: context, size: size, time: time)
+                    drawOvercastScene(context: &context, size: size, time: time)
                 }
             }
             .ignoresSafeArea()
@@ -40,8 +40,8 @@ struct CloudyBackground: View {
     ///   - size: Canvas size
     private func drawBackgroundGradient(context: inout GraphicsContext, size: CGSize) {
         let gradient: Gradient
-        let startPoint: UnitPoint
-        let endPoint: UnitPoint
+        let startPoint: CGPoint
+        let endPoint: CGPoint
 
         switch density {
         case .partly:
@@ -50,8 +50,8 @@ struct CloudyBackground: View {
                 Color(red: 0.85, green: 0.90, blue: 0.95), // Light blue top
                 Color(red: 0.92, green: 0.92, blue: 0.93)  // Light gray bottom
             ])
-            startPoint = .topLeading
-            endPoint = .bottomTrailing
+            startPoint = CGPoint(x: 0, y: 0)
+            endPoint = CGPoint(x: size.width, y: size.height)
 
         case .overcast:
             // Darker gradient for overcast - darker grays
@@ -59,8 +59,8 @@ struct CloudyBackground: View {
                 Color(red: 0.65, green: 0.68, blue: 0.72), // Dark gray-blue top
                 Color(red: 0.72, green: 0.72, blue: 0.74)  // Medium gray bottom
             ])
-            startPoint = .top
-            endPoint = .bottom
+            startPoint = CGPoint(x: 0, y: 0)
+            endPoint = CGPoint(x: 0, y: size.height)
         }
 
         let gradientRect = CGRect(origin: .zero, size: size)

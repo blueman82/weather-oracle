@@ -37,13 +37,7 @@ struct ClearSkyDayBackground: View {
             .init(color: bottomColor, location: 1.0)
         ])
 
-        let linearGradient = LinearGradient(
-            gradient: gradient,
-            startPoint: .top,
-            endPoint: .bottom
-        )
-
-        gradientContext.fill(gradientPath, with: .linearGradient(linearGradient, startPoint: CGPoint(x: 0, y: 0), endPoint: CGPoint(x: 0, y: size.height)))
+        gradientContext.fill(gradientPath, with: .linearGradient(gradient, startPoint: CGPoint(x: 0, y: 0), endPoint: CGPoint(x: 0, y: size.height)))
     }
 
     /// Draws the animated sun with glow effect and rotating rays
