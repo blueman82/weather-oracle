@@ -38,6 +38,7 @@
 		A10000012300000100000BC /* HomeWidgetViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000012300000100000BD /* HomeWidgetViews.swift */; };
 		A10000012300000100000BE /* LockScreenWidgetViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000012300000100000BF /* LockScreenWidgetViews.swift */; };
 		A10000012300000100000C0 /* StandByWidgetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000012300000100000C1 /* StandByWidgetView.swift */; };
+		A10000012300000100000C3 /* WeatherIconProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000012300000100000C4 /* WeatherIconProvider.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -126,6 +127,7 @@
 		A10000012300000100000BD /* HomeWidgetViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeWidgetViews.swift; sourceTree = "<group>"; };
 		A10000012300000100000BF /* LockScreenWidgetViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LockScreenWidgetViews.swift; sourceTree = "<group>"; };
 		A10000012300000100000C1 /* StandByWidgetView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StandByWidgetView.swift; sourceTree = "<group>"; };
+		A10000012300000100000C4 /* WeatherIconProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeatherIconProvider.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -254,6 +256,7 @@
 			children = (
 				A10000012300000100000035 /* WeatherOracleWidgets.swift */,
 				A10000012300000100000BB /* TimelineProvider.swift */,
+				A10000012300000100000C4 /* WeatherIconProvider.swift */,
 				A10000012300000100000C2 /* Views */,
 				A10000012300000100000037 /* Assets.xcassets */,
 				84F8E4542EDFBBEE009CDB20 /* WeatherOracleWidgetsExtension.entitlements */,
@@ -589,6 +592,7 @@
 			files = (
 				A10000012300000100000034 /* WeatherOracleWidgets.swift in Sources */,
 				A10000012300000100000BA /* TimelineProvider.swift in Sources */,
+				A10000012300000100000C3 /* WeatherIconProvider.swift in Sources */,
 				A10000012300000100000BC /* HomeWidgetViews.swift in Sources */,
 				A10000012300000100000BE /* LockScreenWidgetViews.swift in Sources */,
 				A10000012300000100000C0 /* StandByWidgetView.swift in Sources */,
