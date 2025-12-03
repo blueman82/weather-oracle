@@ -165,7 +165,7 @@ struct SnowBackground: View {
         rotation: Double
     ) {
         // Create a snowflake using multiple line segments for a simple six-pointed star
-        var contextCopy = context
+        let contextCopy = context
         let radius = size / 2
 
         // Adjust snowflake opacity based on time of day
