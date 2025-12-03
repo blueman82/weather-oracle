@@ -307,7 +307,7 @@ extension WeatherWidgetEntry {
         let targetDate = Calendar.current.startOfDay(for: date)
 
         for dayForecast in dailyForecasts {
-            let forecastDate = Calendar.current.startOfDay(for: dayForecast.timestamp)
+            let forecastDate = Calendar.current.startOfDay(for: dayForecast.date)
             if forecastDate == targetDate {
                 return (dayForecast.forecast.sun.sunrise, dayForecast.forecast.sun.sunset)
             }
