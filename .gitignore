@@ -12,6 +12,7 @@ dist/
 !*.config.d.ts
 
 # Bun
+bun.lock
 bun.lockb
 
 # Environment variables
