@@ -28,7 +28,7 @@ struct ClearSkyDayBackground: View {
         let topColor = Color(red: 0.53, green: 0.81, blue: 0.92)  // Light sky blue
         let bottomColor = Color(red: 0.98, green: 0.98, blue: 1.0) // Nearly white
 
-        var gradientContext = context
+        let gradientContext = context
         let gradientPath = Path(roundedRect: CGRect(origin: .zero, size: size), cornerRadius: 0)
 
         // Create gradient using stop points

@@ -171,13 +171,14 @@ struct SnowBackground: View {
             let startPoint = CGPoint(x: point.x, y: point.y)
 
             // Create path for the line
-            var path = Path()
-            path.move(to: startPoint)
-            path.addLine(to: endPoint)
+            let path = Path()
+            var pointPath = path
+            pointPath.move(to: startPoint)
+            pointPath.addLine(to: endPoint)
 
             // Draw the line
             contextCopy.stroke(
-                path,
+                pointPath,
                 with: .color(Color.white.opacity(0.8)),
                 lineWidth: max(0.5, size / 8)
             )

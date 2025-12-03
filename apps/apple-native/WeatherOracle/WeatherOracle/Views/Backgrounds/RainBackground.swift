@@ -145,7 +145,7 @@ struct RainBackground: View {
             dropPath.addLine(to: CGPoint(x: xPosition, y: yEnd))
 
             // Apply stroke with slight blur for depth
-            var dropStroke = StrokeStyle(lineWidth: 0.003, lineCap: .round)
+            let dropStroke = StrokeStyle(lineWidth: 0.003, lineCap: .round)
             context.stroke(dropPath, with: .color(dropColor.opacity(intensity.opacity)), style: dropStroke)
 
             // Optional: Add subtle splash effect at bottom

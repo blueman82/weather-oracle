@@ -202,7 +202,7 @@ private struct RainCanvas: View {
         path.move(to: CGPoint(x: particle.x, y: particle.y))
         path.addLine(to: CGPoint(x: particle.x, y: particle.y + particle.length))
 
-        var stroke = StrokeStyle(lineWidth: 1.5, lineCap: .round)
+        let stroke = StrokeStyle(lineWidth: 1.5, lineCap: .round)
         context.stroke(
             path,
             with: .color(Color.white.opacity(particle.opacity)),

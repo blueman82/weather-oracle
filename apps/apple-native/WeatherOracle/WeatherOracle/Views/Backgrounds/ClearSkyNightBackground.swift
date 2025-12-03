@@ -79,7 +79,7 @@ struct ClearSkyNightBackground: View {
                     initializeStars()
                 }
             }
-            .onChange(of: timeline.date.timeIntervalSinceReferenceDate) { time in
+            .onChange(of: timeline.date.timeIntervalSinceReferenceDate) { _, time in
                 updateShootingStars(at: time)
             }
         }
@@ -118,7 +118,7 @@ struct ClearSkyNightBackground: View {
             Color(red: 0.08, green: 0.04, blue: 0.20)  // Nearly black bottom
         ])
 
-        var path = Path(roundedRect: CGRect(origin: .zero, size: size), cornerRadius: 0)
+        let path = Path(roundedRect: CGRect(origin: .zero, size: size), cornerRadius: 0)
         context.fill(path, with: .linearGradient(gradient, startPoint: CGPoint(x: 0.5, y: 0), endPoint: CGPoint(x: 0.5, y: 1)))
     }
 
@@ -129,24 +129,24 @@ struct ClearSkyNightBackground: View {
         let moonRadius: CGFloat = 35
 
         // Outer glow layer (semi-transparent)
-        var glowPath = Circle().path(in: CGRect(x: moonX - moonRadius * 1.5, y: moonY - moonRadius * 1.5, width: moonRadius * 3, height: moonRadius * 3))
+        let glowPath = Circle().path(in: CGRect(x: moonX - moonRadius * 1.5, y: moonY - moonRadius * 1.5, width: moonRadius * 3, height: moonRadius * 3))
         let glowColor = Color(red: 1.0, green: 0.98, blue: 0.85, opacity: 0.15)
         context.fill(glowPath, with: .color(glowColor))
 
         // Inner glow layer
-        var innerGlowPath = Circle().path(in: CGRect(x: moonX - moonRadius * 1.2, y: moonY - moonRadius * 1.2, width: moonRadius * 2.4, height: moonRadius * 2.4))
+        let innerGlowPath = Circle().path(in: CGRect(x: moonX - moonRadius * 1.2, y: moonY - moonRadius * 1.2, width: moonRadius * 2.4, height: moonRadius * 2.4))
         let innerGlowColor = Color(red: 1.0, green: 0.98, blue: 0.85, opacity: 0.25)
         context.fill(innerGlowPath, with: .color(innerGlowColor))
 
         // Moon crescent
-        var moonPath = Circle().path(in: CGRect(x: moonX - moonRadius, y: moonY - moonRadius, width: moonRadius * 2, height: moonRadius * 2))
+        let moonPath = Circle().path(in: CGRect(x: moonX - moonRadius, y: moonY - moonRadius, width: moonRadius * 2, height: moonRadius * 2))
         let moonColor = Color(red: 0.95, green: 0.93, blue: 0.85)
         context.fill(moonPath, with: .color(moonColor))
 
         // Shadow to create crescent effect
         let shadowX = moonX + moonRadius * 0.3
         let shadowRadius = moonRadius * 0.95
-        var shadowPath = Circle().path(in: CGRect(x: shadowX - shadowRadius, y: moonY - shadowRadius, width: shadowRadius * 2, height: shadowRadius * 2))
+        let shadowPath = Circle().path(in: CGRect(x: shadowX - shadowRadius, y: moonY - shadowRadius, width: shadowRadius * 2, height: shadowRadius * 2))
         context.fill(shadowPath, with: .color(Color(red: 0.05, green: 0.08, blue: 0.25)))
     }
 
@@ -157,7 +157,7 @@ struct ClearSkyNightBackground: View {
             let screenY = star.y * 800 // Approximate height
 
             let opacity = star.opacity(at: time)
-            var starPath = Circle().path(in: CGRect(x: screenX - star.size / 2, y: screenY - star.size / 2, width: star.size, height: star.size))
+            let starPath = Circle().path(in: CGRect(x: screenX - star.size / 2, y: screenY - star.size / 2, width: star.size, height: star.size))
 
             let starColor = Color(red: 0.95, green: 0.93, blue: 0.88, opacity: opacity)
             context.fill(starPath, with: .color(starColor))
@@ -165,7 +165,7 @@ struct ClearSkyNightBackground: View {
             // Add subtle glow for brighter stars
             if opacity > 0.8 {
                 let glowSize = star.size * 1.5
-                var glowPath = Circle().path(in: CGRect(x: screenX - glowSize / 2, y: screenY - glowSize / 2, width: glowSize, height: glowSize))
+                let glowPath = Circle().path(in: CGRect(x: screenX - glowSize / 2, y: screenY - glowSize / 2, width: glowSize, height: glowSize))
                 let glowColor = Color(red: 0.95, green: 0.93, blue: 0.88, opacity: opacity * 0.4)
                 context.fill(glowPath, with: .color(glowColor))
             }
@@ -181,13 +181,13 @@ struct ClearSkyNightBackground: View {
 
             // Main shooting star point
             let starSize: CGFloat = 2.5
-            var starPath = Circle().path(in: CGRect(x: position.x - starSize / 2, y: position.y - starSize / 2, width: starSize, height: starSize))
+            let starPath = Circle().path(in: CGRect(x: position.x - starSize / 2, y: position.y - starSize / 2, width: starSize, height: starSize))
             let starColor = Color(red: 1.0, green: 0.98, blue: 0.90, opacity: opacity)
             context.fill(starPath, with: .color(starColor))
 
             // Shooting star trail (glow)
             let trailSize = starSize * 3
-            var trailPath = Circle().path(in: CGRect(x: position.x - trailSize / 2, y: position.y - trailSize / 2, width: trailSize, height: trailSize))
+            let trailPath = Circle().path(in: CGRect(x: position.x - trailSize / 2, y: position.y - trailSize / 2, width: trailSize, height: trailSize))
             let trailColor = Color(red: 1.0, green: 0.98, blue: 0.90, opacity: opacity * 0.5)
             context.fill(trailPath, with: .color(trailColor))
         }
@@ -199,8 +199,8 @@ struct ClearSkyNightBackground: View {
     private func updateShootingStars(at time: TimeInterval) {
         // Clean up completed shooting stars
         shootingStars.removeAll { star in
-            guard let position = star.position(at: time) else { return true }
-            return position == nil
+            guard let _ = star.position(at: time) else { return true }
+            return false
         }
 
         // Randomly spawn new shooting stars (every 2-4 seconds on average)
