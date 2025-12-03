@@ -28,7 +28,7 @@ public struct SmallHomeWidgetView: View {
                     // Weather icon
                     Image(systemName: weatherIcon(weatherCode))
                         .font(.system(size: 32))
-                        .symbolRenderingMode(.multicolor)
+                        .foregroundStyle(.blue)
 
                     Spacer()
 
@@ -95,16 +95,16 @@ public struct SmallHomeWidgetView: View {
         case .partlyCloudy: return "cloud.sun.fill"
         case .overcast: return "cloud.fill"
         case .fog, .depositingRimeFog: return "cloud.fog.fill"
-        case .drizzleLight, .drizzleModerate, .drizzleDense: return "cloud.drizzle.fill"
-        case .freezingDrizzleLight, .freezingDrizzleDense: return "cloud.sleet.fill"
-        case .rainSlight, .rainModerate: return "cloud.rain.fill"
-        case .rainHeavy: return "cloud.heavyrain.fill"
-        case .freezingRainLight, .freezingRainHeavy: return "cloud.sleet.fill"
-        case .snowFallSlight, .snowFallModerate, .snowFallHeavy: return "cloud.snow.fill"
+        case .lightDrizzle, .moderateDrizzle, .denseDrizzle: return "cloud.drizzle.fill"
+        case .lightFreezingDrizzle, .denseFreezingDrizzle: return "cloud.sleet.fill"
+        case .slightRain, .moderateRain: return "cloud.rain.fill"
+        case .heavyRain: return "cloud.heavyrain.fill"
+        case .lightFreezingRain, .heavyFreezingRain: return "cloud.sleet.fill"
+        case .slightSnow, .moderateSnow, .heavySnow: return "cloud.snow.fill"
         case .snowGrains: return "cloud.snow"
-        case .rainShowersSlight, .rainShowersModerate, .rainShowersViolent: return "cloud.rain.fill"
-        case .snowShowersSlight, .snowShowersHeavy: return "cloud.snow.fill"
-        case .thunderstorm, .thunderstormSlightHail, .thunderstormHeavyHail: return "cloud.bolt.rain.fill"
+        case .slightRainShowers, .moderateRainShowers, .violentRainShowers: return "cloud.rain.fill"
+        case .slightSnowShowers, .heavySnowShowers: return "cloud.snow.fill"
+        case .thunderstorm, .thunderstormWithSlightHail, .thunderstormWithHeavyHail: return "cloud.bolt.rain.fill"
         }
     }
 }
@@ -132,7 +132,7 @@ public struct MediumHomeWidgetView: View {
                     HStack(alignment: .top, spacing: 8) {
                         Image(systemName: weatherIcon(weatherCode))
                             .font(.system(size: 24))
-                            .symbolRenderingMode(.multicolor)
+                            .foregroundStyle(.blue)
 
                         Text("\(Int(temp.rawValue.rounded()))°")
                             .font(.system(size: 40, weight: .thin))
@@ -244,16 +244,16 @@ public struct MediumHomeWidgetView: View {
         case .partlyCloudy: return "cloud.sun.fill"
         case .overcast: return "cloud.fill"
         case .fog, .depositingRimeFog: return "cloud.fog.fill"
-        case .drizzleLight, .drizzleModerate, .drizzleDense: return "cloud.drizzle.fill"
-        case .freezingDrizzleLight, .freezingDrizzleDense: return "cloud.sleet.fill"
-        case .rainSlight, .rainModerate: return "cloud.rain.fill"
-        case .rainHeavy: return "cloud.heavyrain.fill"
-        case .freezingRainLight, .freezingRainHeavy: return "cloud.sleet.fill"
-        case .snowFallSlight, .snowFallModerate, .snowFallHeavy: return "cloud.snow.fill"
+        case .lightDrizzle, .moderateDrizzle, .denseDrizzle: return "cloud.drizzle.fill"
+        case .lightFreezingDrizzle, .denseFreezingDrizzle: return "cloud.sleet.fill"
+        case .slightRain, .moderateRain: return "cloud.rain.fill"
+        case .heavyRain: return "cloud.heavyrain.fill"
+        case .lightFreezingRain, .heavyFreezingRain: return "cloud.sleet.fill"
+        case .slightSnow, .moderateSnow, .heavySnow: return "cloud.snow.fill"
         case .snowGrains: return "cloud.snow"
-        case .rainShowersSlight, .rainShowersModerate, .rainShowersViolent: return "cloud.rain.fill"
-        case .snowShowersSlight, .snowShowersHeavy: return "cloud.snow.fill"
-        case .thunderstorm, .thunderstormSlightHail, .thunderstormHeavyHail: return "cloud.bolt.rain.fill"
+        case .slightRainShowers, .moderateRainShowers, .violentRainShowers: return "cloud.rain.fill"
+        case .slightSnowShowers, .heavySnowShowers: return "cloud.snow.fill"
+        case .thunderstorm, .thunderstormWithSlightHail, .thunderstormWithHeavyHail: return "cloud.bolt.rain.fill"
         }
     }
 }
@@ -355,7 +355,7 @@ public struct LargeHomeWidgetView: View {
                 HStack(alignment: .top, spacing: 8) {
                     Image(systemName: weatherIcon(weatherCode))
                         .font(.system(size: 32))
-                        .symbolRenderingMode(.multicolor)
+                        .foregroundStyle(.blue)
 
                     Text("\(Int(temp.rawValue.rounded()))°")
                         .font(.system(size: 56, weight: .thin))
@@ -399,7 +399,7 @@ public struct LargeHomeWidgetView: View {
 
             Image(systemName: weatherIcon(hourly.metrics.weatherCode))
                 .font(.body)
-                .symbolRenderingMode(.multicolor)
+                .foregroundStyle(.blue)
 
             Text("\(Int(hourly.metrics.temperature.rawValue.rounded()))°")
                 .font(.caption)
@@ -416,7 +416,7 @@ public struct LargeHomeWidgetView: View {
 
             Image(systemName: weatherIcon(daily.forecast.weatherCode))
                 .font(.caption)
-                .symbolRenderingMode(.multicolor)
+                .foregroundStyle(.blue)
                 .frame(width: 20)
 
             Spacer()
@@ -488,16 +488,16 @@ public struct LargeHomeWidgetView: View {
         case .partlyCloudy: return "cloud.sun.fill"
         case .overcast: return "cloud.fill"
         case .fog, .depositingRimeFog: return "cloud.fog.fill"
-        case .drizzleLight, .drizzleModerate, .drizzleDense: return "cloud.drizzle.fill"
-        case .freezingDrizzleLight, .freezingDrizzleDense: return "cloud.sleet.fill"
-        case .rainSlight, .rainModerate: return "cloud.rain.fill"
-        case .rainHeavy: return "cloud.heavyrain.fill"
-        case .freezingRainLight, .freezingRainHeavy: return "cloud.sleet.fill"
-        case .snowFallSlight, .snowFallModerate, .snowFallHeavy: return "cloud.snow.fill"
+        case .lightDrizzle, .moderateDrizzle, .denseDrizzle: return "cloud.drizzle.fill"
+        case .lightFreezingDrizzle, .denseFreezingDrizzle: return "cloud.sleet.fill"
+        case .slightRain, .moderateRain: return "cloud.rain.fill"
+        case .heavyRain: return "cloud.heavyrain.fill"
+        case .lightFreezingRain, .heavyFreezingRain: return "cloud.sleet.fill"
+        case .slightSnow, .moderateSnow, .heavySnow: return "cloud.snow.fill"
         case .snowGrains: return "cloud.snow"
-        case .rainShowersSlight, .rainShowersModerate, .rainShowersViolent: return "cloud.rain.fill"
-        case .snowShowersSlight, .snowShowersHeavy: return "cloud.snow.fill"
-        case .thunderstorm, .thunderstormSlightHail, .thunderstormHeavyHail: return "cloud.bolt.rain.fill"
+        case .slightRainShowers, .moderateRainShowers, .violentRainShowers: return "cloud.rain.fill"
+        case .slightSnowShowers, .heavySnowShowers: return "cloud.snow.fill"
+        case .thunderstorm, .thunderstormWithSlightHail, .thunderstormWithHeavyHail: return "cloud.bolt.rain.fill"
         }
     }
 
