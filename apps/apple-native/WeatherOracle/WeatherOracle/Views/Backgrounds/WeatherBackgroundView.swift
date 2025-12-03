@@ -74,17 +74,17 @@ struct WeatherBackgroundView: View {
 
         // MARK: - Cloudy Conditions
         case .partlyCloudy:
-            CloudyBackground(density: .partly)
+            CloudyBackground(density: .partly, isDaytime: isDaytime)
 
         case .overcast:
-            CloudyBackground(density: .overcast)
+            CloudyBackground(density: .overcast, isDaytime: isDaytime)
 
         // MARK: - Fog Conditions
         case .fog:
-            FogBackground()
+            FogBackground(isDaytime: isDaytime)
 
         case .depositingRimeFog:
-            FogBackground()
+            FogBackground(isDaytime: isDaytime)
 
         // MARK: - Drizzle Conditions
         case .lightDrizzle:
@@ -122,23 +122,23 @@ struct WeatherBackgroundView: View {
 
         // MARK: - Snow Conditions
         case .slightSnow:
-            SnowBackground(intensity: .light)
+            SnowBackground(intensity: .light, isDaytime: isDaytime)
 
         case .moderateSnow:
-            SnowBackground(intensity: .moderate)
+            SnowBackground(intensity: .moderate, isDaytime: isDaytime)
 
         case .heavySnow:
-            SnowBackground(intensity: .heavy)
+            SnowBackground(intensity: .heavy, isDaytime: isDaytime)
 
         case .snowGrains:
-            SnowBackground(intensity: .moderate)
+            SnowBackground(intensity: .moderate, isDaytime: isDaytime)
 
         // MARK: - Snow Shower Conditions
         case .slightSnowShowers:
-            SnowBackground(intensity: .light)
+            SnowBackground(intensity: .light, isDaytime: isDaytime)
 
         case .heavySnowShowers:
-            SnowBackground(intensity: .heavy)
+            SnowBackground(intensity: .heavy, isDaytime: isDaytime)
 
         // MARK: - Rain Shower Conditions
         case .slightRainShowers:

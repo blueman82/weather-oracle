@@ -6,10 +6,13 @@ import SwiftUI
 /// Features:
 /// - Multiple horizontal fog bands with varying opacity
 /// - Slow continuous horizontal drift animation
-/// - Gray gradient background with subtle blue tint
+/// - Gray gradient background with subtle blue tint (day) or dark blue-gray (night)
 /// - Smooth blur effects for soft edges
 /// - Optimized for performance using TimelineView
+/// - Day/night color palette support
 struct FogBackground: View {
+    /// Whether it's currently daytime (affects background colors)
+    let isDaytime: Bool
     /// Configuration for individual fog layers
     private struct FogLayer {
         let heightOffset: CGFloat
@@ -52,11 +55,17 @@ struct FogBackground: View {
     ///   - context: Canvas context for drawing
     ///   - size: Canvas size
     private func drawGradientBackground(context: inout GraphicsContext, size: CGSize) {
-        let gradient = Gradient(colors: [
-            Color(red: 0.65, green: 0.70, blue: 0.75),  // Light blue-gray top
-            Color(red: 0.55, green: 0.62, blue: 0.68),  // Medium blue-gray middle
-            Color(red: 0.50, green: 0.58, blue: 0.65),  // Darker blue-gray bottom
-        ])
+        let gradient = isDaytime
+            ? Gradient(colors: [
+                Color(red: 0.65, green: 0.70, blue: 0.75),  // Light blue-gray top
+                Color(red: 0.55, green: 0.62, blue: 0.68),  // Medium blue-gray middle
+                Color(red: 0.50, green: 0.58, blue: 0.65),  // Darker blue-gray bottom
+            ])
+            : Gradient(colors: [
+                Color(red: 0.28, green: 0.32, blue: 0.38),  // Dark blue-gray top
+                Color(red: 0.25, green: 0.29, blue: 0.35),  // Darker blue-gray middle
+                Color(red: 0.22, green: 0.26, blue: 0.32),  // Very dark blue-gray bottom
+            ])
 
         let backgroundPath = Path(roundedRect: CGRect(origin: .zero, size: size), cornerRadius: 0)
         context.fill(backgroundPath, with: .linearGradient(gradient, startPoint: CGPoint(x: 0, y: 0), endPoint: CGPoint(x: 0, y: size.height)))
@@ -147,12 +156,28 @@ struct FogBackground: View {
     }
 }
 
-#Preview {
+#Preview("Fog - Day") {
     ZStack {
-        FogBackground()
+        FogBackground(isDaytime: true)
 
         VStack {
-            Text("Foggy Conditions")
+            Text("Foggy Conditions - Day")
+                .font(.title)
+                .foregroundColor(.white)
+                .shadow(radius: 2)
+
+            Spacer()
+        }
+        .padding()
+    }
+}
+
+#Preview("Fog - Night") {
+    ZStack {
+        FogBackground(isDaytime: false)
+
+        VStack {
+            Text("Foggy Conditions - Night")
                 .font(.title)
                 .foregroundColor(.white)
                 .shadow(radius: 2)

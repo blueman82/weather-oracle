@@ -9,10 +9,14 @@ enum CloudDensity {
 /// Animated weather background view for cloudy conditions
 ///
 /// Renders a dynamic cloud scene using Canvas API with TimelineView for smooth animation.
-/// Supports both partly cloudy (sun peeking through) and overcast (dense cloud layer) conditions.
+/// Supports both partly cloudy (sun peeking through) and overcast (dense cloud layer) conditions,
+/// with day/night awareness for appropriate color palettes.
 struct CloudyBackground: View {
     /// The density of clouds to display
     let density: CloudDensity
+
+    /// Whether it's currently daytime (affects background colors)
+    let isDaytime: Bool
 
     var body: some View {
         TimelineView(.animation) { timeline in
@@ -43,9 +47,9 @@ struct CloudyBackground: View {
         let startPoint: CGPoint
         let endPoint: CGPoint
 
-        switch density {
-        case .partly:
-            // Lighter gradient for partly cloudy - hint of blue sky
+        switch (density, isDaytime) {
+        case (.partly, true):
+            // Daytime partly cloudy - light blue sky
             gradient = Gradient(colors: [
                 Color(red: 0.85, green: 0.90, blue: 0.95), // Light blue top
                 Color(red: 0.92, green: 0.92, blue: 0.93)  // Light gray bottom
@@ -53,11 +57,29 @@ struct CloudyBackground: View {
             startPoint = CGPoint(x: 0, y: 0)
             endPoint = CGPoint(x: size.width, y: size.height)
 
-        case .overcast:
-            // Darker gradient for overcast - darker grays
+        case (.partly, false):
+            // Nighttime partly cloudy - dark blue/purple sky
             gradient = Gradient(colors: [
-                Color(red: 0.65, green: 0.68, blue: 0.72), // Dark gray-blue top
-                Color(red: 0.72, green: 0.72, blue: 0.74)  // Medium gray bottom
+                Color(red: 0.15, green: 0.18, blue: 0.28), // Dark navy top
+                Color(red: 0.25, green: 0.28, blue: 0.38)  // Lighter navy bottom
+            ])
+            startPoint = CGPoint(x: 0, y: 0)
+            endPoint = CGPoint(x: size.width, y: size.height)
+
+        case (.overcast, true):
+            // Daytime overcast - medium grays
+            gradient = Gradient(colors: [
+                Color(red: 0.65, green: 0.68, blue: 0.72), // Medium gray-blue top
+                Color(red: 0.72, green: 0.72, blue: 0.74)  // Light gray bottom
+            ])
+            startPoint = CGPoint(x: 0, y: 0)
+            endPoint = CGPoint(x: 0, y: size.height)
+
+        case (.overcast, false):
+            // Nighttime overcast - very dark grays
+            gradient = Gradient(colors: [
+                Color(red: 0.20, green: 0.22, blue: 0.28), // Very dark gray-blue top
+                Color(red: 0.30, green: 0.32, blue: 0.36)  // Dark gray bottom
             ])
             startPoint = CGPoint(x: 0, y: 0)
             endPoint = CGPoint(x: 0, y: size.height)
@@ -76,8 +98,10 @@ struct CloudyBackground: View {
     ///   - size: Canvas size
     ///   - time: Current animation time for movement
     private func drawPartlyCloudyScene(context: inout GraphicsContext, size: CGSize, time: Double) {
-        // Sun peeking through (upper right)
-        drawSun(context: &context, size: size, opacity: 0.7)
+        // Sun peeking through (upper right) - only during daytime
+        if isDaytime {
+            drawSun(context: &context, size: size, opacity: 0.7)
+        }
 
         // Cloud 1: Slow moving, upper-left area
         let cloud1X = fmod(time * 20, size.width + 150) - 75
@@ -142,7 +166,10 @@ struct CloudyBackground: View {
     ///   - opacity: Alpha value for the cloud
     private func drawCloud(context: inout GraphicsContext, position: CGPoint,
                           size: CGSize, opacity: Double) {
-        let cloudColor = Color(red: 0.90, green: 0.90, blue: 0.92).opacity(opacity)
+        // Darker clouds at night
+        let cloudColor = isDaytime
+            ? Color(red: 0.90, green: 0.90, blue: 0.92).opacity(opacity)
+            : Color(red: 0.35, green: 0.37, blue: 0.42).opacity(opacity)
 
         // Cloud is made of 4 overlapping circles for organic appearance
         let circleRadius1: CGFloat = size.width * 0.35
@@ -222,12 +249,22 @@ struct CloudyBackground: View {
 
 // MARK: - Previews
 
-#Preview("Partly Cloudy") {
-    CloudyBackground(density: .partly)
+#Preview("Partly Cloudy - Day") {
+    CloudyBackground(density: .partly, isDaytime: true)
         .frame(height: 400)
 }
 
-#Preview("Overcast") {
-    CloudyBackground(density: .overcast)
+#Preview("Partly Cloudy - Night") {
+    CloudyBackground(density: .partly, isDaytime: false)
+        .frame(height: 400)
+}
+
+#Preview("Overcast - Day") {
+    CloudyBackground(density: .overcast, isDaytime: true)
+        .frame(height: 400)
+}
+
+#Preview("Overcast - Night") {
+    CloudyBackground(density: .overcast, isDaytime: false)
         .frame(height: 400)
 }
