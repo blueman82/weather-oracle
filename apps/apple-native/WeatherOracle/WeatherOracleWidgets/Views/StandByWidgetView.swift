@@ -28,7 +28,7 @@ public struct StandByWidgetView: View {
 
                         // Large temperature with icon
                         HStack(alignment: .top, spacing: 16) {
-                            Image(systemName: weatherIcon(weatherCode))
+                            Image(systemName: weatherIcon(weatherCode, at: entry.date))
                                 .font(.system(size: 80))
                                 .foregroundStyle(.blue)
 
@@ -139,7 +139,7 @@ public struct StandByWidgetView: View {
                 .font(.caption)
                 .foregroundStyle(.secondary)
 
-            Image(systemName: weatherIcon(hourly.metrics.weatherCode))
+            Image(systemName: weatherIcon(hourly.metrics.weatherCode, at: hourly.timestamp))
                 .font(.title2)
                 .foregroundStyle(.blue)
 
@@ -156,7 +156,7 @@ public struct StandByWidgetView: View {
                 .font(.body)
                 .frame(width: 40, alignment: .leading)
 
-            Image(systemName: weatherIcon(daily.forecast.weatherCode))
+            Image(systemName: weatherIcon(daily.forecast.weatherCode, at: daily.date))
                 .font(.title3)
                 .foregroundStyle(.blue)
                 .frame(width: 30)
@@ -233,24 +233,9 @@ public struct StandByWidgetView: View {
         }
     }
 
-    private func weatherIcon(_ code: WeatherCode) -> String {
-        switch code {
-        case .clearSky: return "sun.max.fill"
-        case .mainlyClear: return "sun.max"
-        case .partlyCloudy: return "cloud.sun.fill"
-        case .overcast: return "cloud.fill"
-        case .fog, .depositingRimeFog: return "cloud.fog.fill"
-        case .lightDrizzle, .moderateDrizzle, .denseDrizzle: return "cloud.drizzle.fill"
-        case .lightFreezingDrizzle, .denseFreezingDrizzle: return "cloud.sleet.fill"
-        case .slightRain, .moderateRain: return "cloud.rain.fill"
-        case .heavyRain: return "cloud.heavyrain.fill"
-        case .lightFreezingRain, .heavyFreezingRain: return "cloud.sleet.fill"
-        case .slightSnow, .moderateSnow, .heavySnow: return "cloud.snow.fill"
-        case .snowGrains: return "cloud.snow"
-        case .slightRainShowers, .moderateRainShowers, .violentRainShowers: return "cloud.rain.fill"
-        case .slightSnowShowers, .heavySnowShowers: return "cloud.snow.fill"
-        case .thunderstorm, .thunderstormWithSlightHail, .thunderstormWithHeavyHail: return "cloud.bolt.rain.fill"
-        }
+    private func weatherIcon(_ code: WeatherCode, at timestamp: Date) -> String {
+        let (sunrise, sunset) = entry.sunTimes(for: timestamp)
+        return WeatherIconProvider.icon(for: code, at: timestamp, sunrise: sunrise, sunset: sunset)
     }
 
     private func weatherDescription(_ code: WeatherCode) -> String {

@@ -13,7 +13,7 @@ public struct InlineAccessoryWidgetView: View {
            let temp = entry.currentTemperature {
             // Inline widgets support text and SF Symbols only
             HStack(spacing: 4) {
-                Image(systemName: weatherIcon(entry.currentWeatherCode ?? .clearSky))
+                Image(systemName: weatherIcon(entry.currentWeatherCode ?? .clearSky, at: entry.date))
 
                 Text("\(location.name)")
 
@@ -24,21 +24,9 @@ public struct InlineAccessoryWidgetView: View {
         }
     }
 
-    private func weatherIcon(_ code: WeatherCode) -> String {
-        switch code {
-        case .clearSky, .mainlyClear: return "sun.max"
-        case .partlyCloudy: return "cloud.sun"
-        case .overcast: return "cloud"
-        case .fog, .depositingRimeFog: return "cloud.fog"
-        case .lightDrizzle, .moderateDrizzle, .denseDrizzle,
-             .lightFreezingDrizzle, .denseFreezingDrizzle: return "cloud.drizzle"
-        case .slightRain, .moderateRain, .heavyRain,
-             .lightFreezingRain, .heavyFreezingRain,
-             .slightRainShowers, .moderateRainShowers, .violentRainShowers: return "cloud.rain"
-        case .slightSnow, .moderateSnow, .heavySnow,
-             .snowGrains, .slightSnowShowers, .heavySnowShowers: return "cloud.snow"
-        case .thunderstorm, .thunderstormWithSlightHail, .thunderstormWithHeavyHail: return "cloud.bolt.rain"
-        }
+    private func weatherIcon(_ code: WeatherCode, at timestamp: Date) -> String {
+        let (sunrise, sunset) = entry.sunTimes(for: timestamp)
+        return WeatherIconProvider.icon(for: code, at: timestamp, sunrise: sunrise, sunset: sunset)
     }
 }
 
@@ -56,7 +44,7 @@ public struct CircularAccessoryWidgetView: View {
                 AccessoryWidgetBackground()
 
                 VStack(spacing: 2) {
-                    Image(systemName: weatherIcon(weatherCode))
+                    Image(systemName: weatherIcon(weatherCode, at: entry.date))
                         .font(.title3)
                         .imageScale(.large)
 
@@ -81,21 +69,9 @@ public struct CircularAccessoryWidgetView: View {
         }
     }
 
-    private func weatherIcon(_ code: WeatherCode) -> String {
-        switch code {
-        case .clearSky, .mainlyClear: return "sun.max.fill"
-        case .partlyCloudy: return "cloud.sun.fill"
-        case .overcast: return "cloud.fill"
-        case .fog, .depositingRimeFog: return "cloud.fog.fill"
-        case .lightDrizzle, .moderateDrizzle, .denseDrizzle,
-             .lightFreezingDrizzle, .denseFreezingDrizzle: return "cloud.drizzle.fill"
-        case .slightRain, .moderateRain, .heavyRain,
-             .lightFreezingRain, .heavyFreezingRain,
-             .slightRainShowers, .moderateRainShowers, .violentRainShowers: return "cloud.rain.fill"
-        case .slightSnow, .moderateSnow, .heavySnow,
-             .snowGrains, .slightSnowShowers, .heavySnowShowers: return "cloud.snow.fill"
-        case .thunderstorm, .thunderstormWithSlightHail, .thunderstormWithHeavyHail: return "cloud.bolt.rain.fill"
-        }
+    private func weatherIcon(_ code: WeatherCode, at timestamp: Date) -> String {
+        let (sunrise, sunset) = entry.sunTimes(for: timestamp)
+        return WeatherIconProvider.icon(for: code, at: timestamp, sunrise: sunrise, sunset: sunset)
     }
 }
 
@@ -112,7 +88,7 @@ public struct RectangularAccessoryWidgetView: View {
                 // Left: Current conditions
                 VStack(alignment: .leading, spacing: 2) {
                     HStack(spacing: 4) {
-                        Image(systemName: weatherIcon(weatherCode))
+                        Image(systemName: weatherIcon(weatherCode, at: entry.date))
                             .font(.title3)
 
                         Text("\(Int(temp.rawValue.rounded()))°")
@@ -138,7 +114,7 @@ public struct RectangularAccessoryWidgetView: View {
                                     .font(.system(size: 8))
                                     .foregroundStyle(.tertiary)
 
-                                Image(systemName: weatherIcon(hourly.metrics.weatherCode))
+                                Image(systemName: weatherIcon(hourly.metrics.weatherCode, at: hourly.timestamp))
                                     .font(.caption2)
 
                                 Text("\(Int(hourly.metrics.temperature.rawValue.rounded()))°")
@@ -162,20 +138,8 @@ public struct RectangularAccessoryWidgetView: View {
         }
     }
 
-    private func weatherIcon(_ code: WeatherCode) -> String {
-        switch code {
-        case .clearSky, .mainlyClear: return "sun.max.fill"
-        case .partlyCloudy: return "cloud.sun.fill"
-        case .overcast: return "cloud.fill"
-        case .fog, .depositingRimeFog: return "cloud.fog.fill"
-        case .lightDrizzle, .moderateDrizzle, .denseDrizzle,
-             .lightFreezingDrizzle, .denseFreezingDrizzle: return "cloud.drizzle.fill"
-        case .slightRain, .moderateRain, .heavyRain,
-             .lightFreezingRain, .heavyFreezingRain,
-             .slightRainShowers, .moderateRainShowers, .violentRainShowers: return "cloud.rain.fill"
-        case .slightSnow, .moderateSnow, .heavySnow,
-             .snowGrains, .slightSnowShowers, .heavySnowShowers: return "cloud.snow.fill"
-        case .thunderstorm, .thunderstormWithSlightHail, .thunderstormWithHeavyHail: return "cloud.bolt.rain.fill"
-        }
+    private func weatherIcon(_ code: WeatherCode, at timestamp: Date) -> String {
+        let (sunrise, sunset) = entry.sunTimes(for: timestamp)
+        return WeatherIconProvider.icon(for: code, at: timestamp, sunrise: sunrise, sunset: sunset)
     }
 }
