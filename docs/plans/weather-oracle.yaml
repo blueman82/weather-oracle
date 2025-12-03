@@ -1433,7 +1433,7 @@ plan:
           - point: "Commander.js setup"
             details: "new Command().name().version().description().option()"
           - point: "Bin field for global install"
-            details: "\"bin\": { \"weather-oracle\": \"./src/index.ts\" }"
+            details: '"bin": { "weather-oracle": "./src/index.ts" }'
           - point: "Color support detection"
             details: "Use chalk.supportsColor to respect --no-color"
         integration:
