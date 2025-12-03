@@ -282,4 +282,37 @@ extension WeatherWidgetEntry {
     public func nextDailyForecasts(count: Int = 5) -> [AggregatedDailyForecast] {
         Array((forecast?.consensus.daily.prefix(count) ?? []))
     }
+
+    /// Today's sunrise time from the first daily forecast
+    /// - Returns: The sunrise time if available, otherwise nil
+    public var todaySunrise: Date? {
+        forecast?.consensus.daily.first?.forecast.sun.sunrise
+    }
+
+    /// Today's sunset time from the first daily forecast
+    /// - Returns: The sunset time if available, otherwise nil
+    public var todaySunset: Date? {
+        forecast?.consensus.daily.first?.forecast.sun.sunset
+    }
+
+    /// Retrieves sunrise and sunset times for a given date
+    /// - Parameter date: The date to find sun times for
+    /// - Returns: A tuple containing the sunrise and sunset times, or (nil, nil) if not found
+    /// - Note: Matches dates using calendar day comparison, falling back to (nil, nil) if daily forecasts are unavailable
+    public func sunTimes(for date: Date) -> (sunrise: Date?, sunset: Date?) {
+        guard let dailyForecasts = forecast?.consensus.daily else {
+            return (nil, nil)
+        }
+
+        let targetDate = Calendar.current.startOfDay(for: date)
+
+        for dayForecast in dailyForecasts {
+            let forecastDate = Calendar.current.startOfDay(for: dayForecast.timestamp)
+            if forecastDate == targetDate {
+                return (dayForecast.forecast.sun.sunrise, dayForecast.forecast.sun.sunset)
+            }
+        }
+
+        return (nil, nil)
+    }
 }
